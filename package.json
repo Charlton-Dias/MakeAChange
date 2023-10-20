@@ -13,6 +13,7 @@
     "@gluestack-style/react": "^1.0.6",
     "@gluestack-ui/config": "^1.0.1",
     "@gluestack-ui/themed": "^1.0.8",
+    "@react-native-community/datetimepicker": "^7.6.1",
     "@react-navigation/bottom-tabs": "^6.5.9",
     "@react-navigation/material-bottom-tabs": "^6.2.18",
     "@react-navigation/native": "^6.1.8",

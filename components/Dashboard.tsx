@@ -1,11 +1,19 @@
 import React from 'react';
-import {View, Text, Image, HStack, VStack} from '@gluestack-ui/themed';
+import {
+  View,
+  Text,
+  Image,
+  HStack,
+  VStack,
+  Button,
+  ButtonText,
+} from '@gluestack-ui/themed';
 
 interface DashboardProps {
-  avatar: string;
+  avatar?: string;
   username: string;
   points: number;
-  address: string;
+  address?: string;
 }
 
 export default function Dashboard({
@@ -15,8 +23,8 @@ export default function Dashboard({
   address,
 }: DashboardProps): JSX.Element {
   return (
-    <View>
-      <HStack>
+    <View margin="5%">
+      <HStack display="flex" flexDirection="row">
         <Image
           source={{
             uri: avatar
@@ -24,13 +32,20 @@ export default function Dashboard({
               : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
           }}
           alt="avatar"
-          // style={styles.avatar}
+          style={{width: 100, height: 100}}
+          borderRadius={50}
         />
-        <VStack>
+
+        <VStack marginLeft={20}>
           <Text>{username}</Text>
-          <Text>{points} points</Text>
+          <Text>{username}</Text>
+
+          <Button>
+            <ButtonText>Edit Profile</ButtonText>
+          </Button>
         </VStack>
       </HStack>
+      <Text>{points} points</Text>
       <Text>{address}</Text>
     </View>
   );

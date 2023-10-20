@@ -4,65 +4,56 @@ import {
   Button,
   ButtonText,
   Center,
-  Divider,
   GluestackUIProvider,
   Heading,
-  Pressable,
   ScrollView,
   Text,
 } from '@gluestack-ui/themed';
 import {config} from '@gluestack-ui/config';
 import InputWithLabel from './InputWithLabel';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SignInWith from './SignInWith';
+import SectionWrapper from './SectionWrapper';
 
-export default function Login(): JSX.Element {
+export default function Login({
+  handleUser,
+}: {
+  handleUser: () => void;
+}): JSX.Element {
   return (
     <GluestackUIProvider config={config}>
       <ScrollView>
-        <Box display="flex">
+        <Box display="flex" padding={'5%'}>
           <Center marginTop={80} marginBottom={20}>
             <Icon name="user" size={100} color={'#222'} />
             <Heading>Login</Heading>
           </Center>
 
-          <InputWithLabel name={'Username'} type={'text'} />
-          <InputWithLabel name={'Password'} type={'password'} />
+          <SectionWrapper>
+            <InputWithLabel name={'Username'} />
+            <InputWithLabel name={'Password'} type={'password'} />
+            {/* </SectionWrapper> */}
 
-          <Button size="sm" variant="link">
-            <ButtonText textAlign="left">Forgot password?</ButtonText>
-          </Button>
+            <Button size="sm" variant="link">
+              <ButtonText textAlign="left">Forgot password?</ButtonText>
+            </Button>
 
-          <Button size="sm" alignSelf="center" width={'90%'} marginTop={10}>
-            <ButtonText>Login</ButtonText>
-          </Button>
+            <Button
+              size="sm"
+              alignSelf="center"
+              width={'100%'}
+              marginTop={10}
+              onPress={handleUser}>
+              <ButtonText>Login</ButtonText>
+            </Button>
+          </SectionWrapper>
 
           <Button size="sm" variant="link" marginTop={10}>
             <Text>Don't have an account? </Text>
             <ButtonText>Sign up</ButtonText>
           </Button>
 
-          <Divider marginTop={10} width={'90%'} alignSelf="center" />
-
-          <Box p={'5%'}>
-            <Box
-              flexDirection="row"
-              justifyContent="space-between"
-              paddingHorizontal={5}>
-              <Text>Sign in with:</Text>
-              <Pressable onPress={() => console.log('google')}>
-                <Icon name="google" size={24} color={'#222'} />
-              </Pressable>
-              <Pressable onPress={() => console.log('rich people')}>
-                <Icon name="apple" size={24} color={'#222'} />
-              </Pressable>
-              <Pressable onPress={() => console.log('fb')}>
-                <Icon name="facebook" size={24} color={'#222'} />
-              </Pressable>
-              <Pressable onPress={() => console.log('x')}>
-                <Icon name="twitter" size={24} color={'#222'} />
-              </Pressable>
-            </Box>
-          </Box>
+          <SignInWith />
         </Box>
       </ScrollView>
     </GluestackUIProvider>

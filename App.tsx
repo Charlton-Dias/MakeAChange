@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import BottomTabs from './components/BottomTabs';
 
 export default function App(): JSX.Element {
+  const handleUser = () => {
+    setUser(!user);
+  };
   const [user, setUser] = useState(false);
-  return (
-    <BottomTabs user={user} />
-  );
+  return <BottomTabs user={user} handleUser={handleUser} />;
 }

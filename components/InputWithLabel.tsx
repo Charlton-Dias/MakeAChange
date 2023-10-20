@@ -3,7 +3,7 @@ import {Box, Center, Input, InputField, Text} from '@gluestack-ui/themed';
 
 interface InputWithLabelProps {
   name: string;
-  type: string;
+  type?: string;
 }
 
 export default function InputWithLabel(
@@ -12,7 +12,7 @@ export default function InputWithLabel(
 ): React.JSX.Element {
   return (
     <Center>
-      <Box width={'90%'} paddingVertical={5}>
+      <Box width={'100%'} paddingVertical={5}>
         <Text>{name}</Text>
         <Input variant="outline" size="md">
           <InputField type={type} {...props} />
