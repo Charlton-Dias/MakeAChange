@@ -1,12 +1,9 @@
-import React from 'react';
-import {GluestackUIProvider} from '@gluestack-ui/themed';
-import {config} from '@gluestack-ui/config';
-import Dashboard from './components/Dashboard';
+import React, {useState} from 'react';
+import BottomTabs from './components/BottomTabs';
 
 export default function App(): JSX.Element {
+  const [user, setUser] = useState(false);
   return (
-    <GluestackUIProvider config={config}>
-      <Dashboard address="test" points={3000} username="Charlton.Dias" />
-    </GluestackUIProvider>
+    <BottomTabs user={user} />
   );
 }

@@ -23,6 +23,7 @@ export default function Dashboard({
               ? avatar
               : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
           }}
+          alt="avatar"
           // style={styles.avatar}
         />
         <VStack>
