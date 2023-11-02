@@ -17,6 +17,7 @@
     "@react-navigation/bottom-tabs": "^6.5.9",
     "@react-navigation/material-bottom-tabs": "^6.2.18",
     "@react-navigation/native": "^6.1.8",
+    "@react-navigation/native-stack": "^6.9.16",
     "@shoutem/ui": "^6.3.0",
     "react": "18.2.0",
     "react-native": "0.72.6",

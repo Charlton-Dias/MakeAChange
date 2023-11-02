@@ -5,16 +5,20 @@ import Profile from '../screens/Profile';
 import LeaderBoard from '../screens/LeaderBoard';
 import Tasks from '../screens/Tasks';
 import Home from '../screens/Home';
+// import CreateTask from '../screens/CreateTask';
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeIcon = () => <Icon name="home" size={24} color={'black'} />;
 const LeaderBoardIcon = () => <Icon name="trophy" size={24} color={'black'} />;
 const ProfileIcon = () => <Icon name="user" size={24} color={'black'} />;
 const TasksIcon = () => <Icon name="clipboard" size={24} color={'black'} />;
+// const CreateTaskIcon = () => (
+//   <Icon name="plus-circle" size={24} color={'black'} />
+// );
 
 export default function BottomTabs() {
   return (
-    <Tab.Navigator sceneAnimationType="shifting" style={{borderRadius: 10}}>
+    <Tab.Navigator sceneAnimationType="shifting">
       <>
         <Tab.Screen
           name="Home"
@@ -30,6 +34,13 @@ export default function BottomTabs() {
             tabBarIcon: TasksIcon,
           }}
         />
+        {/* <Tab.Screen
+          name="Create Task"
+          component={CreateTask}
+          options={{
+            tabBarIcon: CreateTaskIcon,
+          }}
+        /> */}
         <Tab.Screen
           name="LeaderBoard"
           component={LeaderBoard}
