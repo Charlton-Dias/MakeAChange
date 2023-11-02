@@ -2,25 +2,73 @@ import {
   Avatar,
   AvatarImage,
   Box,
+  Divider,
   HStack,
+  Heading,
+  ScrollView,
   Text,
   VStack,
 } from '@gluestack-ui/themed';
 import React from 'react';
 
+const dummyUsers = [
+  {
+    username: 'Charlton.Dias',
+    points: 3000,
+    address: 'Goa',
+    avatar: 'https://www.gravatar.com/avatar/',
+  },
+  {
+    username: 'Baban.Gawas',
+    points: 3000,
+    address: 'Goa',
+    avatar: 'https://www.gravatar.com/avatar/',
+  },
+  {
+    username: 'JohnDoe12',
+    points: 2800,
+    address: 'Goa',
+    avatar: 'https://www.gravatar.com/avatar/',
+  },
+  {
+    username: 'Spiderman',
+    points: 2700,
+    address: 'Goa',
+    avatar: 'https://www.gravatar.com/avatar/',
+  },
+  {
+    username: 'Flash',
+    points: 2600,
+    address: 'Goa',
+    avatar: 'https://www.gravatar.com/avatar/',
+  },
+];
+
 const LeaderBoard = () => {
   return (
-    <Box backgroundColor="#EAFAFE" m={10} p={5}>
-      {[...Array(5).keys()].map(() => (
-        <User />
-      ))}
-    </Box>
+    <ScrollView m={10} showsVerticalScrollIndicator={false}>
+      <Heading size="lg">Top 5 users</Heading>
+      <Divider mb={5} />
+      <Box backgroundColor="#EAFAFE" p={5} borderRadius={10} mb={10}>
+        {dummyUsers.map(item => (
+          <User username={item?.username} points={item?.points} />
+        ))}
+      </Box>
+
+      <Heading size="lg">Users from your area</Heading>
+      <Divider mb={5} />
+      <Box backgroundColor="#EAFAFE" p={5} borderRadius={10}>
+        {dummyUsers.map(item => (
+          <User username={item?.username} points={item?.points} />
+        ))}
+      </Box>
+    </ScrollView>
   );
 };
 
 export default LeaderBoard;
 
-function User() {
+function User(props: any) {
   return (
     <Box m={5} borderRadius={10} p={5} backgroundColor="#eff">
       <HStack>
@@ -31,9 +79,9 @@ function User() {
             }}
           />
         </Avatar>
-        <VStack ml={4}>
-          <Text size="lg">Username</Text>
-          <Text>2500</Text>
+        <VStack ml={10}>
+          <Text size="lg">{props?.username}</Text>
+          <Text>{props?.points}</Text>
         </VStack>
       </HStack>
     </Box>
