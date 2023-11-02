@@ -1,95 +1,50 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import Dashboard from './Dashboard';
-import Login from './Login';
-import {NavigationContainer} from '@react-navigation/native';
-import Signup from './Signup';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Button, Text} from '@gluestack-ui/themed';
-import {ButtonText} from '@gluestack-ui/themed';
+import Profile from '../screens/Profile';
+import LeaderBoard from '../screens/LeaderBoard';
+import Tasks from '../screens/Tasks';
+import Home from '../screens/Home';
 
 const Tab = createMaterialBottomTabNavigator();
+const HomeIcon = () => <Icon name="home" size={24} color={'black'} />;
+const LeaderBoardIcon = () => <Icon name="trophy" size={24} color={'black'} />;
+const ProfileIcon = () => <Icon name="user" size={24} color={'black'} />;
+const TasksIcon = () => <Icon name="clipboard" size={24} color={'black'} />;
 
-export default function BottomTabs({
-  user,
-  handleUser,
-}: {
-  user: boolean;
-  handleUser: () => void;
-}) {
+export default function BottomTabs() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator sceneAnimationType="shifting" style={{borderRadius: 10}}>
-        {!user ? (
-          <>
-            <Tab.Screen
-              name="Login"
-              component={() => <Login handleUser={handleUser} />}
-              options={{
-                tabBarIcon: () => (
-                  <Icon name="lock" size={24} color={'black'} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Signup"
-              component={Signup}
-              options={{
-                tabBarIcon: () => (
-                  <Icon name="user-plus" size={24} color={'black'} />
-                ),
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <Tab.Screen
-              name="Home"
-              component={Home}
-              options={{
-                tabBarIcon: () => (
-                  <Icon name="home" size={24} color={'black'} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Tasks"
-              component={() => <Task />}
-              options={{
-                tabBarIcon: () => (
-                  <Icon name="clipboard" size={24} color={'black'} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Profile"
-              component={() => <Profile handleUser={handleUser} />}
-              options={{
-                tabBarIcon: () => (
-                  <Icon name="user" size={24} color={'black'} />
-                ),
-              }}
-            />
-          </>
-        )}
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-}
-
-function Home() {
-  return <Dashboard address="test" points={3000} username="Charlton.Dias" />;
-}
-function Task() {
-  return <Text>Tasks here :)</Text>;
-}
-
-function Profile({handleUser}: {handleUser: () => void}) {
-  return (
-    <>
-      <Button onPress={handleUser}>
-        <ButtonText>Logout</ButtonText>
-      </Button>
-    </>
+    <Tab.Navigator sceneAnimationType="shifting" style={{borderRadius: 10}}>
+      <>
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarIcon: HomeIcon,
+          }}
+        />
+        <Tab.Screen
+          name="Tasks"
+          component={Tasks}
+          options={{
+            tabBarIcon: TasksIcon,
+          }}
+        />
+        <Tab.Screen
+          name="LeaderBoard"
+          component={LeaderBoard}
+          options={{
+            tabBarIcon: LeaderBoardIcon,
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: ProfileIcon,
+          }}
+        />
+      </>
+    </Tab.Navigator>
   );
 }
