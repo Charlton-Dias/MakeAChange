@@ -8,7 +8,15 @@ import {
   Button,
   ButtonText,
   Divider,
+  ButtonGroup,
+  ScrollView,
 } from '@gluestack-ui/themed';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import dummyData from '../dummyData';
+import Card from '../components/Card';
+import styles from '../styles';
+
+const Tab = createMaterialTopTabNavigator();
 
 interface DashboardProps {
   avatar?: string;
@@ -31,7 +39,30 @@ export default function Dashboard({
         address={address}
         points={points}
       />
-      <Divider alignSelf="center" width={'95%'} />
+      <Divider alignSelf="center" width={'95%'} marginBottom={5} />
+
+      <Tab.Navigator
+        tabBarOptions={{
+          activeTintColor: 'white',
+          inactiveTintColor: '#1A6EBC',
+          style: {
+            backgroundColor: 'white',
+            borderRadius: 10,
+            margin: 10,
+            borderWidth: 1,
+            borderColor: '#1A6EBC',
+          },
+          indicatorStyle: {
+            backgroundColor: '#1A6EBC',
+            height: '100%',
+            borderRadius: 10,
+          },
+          labelStyle: {fontSize: 14, textTransform: 'none'},
+        }}>
+        <Tab.Screen name="Created" component={CreatedList} />
+        <Tab.Screen name="Selected" component={SelectedList} />
+        <Tab.Screen name="Completed" component={CompletedList} />
+      </Tab.Navigator>
     </>
   );
 }
@@ -54,7 +85,7 @@ const ProfileCard = (props: any) => (
             : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
         }}
         alt="avatar"
-        style={{width: 100, height: 100}}
+        style={styles.profileAvatar}
         borderRadius={50}
       />
 
@@ -67,34 +98,42 @@ const ProfileCard = (props: any) => (
         <Text>{props?.address}</Text>
       </VStack>
     </HStack>
-    <Button isDisabled>
-      <ButtonText>Edit Profile</ButtonText>
-    </Button>
+    <ButtonGroup>
+      <Button isDisabled w={'48%'}>
+        <ButtonText>Edit Profile</ButtonText>
+      </Button>
+      <Button action="negative" w={'48%'}>
+        <ButtonText>Logout</ButtonText>
+      </Button>
+    </ButtonGroup>
   </View>
 );
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   avatar: {
-//     width: 100,
-//     height: 100,
-//     borderRadius: 50,
-//     marginBottom: 20,
-//   },
-//   username: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 10,
-//   },
-//   points: {
-//     fontSize: 18,
-//     marginBottom: 10,
-//   },
-//   address: {
-//     fontSize: 16,
-//   },
-// });
+function CreatedList() {
+  return (
+    <ScrollView contentContainerStyle={styles.profileCardContainter}>
+      {dummyData.map((item, index) => (
+        <Card key={index} title={item.title} description={item.desc} />
+      ))}
+    </ScrollView>
+  );
+}
+
+function SelectedList() {
+  return (
+    <ScrollView contentContainerStyle={styles.profileCardContainter}>
+      {dummyData.map((item, index) => (
+        <Card key={index} title={item.title} description={item.desc} />
+      ))}
+    </ScrollView>
+  );
+}
+function CompletedList() {
+  return (
+    <ScrollView contentContainerStyle={styles.profileCardContainter}>
+      {dummyData.map((item, index) => (
+        <Card key={index} title={item.title} description={item.desc} />
+      ))}
+    </ScrollView>
+  );
+}

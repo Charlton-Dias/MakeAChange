@@ -75,7 +75,7 @@ export default function Signup({navigation}: any): JSX.Element {
           size="sm"
           variant="link"
           marginTop={10}
-          onPress={navigation.navigate('Login')}>
+          onPress={() => navigation.navigate('Login')}>
           <Text>Already have an account? </Text>
           <ButtonText>Login </ButtonText>
         </Button>

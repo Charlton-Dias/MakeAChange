@@ -47,17 +47,28 @@ const dummyUsers = [
 const LeaderBoard = () => {
   return (
     <ScrollView m={10} showsVerticalScrollIndicator={false}>
-      <Heading size="lg">Top 5 users</Heading>
+      <Heading size="xl">Top 5 users</Heading>
       <Divider mb={5} />
-      <Box backgroundColor="#EAFAFE" p={5} borderRadius={10} mb={10}>
+      <Box
+        backgroundColor="#EAFAFE"
+        p={5}
+        borderRadius={10}
+        mb={10}
+        borderWidth={1}
+        borderColor="#DDDDDD">
         {dummyUsers.map(item => (
           <User username={item?.username} points={item?.points} />
         ))}
       </Box>
 
-      <Heading size="lg">Users from your area</Heading>
+      <Heading size="xl">Users from your area</Heading>
       <Divider mb={5} />
-      <Box backgroundColor="#EAFAFE" p={5} borderRadius={10}>
+      <Box
+        backgroundColor="#EAFAFE"
+        p={5}
+        borderRadius={10}
+        borderWidth={1}
+        borderColor="#DDDDDD">
         {dummyUsers.map(item => (
           <User username={item?.username} points={item?.points} />
         ))}
@@ -70,7 +81,7 @@ export default LeaderBoard;
 
 function User(props: any) {
   return (
-    <Box m={5} borderRadius={10} p={5} backgroundColor="#eff">
+    <Box m={5} borderRadius={10} p={5}>
       <HStack>
         <Avatar size="lg">
           <AvatarImage
@@ -80,7 +91,9 @@ function User(props: any) {
           />
         </Avatar>
         <VStack ml={10}>
-          <Text size="lg">{props?.username}</Text>
+          <Text size="lg" bold>
+            {props?.username}
+          </Text>
           <Text>{props?.points}</Text>
         </VStack>
       </HStack>

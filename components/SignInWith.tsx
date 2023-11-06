@@ -10,7 +10,9 @@ export default function SignInWith() {
     <>
       <Divider marginVertical={10} alignSelf="center" />
       <Center>
-        <Heading>OR</Heading>
+        <Heading backgroundColor="white" mt={-28}>
+          OR
+        </Heading>
       </Center>
       <Box mt={10}>
         <Box flexDirection="row" justifyContent="space-between">

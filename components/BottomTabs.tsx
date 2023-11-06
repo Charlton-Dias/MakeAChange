@@ -18,7 +18,7 @@ const TasksIcon = () => <Icon name="clipboard" size={24} color={'black'} />;
 
 export default function BottomTabs() {
   return (
-    <Tab.Navigator sceneAnimationType="shifting">
+    <Tab.Navigator sceneAnimationType="opacity">
       <>
         <Tab.Screen
           name="Home"

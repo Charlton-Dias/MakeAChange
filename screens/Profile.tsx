@@ -3,7 +3,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
-import {Button, ButtonText} from '@gluestack-ui/themed';
 
 const Stack = createNativeStackNavigator();
 
@@ -11,11 +10,8 @@ export default function Profile() {
   const [user, setUser] = useState(false);
   return (
     <>
-      <Button onPress={() => setUser(!user)}>
-        <ButtonText>Test User</ButtonText>
-      </Button>
       <Stack.Navigator initialRouteName="Login">
-        {user ? (
+        {!user ? (
           <Stack.Screen
             name="User"
             component={UserProfile}
