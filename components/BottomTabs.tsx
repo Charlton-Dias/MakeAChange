@@ -1,61 +1,83 @@
 import React from 'react';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {
+  createBottomTabNavigator,
+  BottomTabBarProps,
+} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Profile from '../screens/Profile';
 import LeaderBoard from '../screens/LeaderBoard';
 import Tasks from '../screens/Tasks';
 import Home from '../screens/Home';
-// import CreateTask from '../screens/CreateTask';
+import styles from '../styles';
+import {HStack, Text, View} from '@gluestack-ui/themed';
+import {TouchableOpacity} from 'react-native';
 
-const Tab = createMaterialBottomTabNavigator();
-const HomeIcon = () => <Icon name="home" size={24} color={'black'} />;
-const LeaderBoardIcon = () => <Icon name="trophy" size={24} color={'black'} />;
-const ProfileIcon = () => <Icon name="user" size={24} color={'black'} />;
-const TasksIcon = () => <Icon name="clipboard" size={24} color={'black'} />;
-// const CreateTaskIcon = () => (
-//   <Icon name="plus-circle" size={24} color={'black'} />
-// );
+const Tab = createBottomTabNavigator();
+
+const ICON_NAMES: {[key: string]: string} = {
+  Home: 'home',
+  Tasks: 'clipboard',
+  LeaderBoard: 'trophy',
+  Profile: 'user',
+};
 
 export default function BottomTabs() {
   return (
-    <Tab.Navigator sceneAnimationType="opacity">
-      <>
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          options={{
-            tabBarIcon: HomeIcon,
-          }}
-        />
-        <Tab.Screen
-          name="Tasks"
-          component={Tasks}
-          options={{
-            tabBarIcon: TasksIcon,
-          }}
-        />
-        {/* <Tab.Screen
-          name="Create Task"
-          component={CreateTask}
-          options={{
-            tabBarIcon: CreateTaskIcon,
-          }}
-        /> */}
-        <Tab.Screen
-          name="LeaderBoard"
-          component={LeaderBoard}
-          options={{
-            tabBarIcon: LeaderBoardIcon,
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            tabBarIcon: ProfileIcon,
-          }}
-        />
-      </>
+    <Tab.Navigator tabBar={Tabs} screenOptions={{headerShown: false}}>
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Tasks" component={Tasks} />
+      <Tab.Screen name="LeaderBoard" component={LeaderBoard} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 }
+
+const Tabs = ({state, descriptors, navigation}: BottomTabBarProps) => {
+  return (
+    <View style={styles.navBar}>
+      {state.routes.map((route, index) => {
+        const {options} = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
+
+        const iconName = ICON_NAMES[route.name];
+        const isFocused = state.index === index;
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableOpacity
+            accessibilityRole="button"
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            key={index}
+            style={(styles.navBarTabs, isFocused && styles.navBarActiveTab)}>
+            <HStack>
+              <Icon
+                name={`${iconName}`}
+                size={28}
+                color={isFocused ? 'white' : '#1A6EBC'}
+              />
+              {isFocused && (
+                <Text style={styles.navBarActiveTabText}>{label}</Text>
+              )}
+            </HStack>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};

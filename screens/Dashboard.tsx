@@ -42,22 +42,22 @@ export default function Dashboard({
       <Divider alignSelf="center" width={'95%'} marginBottom={5} />
 
       <Tab.Navigator
-        tabBarOptions={{
-          activeTintColor: 'white',
-          inactiveTintColor: '#1A6EBC',
-          style: {
+        screenOptions={{
+          tabBarActiveTintColor: 'white',
+          tabBarInactiveTintColor: '#1A6EBC',
+          tabBarStyle: {
             backgroundColor: 'white',
             borderRadius: 10,
             margin: 10,
             borderWidth: 1,
             borderColor: '#1A6EBC',
           },
-          indicatorStyle: {
+          tabBarIndicatorStyle: {
             backgroundColor: '#1A6EBC',
             height: '100%',
             borderRadius: 10,
           },
-          labelStyle: {fontSize: 14, textTransform: 'none'},
+          tabBarLabelStyle: {fontSize: 14, textTransform: 'none'},
         }}>
         <Tab.Screen name="Created" component={CreatedList} />
         <Tab.Screen name="Selected" component={SelectedList} />

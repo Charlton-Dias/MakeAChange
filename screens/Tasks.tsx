@@ -1,13 +1,13 @@
 import React from 'react';
 import {Divider, Heading, ScrollView, VStack} from '@gluestack-ui/themed';
-import {StyleSheet} from 'react-native';
 import Card from '../components/Card';
 import dummyData from '../dummyData';
+import styles from '../styles';
 
 const Tasks = () => {
   return (
     <>
-      <ScrollView p={20} contentContainerStyle={styles.container}>
+      <ScrollView p={20} contentContainerStyle={styles.taskContainer}>
         <Heading size="xl">Available</Heading>
         <Divider alignSelf="center" mb={10} />
         <ScrollView
@@ -49,10 +49,3 @@ const Tasks = () => {
 };
 
 export default Tasks;
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    paddingBottom: 20,
-  },
-});
