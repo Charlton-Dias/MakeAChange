@@ -1,4 +1,4 @@
-package com.makeachange;
+package com.taskify;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

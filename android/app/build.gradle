@@ -73,9 +73,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.makeachange"
+    namespace "com.taskify"
     defaultConfig {
-        applicationId "com.makeachange"
+        applicationId "com.taskify"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
