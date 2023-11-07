@@ -3,14 +3,14 @@ import {
   createBottomTabNavigator,
   BottomTabBarProps,
 } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Profile from '../screens/Profile';
-import LeaderBoard from '../screens/LeaderBoard';
-import Tasks from '../screens/Tasks';
-import Home from '../screens/Home';
-import styles from '../styles';
 import {HStack, Text, View} from '@gluestack-ui/themed';
 import {TouchableOpacity} from 'react-native';
+import Home from '../screens/Home';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import LeaderBoard from '../screens/LeaderBoard';
+import Profile from '../screens/Profile';
+import styles from '../styles';
+import Tasks from '../screens/Tasks';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +23,10 @@ const ICON_NAMES: {[key: string]: string} = {
 
 export default function BottomTabs() {
   return (
-    <Tab.Navigator tabBar={Tabs} screenOptions={{headerShown: false}}>
+    <Tab.Navigator
+      tabBar={Tabs}
+      screenOptions={{headerShown: false}}
+      sceneContainerStyle={styles.sceneContainerStyle}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Tasks" component={Tasks} />
       <Tab.Screen name="LeaderBoard" component={LeaderBoard} />

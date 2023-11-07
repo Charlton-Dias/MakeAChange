@@ -1,17 +1,6 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-  profileAvatar: {
-    width: 100,
-    height: 100,
-  },
-  profileCardContainter: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    padding: 10,
-  },
   navBar: {
     width: '95%',
     alignSelf: 'center',
@@ -42,6 +31,21 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+  },
+  profileAvatar: {
+    width: 100,
+    height: 100,
+  },
+  profileCardContainter: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+  sceneContainerStyle: {
+    backgroundColor: 'white',
+    height: '130%',
   },
   taskContainer: {
     justifyContent: 'center',
