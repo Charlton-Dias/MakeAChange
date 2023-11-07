@@ -15,6 +15,7 @@ const Card = ({...props}) => {
         height={150}
         borderTopLeftRadius={10}
         borderTopRightRadius={10}
+        alt={'Task Image'}
         source={{
           uri:
             props?.image ||

@@ -85,6 +85,7 @@ function User(props: any) {
       <HStack>
         <Avatar size="lg">
           <AvatarImage
+            alt="avatar image"
             source={{
               uri: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
             }}
