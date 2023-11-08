@@ -30,7 +30,12 @@ export default function Login({navigation}: any): JSX.Element {
             <ButtonText textAlign="left">Forgot password?</ButtonText>
           </Button>
 
-          <Button size="sm" alignSelf="center" width={'100%'} marginTop={10}>
+          <Button
+            size="sm"
+            alignSelf="center"
+            width={'100%'}
+            marginTop={10}
+            onPress={() => navigation.navigate('User')}>
             <ButtonText>Login</ButtonText>
           </Button>
         </SectionWrapper>

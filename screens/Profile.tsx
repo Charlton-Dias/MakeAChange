@@ -11,26 +11,26 @@ export default function Profile() {
   return (
     <>
       <Stack.Navigator initialRouteName="Login">
-        {!user ? (
-          <Stack.Screen
-            name="User"
-            component={UserProfile}
-            options={{headerShown: false}}
-          />
-        ) : (
-          <>
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Sign up"
-              component={Signup}
-              options={{headerShown: false}}
-            />
-          </>
-        )}
+        {/* {!user ? ( */}
+        <Stack.Screen
+          name="User"
+          component={UserProfile}
+          options={{headerShown: false}}
+        />
+        {/* ) : (
+        <> */}
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Sign up"
+          component={Signup}
+          options={{headerShown: false}}
+        />
+        {/* </>
+        )} */}
       </Stack.Navigator>
     </>
   );

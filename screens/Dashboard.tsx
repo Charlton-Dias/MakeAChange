@@ -22,6 +22,7 @@ import Card from '../components/Card';
 import styles from '../styles';
 import CreateTask from './CreateTask';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {useNavigation} from '@react-navigation/native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -64,6 +65,7 @@ export default function Dashboard({
   );
 }
 const ProfileCard = (props: any) => {
+  const navigation = useNavigation();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   return (
     <View
@@ -132,7 +134,10 @@ const ProfileCard = (props: any) => {
               <Button
                 action="negative"
                 w={'48%'}
-                onPress={() => setShowLogoutModal(false)}>
+                onPress={() => {
+                  setShowLogoutModal(false);
+                  navigation.navigate('Login');
+                }}>
                 <ButtonText>Logout</ButtonText>
               </Button>
             </ButtonGroup>

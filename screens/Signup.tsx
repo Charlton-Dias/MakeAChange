@@ -67,7 +67,12 @@ export default function Signup({navigation}: any): JSX.Element {
           <InputWithLabel name={'Zip'} />
         </SectionWrapper>
 
-        <Button size="sm" alignSelf="center" width={'100%'} marginTop={10}>
+        <Button
+          size="sm"
+          alignSelf="center"
+          width={'100%'}
+          marginTop={10}
+          onPress={() => navigation.navigate('User')}>
           <ButtonText>Sign up</ButtonText>
         </Button>
 
