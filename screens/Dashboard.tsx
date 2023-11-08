@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,18 @@ import {
   Divider,
   ButtonGroup,
   ScrollView,
+  Modal,
+  Heading,
+  Fab,
+  FabIcon,
+  AddIcon,
 } from '@gluestack-ui/themed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import dummyData from '../dummyData';
 import Card from '../components/Card';
 import styles from '../styles';
+import CreateTask from './CreateTask';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -45,19 +52,9 @@ export default function Dashboard({
         screenOptions={{
           tabBarActiveTintColor: 'white',
           tabBarInactiveTintColor: '#1A6EBC',
-          tabBarStyle: {
-            backgroundColor: 'white',
-            borderRadius: 10,
-            margin: 10,
-            borderWidth: 1,
-            borderColor: '#1A6EBC',
-          },
-          tabBarIndicatorStyle: {
-            backgroundColor: '#1A6EBC',
-            height: '100%',
-            borderRadius: 10,
-          },
-          tabBarLabelStyle: {fontSize: 14, textTransform: 'none'},
+          tabBarIndicatorStyle: styles.profileTabBarIndicatorStyle,
+          tabBarLabelStyle: styles.profileTabBarLabelStyle,
+          tabBarStyle: styles.profileTabBarStyle,
         }}>
         <Tab.Screen name="Created" component={CreatedList} />
         <Tab.Screen name="Selected" component={SelectedList} />
@@ -66,56 +63,121 @@ export default function Dashboard({
     </>
   );
 }
+const ProfileCard = (props: any) => {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  return (
+    <View
+      margin={10}
+      p={15}
+      backgroundColor="#C8F5FF"
+      borderRadius={10}
+      borderWidth={1}
+      borderColor="#8DEBFF">
+      <HStack display="flex" flexDirection="row" mb={10}>
+        <Image
+          borderWidth={2}
+          borderColor="black"
+          source={{
+            uri: props?.avatar
+              ? props?.avatar
+              : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
+          }}
+          alt="avatar"
+          style={styles.profileAvatar}
+          borderRadius={50}
+        />
 
-const ProfileCard = (props: any) => (
-  <View
-    margin={10}
-    p={15}
-    backgroundColor="#C8F5FF"
-    borderRadius={10}
-    borderWidth={1}
-    borderColor="#8DEBFF">
-    <HStack display="flex" flexDirection="row" mb={10}>
-      <Image
-        borderWidth={2}
-        borderColor="black"
-        source={{
-          uri: props?.avatar
-            ? props?.avatar
-            : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
-        }}
-        alt="avatar"
-        style={styles.profileAvatar}
-        borderRadius={50}
-      />
+        <VStack marginLeft={20}>
+          <Text size="lg" bold>
+            {props?.username}
+          </Text>
+          <Text>{props?.username}</Text>
+          <Text>points: {props?.points}</Text>
+          <Text>{props?.address}</Text>
+        </VStack>
+      </HStack>
+      <ButtonGroup>
+        <Button isDisabled w={'48%'} action="secondary">
+          <ButtonText>Edit Profile</ButtonText>
+        </Button>
+        <Button
+          action="negative"
+          w={'48%'}
+          onPress={() => setShowLogoutModal(true)}>
+          <ButtonText>Logout</ButtonText>
+        </Button>
+      </ButtonGroup>
 
-      <VStack marginLeft={20}>
-        <Text size="lg" bold>
-          {props?.username}
-        </Text>
-        <Text>{props?.username}</Text>
-        <Text>points: {props?.points}</Text>
-        <Text>{props?.address}</Text>
-      </VStack>
-    </HStack>
-    <ButtonGroup>
-      <Button isDisabled w={'48%'}>
-        <ButtonText>Edit Profile</ButtonText>
-      </Button>
-      <Button action="negative" w={'48%'}>
-        <ButtonText>Logout</ButtonText>
-      </Button>
-    </ButtonGroup>
-  </View>
-);
+      <Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)}>
+        <Modal.Backdrop />
+        <Modal.Content>
+          <Modal.Header>
+            <Heading>Logout</Heading>
+            <Modal.CloseButton>
+              <Icon name="close" color={'black'} size={24} />
+            </Modal.CloseButton>
+          </Modal.Header>
+          <Modal.Body>
+            <Text>Are you sure you want to logout?</Text>
+          </Modal.Body>
+          <Modal.Footer>
+            <ButtonGroup>
+              <Button
+                action="secondary"
+                variant="outline"
+                w={'48%'}
+                onPress={() => setShowLogoutModal(false)}>
+                <ButtonText>Cancel</ButtonText>
+              </Button>
+              <Button
+                action="negative"
+                w={'48%'}
+                onPress={() => setShowLogoutModal(false)}>
+                <ButtonText>Logout</ButtonText>
+              </Button>
+            </ButtonGroup>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+    </View>
+  );
+};
 
 function CreatedList() {
+  const [showcreateModal, setShowCreateModal] = useState(false);
   return (
-    <ScrollView contentContainerStyle={styles.profileCardContainter}>
-      {dummyData.map((item, index) => (
-        <Card key={index} title={item.title} description={item.desc} />
-      ))}
-    </ScrollView>
+    <>
+      <ScrollView contentContainerStyle={styles.profileCardContainter}>
+        {dummyData.map((item, index) => (
+          <Card key={index} title={item.title} description={item.desc} />
+        ))}
+      </ScrollView>
+      <Fab
+        size="lg"
+        placement="bottom right"
+        shadowColor="black"
+        borderColor="white"
+        bgColor="black"
+        borderWidth={1}
+        onPress={() => setShowCreateModal(!showcreateModal)}>
+        <FabIcon as={AddIcon} mr="$1" />
+      </Fab>
+
+      <Modal isOpen={showcreateModal} onClose={() => setShowCreateModal(false)}>
+        <Modal.Backdrop />
+        <Modal.Content>
+          <Modal.Header>
+            <Heading>Create a new task</Heading>
+            <Modal.CloseButton>
+              <Icon name="close" color={'black'} size={24} />
+            </Modal.CloseButton>
+          </Modal.Header>
+          <Modal.Body>
+            <CreateTask onClose={() => setShowCreateModal(false)} />
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+    </>
   );
 }
 
@@ -128,6 +190,7 @@ function SelectedList() {
     </ScrollView>
   );
 }
+
 function CompletedList() {
   return (
     <ScrollView contentContainerStyle={styles.profileCardContainter}>

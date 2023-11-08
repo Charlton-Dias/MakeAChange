@@ -43,6 +43,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 10,
   },
+  profileTabBarIndicatorStyle: {
+    backgroundColor: '#1A6EBC',
+    height: '100%',
+    borderRadius: 10,
+  },
+  profileTabBarStyle: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    margin: 10,
+    borderWidth: 1,
+    borderColor: '#1A6EBC',
+  },
+  profileTabBarLabelStyle: {
+    fontSize: 14,
+    textTransform: 'none',
+  },
   sceneContainerStyle: {
     backgroundColor: 'white',
     height: '130%',
