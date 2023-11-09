@@ -1,92 +1,217 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Box,
   Button,
   ButtonText,
   Center,
-  CircleIcon,
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
   Heading,
-  RadioGroup,
-  RadioIcon,
-  RadioIndicator,
-  RadioLabel,
+  InputField,
   ScrollView,
   Text,
 } from '@gluestack-ui/themed';
-import InputWithLabel from '../components/InputWithLabel';
-import {Radio} from '@gluestack-ui/themed';
 import SignInWith from '../components/SignInWith';
 import SectionWrapper from '../components/SectionWrapper';
-// import DateTimePicker from '@react-native-community/datetimepicker';
+import {useNavigation} from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import FormInput, {FormRadioGroup} from '../components/FormInput';
+import {Pressable} from 'react-native';
+import {Input} from '@gluestack-ui/themed';
 
-export default function Signup({navigation}: any): JSX.Element {
-  // const [date, setDate] = useState(new Date(1598051730000));
+export default function Signup(): JSX.Element {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [cpassword, setCPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [gender, setGender] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [country, setCountry] = useState('');
+  const [zip, setZip] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const navigation = useNavigation();
+
+  const handleSubmit = () => {
+    const formData = {
+      username,
+      password,
+      email,
+      phone,
+      firstname,
+      lastname,
+      gender,
+      date,
+      address,
+      city,
+      state,
+      country,
+      zip,
+    };
+    console.log(formData);
+  };
+
   return (
     <ScrollView>
-      <Box display="flex" padding={'5%'}>
-        <Center marginBottom={20}>
-          <Heading>Signup</Heading>
-        </Center>
-        <SectionWrapper>
-          <InputWithLabel name={'Username'} />
-          <InputWithLabel name={'Password'} type="password" />
-          <InputWithLabel name={'Confirm Password'} type="password" />
-          <InputWithLabel name={'Email'} />
-          <InputWithLabel name={'Phone'} />
-        </SectionWrapper>
+      <FormControl>
+        <Box display="flex" padding={'5%'}>
+          <Center marginBottom={20}>
+            <Heading>Signup</Heading>
+          </Center>
+          <SectionWrapper>
+            <FormInput
+              label="Username"
+              placeholder="Username"
+              value={username}
+              onChangeText={setUsername}
+            />
 
-        <SectionWrapper>
-          <InputWithLabel name={'First Name'} />
-          <InputWithLabel name={'Last Name'} />
-          <Box display={'flex'} flexDirection="row">
-            <Text>Gender: </Text>
-            <RadioGroup>
-              <Radio value="1" size="md">
-                <RadioIndicator mr="$2">
-                  <RadioIcon as={CircleIcon} />
-                </RadioIndicator>
-                <RadioLabel>Male</RadioLabel>
-              </Radio>
-              <Radio value="2" size="md">
-                <RadioIndicator mr="$2">
-                  <RadioIcon as={CircleIcon} />
-                </RadioIndicator>
-                <RadioLabel>Female</RadioLabel>
-              </Radio>
-            </RadioGroup>
-          </Box>
-          {/* <InputWithLabel name={'Date of birth'}  />
-            <DateTimePicker value={date} /> */}
-        </SectionWrapper>
+            <FormInput
+              label="Email"
+              placeholder="user@email.com"
+              value={email}
+              onChangeText={setEmail}
+            />
 
-        <SectionWrapper>
-          <InputWithLabel name={'Address'} />
-          <InputWithLabel name={'City'} />
-          <InputWithLabel name={'State'} />
-          <InputWithLabel name={'Country'} />
-          <InputWithLabel name={'Zip'} />
-        </SectionWrapper>
+            <FormInput
+              label="Password"
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              type="password"
+            />
 
-        <Button
-          size="sm"
-          alignSelf="center"
-          width={'100%'}
-          marginTop={10}
-          onPress={() => navigation.navigate('User')}>
-          <ButtonText>Sign up</ButtonText>
-        </Button>
+            <FormInput
+              label="Confirm Password"
+              placeholder="Password"
+              value={cpassword}
+              onChangeText={setCPassword}
+              type="password"
+            />
 
-        <Button
-          size="sm"
-          variant="link"
-          marginTop={10}
-          onPress={() => navigation.navigate('Login')}>
-          <Text>Already have an account? </Text>
-          <ButtonText>Login </ButtonText>
-        </Button>
+            <FormInput
+              label="Phone"
+              placeholder="9876543210"
+              value={phone}
+              onChangeText={setPhone}
+            />
+          </SectionWrapper>
 
-        <SignInWith />
-      </Box>
+          <SectionWrapper>
+            <FormInput
+              label="First Name"
+              placeholder="Jon"
+              value={firstname}
+              onChangeText={setFirstname}
+            />
+
+            <FormInput
+              label="Last Name"
+              placeholder="Doe"
+              value={lastname}
+              onChangeText={setLastname}
+            />
+
+            <FormRadioGroup
+              label="Gender: "
+              options={[
+                {value: '1', label: 'Male'},
+                {value: '2', label: 'Female'},
+              ]}
+              value={gender}
+              onChange={setGender}
+            />
+
+            <FormControlLabel mb="$1" mt={5}>
+              <FormControlLabelText>DOB:</FormControlLabelText>
+            </FormControlLabel>
+            <Pressable onPress={() => setShowDatePicker(true)}>
+              <Input isDisabled>
+                <InputField>{date.toDateString()}</InputField>
+              </Input>
+            </Pressable>
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  const currentDate = selectedDate || date;
+                  setDate(currentDate);
+                  setShowDatePicker(false);
+                }}
+              />
+            )}
+          </SectionWrapper>
+
+          <SectionWrapper>
+            <FormInput
+              label="Address"
+              placeholder="Address"
+              value={address}
+              onChangeText={setAddress}
+            />
+
+            <FormInput
+              label="City"
+              placeholder="City"
+              value={city}
+              onChangeText={setCity}
+            />
+
+            <FormInput
+              label="State"
+              placeholder="State"
+              value={state}
+              onChangeText={setState}
+            />
+
+            <FormInput
+              label="Country"
+              placeholder="Country"
+              value={country}
+              onChangeText={setCountry}
+            />
+
+            <FormInput
+              label="Zip"
+              placeholder="Zip"
+              value={zip}
+              onChangeText={setZip}
+            />
+          </SectionWrapper>
+
+          <Button
+            size="sm"
+            alignSelf="center"
+            width={'100%'}
+            marginTop={10}
+            onPress={() => {
+              handleSubmit();
+              navigation.navigate('User');
+            }}>
+            <ButtonText>Sign up</ButtonText>
+          </Button>
+
+          <Button
+            size="sm"
+            variant="link"
+            marginTop={10}
+            onPress={() => navigation.navigate('Login')}>
+            <Text>Already have an account? </Text>
+            <ButtonText>Login </ButtonText>
+          </Button>
+
+          <SignInWith />
+        </Box>
+      </FormControl>
     </ScrollView>
   );
 }

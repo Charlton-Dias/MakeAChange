@@ -3,7 +3,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Button,
   ButtonText,
-  FormControl,
   FormControlLabel,
   FormControlLabelText,
   Input,
@@ -12,6 +11,7 @@ import {
   ScrollView,
 } from '@gluestack-ui/themed';
 import {ButtonGroup} from '@gluestack-ui/themed';
+import FormInput from '../components/FormInput';
 
 function CreateTask({onClose}: any) {
   const [taskName, setTaskName] = useState('');
@@ -27,72 +27,58 @@ function CreateTask({onClose}: any) {
 
   return (
     <ScrollView>
-      <FormControl size="md" isReadOnly={false}>
-        <FormControlLabel mb="$1">
-          <FormControlLabelText>Task Name:</FormControlLabelText>
-        </FormControlLabel>
-        <Input>
-          <InputField
-            placeholder="Task Name"
-            value={taskName}
-            onChangeText={setTaskName}
-          />
+      <FormInput
+        label="Task Name"
+        placeholder="Task Name"
+        value={taskName}
+        onChangeText={setTaskName}
+      />
+
+      <FormInput
+        label="Description"
+        placeholder="Description"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+      />
+
+      <FormInput
+        label="Points"
+        placeholder="Points"
+        value={points}
+        onChangeText={setPoints}
+      />
+
+      <FormControlLabel mb="$1">
+        <FormControlLabelText>Deadline:</FormControlLabelText>
+      </FormControlLabel>
+      <Pressable onPress={() => setShowDatePicker(true)}>
+        <Input isDisabled>
+          <InputField>{date.toDateString()}</InputField>
         </Input>
+      </Pressable>
 
-        <FormControlLabel mb="$1">
-          <FormControlLabelText>Description:</FormControlLabelText>
-        </FormControlLabel>
-        <Input>
-          <InputField
-            multiline
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-          />
-        </Input>
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || date;
+            setDate(currentDate);
+            setShowDatePicker(false);
+          }}
+        />
+      )}
 
-        <FormControlLabel mb="$1">
-          <FormControlLabelText>Points:</FormControlLabelText>
-        </FormControlLabel>
-        <Input>
-          <InputField
-            placeholder="Points"
-            value={points}
-            onChangeText={setPoints}
-          />
-        </Input>
-
-        <FormControlLabel mb="$1">
-          <FormControlLabelText>Deadline:</FormControlLabelText>
-        </FormControlLabel>
-        <Pressable onPress={() => setShowDatePicker(true)}>
-          <Input isDisabled>
-            <InputField>{date.toDateString()}</InputField>
-          </Input>
-        </Pressable>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              const currentDate = selectedDate || date;
-              setDate(currentDate);
-              setShowDatePicker(false);
-            }}
-          />
-        )}
-
-        <ButtonGroup w={'100%'}>
-          <Button w="48%" variant="outline" onPress={onClose}>
-            <ButtonText>Discard</ButtonText>
-          </Button>
-          <Button w="48%" onPress={handleSubmit}>
-            <ButtonText>Create</ButtonText>
-          </Button>
-        </ButtonGroup>
-      </FormControl>
+      <ButtonGroup w={'100%'}>
+        <Button w="48%" variant="outline" onPress={onClose}>
+          <ButtonText>Discard</ButtonText>
+        </Button>
+        <Button w="48%" onPress={handleSubmit}>
+          <ButtonText>Create</ButtonText>
+        </Button>
+      </ButtonGroup>
     </ScrollView>
   );
 }

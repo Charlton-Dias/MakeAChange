@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Box,
   Button,
@@ -8,12 +8,19 @@ import {
   ScrollView,
   Text,
 } from '@gluestack-ui/themed';
-import InputWithLabel from '../components/InputWithLabel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SignInWith from '../components/SignInWith';
 import SectionWrapper from '../components/SectionWrapper';
+import FormInput from '../components/FormInput';
 
 export default function Login({navigation}: any): JSX.Element {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = () => {
+    const formData = {username, password};
+    console.log(formData);
+  };
   return (
     <ScrollView>
       <Box display="flex" padding={'5%'}>
@@ -23,9 +30,20 @@ export default function Login({navigation}: any): JSX.Element {
         </Center>
 
         <SectionWrapper>
-          <InputWithLabel name={'Username'} />
-          <InputWithLabel name={'Password'} type={'password'} />
+          <FormInput
+            label="Username"
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+          />
 
+          <FormInput
+            label="Password"
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            type="password"
+          />
           <Button size="sm" variant="link">
             <ButtonText textAlign="left">Forgot password?</ButtonText>
           </Button>
@@ -35,7 +53,10 @@ export default function Login({navigation}: any): JSX.Element {
             alignSelf="center"
             width={'100%'}
             marginTop={10}
-            onPress={() => navigation.navigate('User')}>
+            onPress={() => {
+              handleSubmit();
+              navigation.navigate('User');
+            }}>
             <ButtonText>Login</ButtonText>
           </Button>
         </SectionWrapper>
