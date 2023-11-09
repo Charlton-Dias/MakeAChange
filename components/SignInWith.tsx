@@ -1,5 +1,13 @@
-import {Box, Center, Heading} from '@gluestack-ui/themed';
+import {
+  Box,
+  ButtonIcon,
+  ButtonText,
+  Center,
+  Heading,
+  View,
+} from '@gluestack-ui/themed';
 import {Pressable} from '@gluestack-ui/themed';
+import {Button} from '@gluestack-ui/themed';
 import {Text} from '@gluestack-ui/themed';
 import {Divider} from '@gluestack-ui/themed';
 import React from 'react';
@@ -8,29 +16,24 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 export default function SignInWith() {
   return (
     <>
-      <Divider marginVertical={10} alignSelf="center" />
-      <Center>
-        <Heading backgroundColor="white" mt={-28}>
-          OR
-        </Heading>
-      </Center>
-      <Box mt={10} mb={80}>
-        <Box flexDirection="row" justifyContent="space-between">
-          <Text>Sign in with:</Text>
-          <Pressable onPress={() => console.log('google')}>
-            <Icon name="google" size={24} color={'#222'} />
-          </Pressable>
-          <Pressable onPress={() => console.log('rich people')}>
-            <Icon name="apple" size={24} color={'#222'} />
-          </Pressable>
-          <Pressable onPress={() => console.log('fb')}>
-            <Icon name="facebook" size={24} color={'#222'} />
-          </Pressable>
-          <Pressable onPress={() => console.log('x')}>
-            <Icon name="twitter" size={24} color={'#222'} />
-          </Pressable>
+      <View mb={80} mt={10}>
+        <Divider marginVertical={10} width={80} alignSelf="center" />
+        <Center>
+          <Heading
+            backgroundColor="white"
+            width={50}
+            mt={-28}
+            textAlign="center">
+            OR
+          </Heading>
+        </Center>
+        <Box mt={10}>
+          <Button action="secondary">
+            <Icon name="google" size={24} color={'white'} />
+            <ButtonText ml={10}>Sign in with Google</ButtonText>
+          </Button>
         </Box>
-      </Box>
+      </View>
     </>
   );
 }

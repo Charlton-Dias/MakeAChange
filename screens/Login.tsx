@@ -22,7 +22,7 @@ export default function Login({navigation}: any): JSX.Element {
     console.log(formData);
   };
   return (
-    <ScrollView>
+    <ScrollView backgroundColor="white">
       <Box display="flex" padding={'5%'}>
         <Center marginTop={80} marginBottom={20}>
           <Icon name="user" size={100} color={'#222'} />

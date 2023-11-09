@@ -1,5 +1,5 @@
 import React from 'react';
-import {Divider, Heading, ScrollView, VStack} from '@gluestack-ui/themed';
+import {Heading, ScrollView, VStack} from '@gluestack-ui/themed';
 import Card from '../components/Card';
 import dummyData from '../dummyData';
 import styles from '../styles';
@@ -8,8 +8,9 @@ const Tasks = () => {
   return (
     <>
       <ScrollView px={10} contentContainerStyle={styles.taskContainer}>
-        <Heading size="xl">Available</Heading>
-        <Divider alignSelf="center" mb={10} />
+        <Heading ml={10} size="xl">
+          Available
+        </Heading>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -21,8 +22,9 @@ const Tasks = () => {
           </VStack>
         </ScrollView>
 
-        <Heading size="xl">Nearby</Heading>
-        <Divider alignSelf="center" mb={10} />
+        <Heading ml={10} size="xl">
+          Nearby
+        </Heading>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -34,8 +36,9 @@ const Tasks = () => {
           </VStack>
         </ScrollView>
 
-        <Heading size="xl">Completed</Heading>
-        <Divider alignSelf="center" mb={10} />
+        <Heading ml={10} size="xl">
+          Completed
+        </Heading>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} mb={60}>
           <VStack display="flex" flexDirection="row">
             {dummyData.map((item, index) => (

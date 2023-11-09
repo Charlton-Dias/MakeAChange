@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     padding: 10,
   },
   profileTabBarIndicatorStyle: {

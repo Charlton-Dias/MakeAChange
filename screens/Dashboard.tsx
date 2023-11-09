@@ -23,6 +23,7 @@ import styles from '../styles';
 import CreateTask from './CreateTask';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -61,8 +62,6 @@ export default function Dashboard({
         <Tab.Screen name="Selected" component={SelectedList} />
         <Tab.Screen name="Completed" component={CompletedList} />
       </Tab.Navigator>
-
-      <View mb={60} />
     </>
   );
 }
@@ -158,16 +157,18 @@ function CreatedList() {
         {dummyData.map((item, index) => (
           <Card key={index} title={item.title} description={item.desc} />
         ))}
+        <Divider h={0} mb={60} />
       </ScrollView>
       <Fab
-        size="lg"
         placement="bottom right"
         shadowColor="black"
         borderColor="white"
         bgColor="black"
         borderWidth={1}
-        onPress={() => setShowCreateModal(!showcreateModal)}>
-        <FabIcon as={AddIcon} mr="$1" />
+        onPress={() => setShowCreateModal(!showcreateModal)}
+        mr={0}
+        mb={60}>
+        <MaterialIcons name="add" size={28} color="white" />
       </Fab>
 
       <Modal isOpen={showcreateModal} onClose={() => setShowCreateModal(false)}>
@@ -194,6 +195,7 @@ function SelectedList() {
       {dummyData.map((item, index) => (
         <Card key={index} title={item.title} description={item.desc} />
       ))}
+      <Divider h={0} mb={60} />
     </ScrollView>
   );
 }
@@ -204,6 +206,7 @@ function CompletedList() {
       {dummyData.map((item, index) => (
         <Card key={index} title={item.title} description={item.desc} />
       ))}
+      <Divider h={0} mb={60} />
     </ScrollView>
   );
 }

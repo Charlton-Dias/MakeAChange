@@ -59,7 +59,7 @@ export default function Signup(): JSX.Element {
   };
 
   return (
-    <ScrollView>
+    <ScrollView backgroundColor="white">
       <FormControl>
         <Box display="flex" padding={'5%'}>
           <Center marginBottom={20}>

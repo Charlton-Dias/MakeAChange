@@ -9,7 +9,7 @@ const Card = ({...props}) => {
       margin={5}
       borderWidth={1}
       backgroundColor="white"
-      maxWidth={180}>
+      maxWidth={175}>
       <Image
         width={200}
         height={150}
