@@ -2,20 +2,24 @@ import React, {useEffect, useState} from 'react';
 import {PermissionsAndroid} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import Leaflet, {Layers, Markers, TileOptions} from 'react-native-leaflet-ts';
+import {Fab, Heading} from '@gluestack-ui/themed';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Home = () => {
-  const [region, setRegion] = useState([0, 0]);
-  useEffect(() => {
-    PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Locatiom',
-        message: 'This app would like to view your contacts.',
-        buttonPositive: 'Please accept bare mortal',
-      },
-    )
-      .then(res => {
-        console.log('Location Permission: ', res);
+  const [region, setRegion] = useState([15.4617259147707, 73.83342337687071]);
+
+  const getCurrentLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'This app needs access to your location',
+          buttonPositive: 'OK',
+        },
+      );
+      console.log('permissions: ', granted);
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         Geolocation.getCurrentPosition(
           position => {
             const {latitude, longitude} = position.coords;
@@ -24,10 +28,16 @@ const Home = () => {
           error => console.log(error),
           {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
         );
-      })
-      .catch(error => {
-        console.error('Permission error: ', error);
-      });
+      } else {
+        console.log('Location permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    getCurrentLocation();
   }, []);
 
   const options: TileOptions = {
@@ -38,8 +48,13 @@ const Home = () => {
 
   const mapLayers: Layers[] = [
     {
-      name: 'Floor 1',
-      src: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      name: 'Satellite View',
+      src: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      tileOptions: options,
+    },
+    {
+      name: 'Street View',
+      src: 'https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}',
       tileOptions: options,
     },
   ];
@@ -48,16 +63,24 @@ const Home = () => {
     {
       latLng: region,
       iconSize: {
-        width: 40,
-        height: 40,
+        width: 20,
+        height: 20,
       },
-      title: 'Task 1',
+      title: 'Your location',
       disabled: true,
     },
   ];
 
   return (
     <>
+      <Heading textAlign="center">Taskify</Heading>
+      <Fab
+        size="md"
+        placement="bottom right"
+        onPress={() => getCurrentLocation()}
+        bottom={80}>
+        <MaterialIcons name="my-location" size={24} color="white" />
+      </Fab>
       <Leaflet
         mapLayers={mapLayers}
         minZoom={2}
@@ -65,7 +88,7 @@ const Home = () => {
         maxZoom={17}
         flyTo={{
           latLng: region,
-          zoom: 14,
+          zoom: 15,
         }}
         markers={markerList}
         startInLoadingState
