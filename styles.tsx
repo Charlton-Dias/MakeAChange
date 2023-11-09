@@ -1,6 +1,43 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
+  addImage: {
+    width: 100,
+    height: 100,
+    margin: 5,
+    borderRadius: 10,
+  },
+  addImageContainer: {
+    borderRadius: 10,
+    borderWidth: 1,
+    height: 130,
+  },
+  camera: {
+    minHeight: 600,
+    width: 'auto',
+  },
+  capture: {
+    height: 50,
+    width: 50,
+    borderRadius: 50,
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: 'white',
+    margin: 2,
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 20,
+    padding: 0,
+  },
+  capture2: {
+    height: 46,
+    width: 46,
+    borderRadius: 50,
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: 'black',
+    alignSelf: 'center',
+  },
   navBar: {
     width: '95%',
     alignSelf: 'center',

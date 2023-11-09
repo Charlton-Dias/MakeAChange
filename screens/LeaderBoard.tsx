@@ -48,7 +48,6 @@ const LeaderBoard = () => {
   return (
     <ScrollView mx={10} showsVerticalScrollIndicator={false}>
       <Heading size="xl">Top 5 users</Heading>
-      <Divider mb={5} />
       <Box
         backgroundColor="#EAFAFE"
         p={5}
@@ -62,7 +61,6 @@ const LeaderBoard = () => {
       </Box>
 
       <Heading size="xl">Users from your area</Heading>
-      <Divider mb={5} />
       <Box
         backgroundColor="#EAFAFE"
         p={5}

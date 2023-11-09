@@ -13,8 +13,6 @@ import {
   Modal,
   Heading,
   Fab,
-  FabIcon,
-  AddIcon,
 } from '@gluestack-ui/themed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import dummyData from '../dummyData';
@@ -180,6 +178,7 @@ function CreatedList() {
               <Icon name="close" color={'black'} size={24} />
             </Modal.CloseButton>
           </Modal.Header>
+          <Divider height={2} />
           <Modal.Body>
             <CreateTask onClose={() => setShowCreateModal(false)} />
           </Modal.Body>

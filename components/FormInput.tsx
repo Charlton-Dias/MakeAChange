@@ -1,4 +1,3 @@
-// FormInput.tsx
 import React from 'react';
 import {
   Box,
@@ -33,7 +32,7 @@ const FormInput = ({
   type,
   multiline,
 }: FormInputProps) => (
-  <FormControl size="md" my={5}>
+  <FormControl size="md" my={5} mb={10}>
     <FormControlLabel mb="$1">
       <FormControlLabelText>{label}:</FormControlLabelText>
     </FormControlLabel>
@@ -62,7 +61,7 @@ const FormRadioGroup = ({
   value,
   onChange,
 }: FormRadioGroupProps) => (
-  <Box display={'flex'} flexDirection="row" my={5}>
+  <Box display={'flex'} flexDirection="row" my={5} mb={10}>
     <Text fontSize={16} bold>
       {label}
     </Text>
