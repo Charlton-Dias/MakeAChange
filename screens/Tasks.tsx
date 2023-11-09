@@ -7,7 +7,7 @@ import styles from '../styles';
 const Tasks = () => {
   return (
     <>
-      <ScrollView p={20} contentContainerStyle={styles.taskContainer}>
+      <ScrollView px={10} contentContainerStyle={styles.taskContainer}>
         <Heading size="xl">Available</Heading>
         <Divider alignSelf="center" mb={10} />
         <ScrollView
@@ -36,7 +36,7 @@ const Tasks = () => {
 
         <Heading size="xl">Completed</Heading>
         <Divider alignSelf="center" mb={10} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} mb={60}>
           <VStack display="flex" flexDirection="row">
             {dummyData.map((item, index) => (
               <Card key={index} title={item.title} description={item.desc} />

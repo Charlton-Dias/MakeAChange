@@ -14,7 +14,7 @@ export default function SignInWith() {
           OR
         </Heading>
       </Center>
-      <Box mt={10}>
+      <Box mt={10} mb={80}>
         <Box flexDirection="row" justifyContent="space-between">
           <Text>Sign in with:</Text>
           <Pressable onPress={() => console.log('google')}>

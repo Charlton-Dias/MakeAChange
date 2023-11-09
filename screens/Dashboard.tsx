@@ -61,6 +61,8 @@ export default function Dashboard({
         <Tab.Screen name="Selected" component={SelectedList} />
         <Tab.Screen name="Completed" component={CompletedList} />
       </Tab.Navigator>
+
+      <View mb={60} />
     </>
   );
 }

@@ -46,7 +46,7 @@ const dummyUsers = [
 
 const LeaderBoard = () => {
   return (
-    <ScrollView m={10} showsVerticalScrollIndicator={false}>
+    <ScrollView mx={10} showsVerticalScrollIndicator={false}>
       <Heading size="xl">Top 5 users</Heading>
       <Divider mb={5} />
       <Box
@@ -68,7 +68,8 @@ const LeaderBoard = () => {
         p={5}
         borderRadius={10}
         borderWidth={1}
-        borderColor="#DDDDDD">
+        borderColor="#DDDDDD"
+        mb={80}>
         {dummyUsers.map(item => (
           <User username={item?.username} points={item?.points} />
         ))}

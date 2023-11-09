@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
   },
   sceneContainerStyle: {
     backgroundColor: 'white',
-    height: '130%',
   },
   taskContainer: {
     justifyContent: 'center',
