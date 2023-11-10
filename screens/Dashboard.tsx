@@ -20,33 +20,30 @@ import Card from '../components/Card';
 import styles from '../styles';
 import CreateTask from './CreateTask';
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import {useNavigation} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const Tab = createMaterialTopTabNavigator();
 
-interface DashboardProps {
-  avatar?: string;
-  username: string;
-  points: number;
-  address?: string;
-}
+export default function Dashboard(): JSX.Element {
+  const [user, setUser] = useState();
+  const currentUser = auth().currentUser;
 
-export default function Dashboard({
-  avatar,
-  username,
-  points,
-  address,
-}: DashboardProps): JSX.Element {
+  const fetchUser = async () => {
+    const userData = await firestore()
+      .collection('users')
+      .where('uid', '==', currentUser.uid)
+      .get();
+    setUser(userData.docs[0]._data);
+  };
+
+  fetchUser();
+
   return (
     <>
-      <ProfileCard
-        avatar={avatar}
-        username={username}
-        address={address}
-        points={points}
-      />
+      {console.log('user: ', user)}
+      <ProfileCard user={user?.userData} />
       <Divider alignSelf="center" width={'95%'} marginBottom={5} />
 
       <Tab.Navigator
@@ -85,7 +82,7 @@ const ProfileCard = (props: any) => {
           borderWidth={2}
           borderColor="black"
           source={{
-            uri: props?.avatar
+            uri: props?.user?.avatar
               ? props?.avatar
               : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
           }}
@@ -95,12 +92,13 @@ const ProfileCard = (props: any) => {
         />
 
         <VStack marginLeft={20}>
-          <Text size="lg" bold>
-            {props?.username}
+          {console.log(props.user)}
+          <Text size="lg" bold color="black">
+            {props?.user?.username}
           </Text>
-          <Text>{props?.username}</Text>
-          <Text>points: {props?.points}</Text>
-          <Text>{props?.address}</Text>
+          <Text color="black">{props?.user?.name}</Text>
+          <Text color="black">points: {props?.points || 0}</Text>
+          <Text color="black">{props?.address}</Text>
         </VStack>
       </HStack>
       <ButtonGroup>

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
   Box,
   Button,
+  ButtonSpinner,
   ButtonText,
   Center,
   FormControl,
@@ -18,26 +19,29 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const registerUser = async formData => {
+const registerUser = async ({userAuth, userData}: any) => {
   try {
     // Register user with Firebase Authentication
-    const {email, password} = formData;
+    const {email, password} = userAuth;
     const userCredential = await auth().createUserWithEmailAndPassword(
       email,
       password,
     );
+    if (!userCredential.user?.uid) {
+      throw new Error('Failed to create account');
+    }
+
     const user = userCredential.user;
-
+    const uid = user.uid;
     // Store additional details in Firestore
-    await firestore().collection('users').doc(user.uid).set(formData);
-
-    console.log('User registered successfully!');
+    await firestore().collection('users').add({uid: uid, userData});
   } catch (error) {
     console.error('Error registering user:', error.message);
   }
 };
 
 export default function Signup(): JSX.Element {
+  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [cpassword, setCPassword] = useState('');
@@ -52,21 +56,26 @@ export default function Signup(): JSX.Element {
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       if (!username || !password || !cpassword || !email || !phone) {
+        setLoading(false);
         throw new Error('All fields are required');
       }
 
-      if (password != cpassword) {
+      if (password !== cpassword) {
         setPassword('');
         setCPassword('');
+        setLoading(false);
         throw new Error('Passwords do not match');
       }
 
-      const formData = {
-        username,
-        password,
+      const userAuth = {
         email,
+        password,
+      };
+      const userData = {
+        username,
         phone,
         name,
         // city,
@@ -76,11 +85,10 @@ export default function Signup(): JSX.Element {
       };
 
       // Perform the signup
-      await registerUser(formData);
 
-      // Navigate to a success screen or show a success message
+      await registerUser({userAuth, userData});
+      setLoading(false);
       console.log('User registered successfully!');
-      // navigation.navigate('User');
     } catch (error) {
       console.error('Error: ', error.message);
     }
@@ -142,8 +150,9 @@ export default function Signup(): JSX.Element {
               alignSelf="center"
               width={'100%'}
               marginTop={10}
-              onPress={handleSubmit}>
-              <ButtonText>Sign up</ButtonText>
+              onPress={handleSubmit}
+              isDisabled={loading}>
+              {loading ? <ButtonSpinner /> : <ButtonText>Sign up</ButtonText>}
             </Button>
           </SectionWrapper>
 

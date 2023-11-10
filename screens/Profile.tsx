@@ -12,7 +12,7 @@ export default function Profile() {
   const [user, setUser] = useState();
 
   // Handle user state changes
-  function onAuthStateChanged(user: React.SetStateAction<undefined>) {
+  function onAuthStateChanged() {
     setUser(user);
     if (initializing) {
       setInitializing(false);
@@ -30,7 +30,7 @@ export default function Profile() {
         {user ? (
           <Stack.Screen
             name="User"
-            component={UserProfile}
+            component={Dashboard}
             options={{headerShown: false}}
           />
         ) : (
@@ -50,8 +50,4 @@ export default function Profile() {
       </Stack.Navigator>
     </>
   );
-}
-
-function UserProfile() {
-  return <Dashboard address="Goa" points={3000} username="Charlton.Dias" />;
 }
