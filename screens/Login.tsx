@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
   Box,
   Button,
+  ButtonSpinner,
   ButtonText,
   Center,
   Heading,
@@ -9,17 +10,30 @@ import {
   Text,
 } from '@gluestack-ui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SignInWith from '../components/SignInWith';
+// import SignInWith from '../components/SignInWith';
 import SectionWrapper from '../components/SectionWrapper';
 import FormInput from '../components/FormInput';
+import auth from '@react-native-firebase/auth';
 
 export default function Login({navigation}: any): JSX.Element {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    const formData = {username, password};
-    console.log(formData);
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      if (!email || !password) {
+        throw new Error('Enter email and password');
+      }
+      await auth().signInWithEmailAndPassword(email, password);
+      // navigation.navigate('User');
+      console.log('success');
+    } catch (error) {
+      alert('Email or Password is incorrect!');
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <ScrollView backgroundColor="white">
@@ -31,10 +45,10 @@ export default function Login({navigation}: any): JSX.Element {
 
         <SectionWrapper>
           <FormInput
-            label="Username"
-            placeholder="Username"
-            value={username}
-            onChangeText={setUsername}
+            label="Email"
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
           />
 
           <FormInput
@@ -53,24 +67,21 @@ export default function Login({navigation}: any): JSX.Element {
             alignSelf="center"
             width={'100%'}
             marginTop={10}
-            onPress={() => {
-              handleSubmit();
-              navigation.navigate('User');
-            }}>
-            <ButtonText>Login</ButtonText>
+            disabled={loading}
+            onPress={handleSubmit}>
+            {loading ? <ButtonSpinner /> : <ButtonText>Login</ButtonText>}
           </Button>
         </SectionWrapper>
 
         <Button
           size="sm"
           variant="link"
-          marginTop={10}
           onPress={() => navigation.navigate('Sign up')}>
           <Text>Don't have an account? </Text>
           <ButtonText>Sign up</ButtonText>
         </Button>
 
-        <SignInWith />
+        {/* <SignInWith /> */}
       </Box>
     </ScrollView>
   );

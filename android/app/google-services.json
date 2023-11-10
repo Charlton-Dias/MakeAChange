@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "411630452695",
+    "project_id": "makeachange-7e3ec",
+    "storage_bucket": "makeachange-7e3ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411630452695:android:02fe3b558efa16a0e55592",
+        "android_client_info": {
+          "package_name": "com.makeachange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411630452695-jnvk8pnles4fioca0l35ajjg5vfjb2h0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAWXxHNUOx0ylbEoVZPHpFCXdi4wOreUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411630452695-jnvk8pnles4fioca0l35ajjg5vfjb2h0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411630452695:android:a5bd3391a8b959e7e55592",
+        "android_client_info": {
+          "package_name": "com.taskify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411630452695-jnvk8pnles4fioca0l35ajjg5vfjb2h0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAWXxHNUOx0ylbEoVZPHpFCXdi4wOreUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411630452695-jnvk8pnles4fioca0l35ajjg5vfjb2h0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

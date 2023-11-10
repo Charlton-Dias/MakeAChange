@@ -5,20 +5,37 @@ import {
   ButtonText,
   Center,
   FormControl,
-  FormControlLabel,
-  FormControlLabelText,
   Heading,
-  InputField,
   ScrollView,
   Text,
+  View,
 } from '@gluestack-ui/themed';
-import SignInWith from '../components/SignInWith';
+// import SignInWith from '../components/SignInWith';
 import SectionWrapper from '../components/SectionWrapper';
 import {useNavigation} from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import FormInput, {FormRadioGroup} from '../components/FormInput';
-import {Pressable} from 'react-native';
-import {Input} from '@gluestack-ui/themed';
+import FormInput from '../components/FormInput';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const registerUser = async formData => {
+  try {
+    // Register user with Firebase Authentication
+    const {email, password} = formData;
+    const userCredential = await auth().createUserWithEmailAndPassword(
+      email,
+      password,
+    );
+    const user = userCredential.user;
+
+    // Store additional details in Firestore
+    await firestore().collection('users').doc(user.uid).set(formData);
+
+    console.log('User registered successfully!');
+  } catch (error) {
+    console.error('Error registering user:', error.message);
+  }
+};
 
 export default function Signup(): JSX.Element {
   const [username, setUsername] = useState('');
@@ -26,44 +43,56 @@ export default function Signup(): JSX.Element {
   const [cpassword, setCPassword] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [gender, setGender] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [country, setCountry] = useState('');
-  const [zip, setZip] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [name, setName] = useState('');
+  // const [city, setCity] = useState('');
+  // const [state, setState] = useState('');
+  // const [country, setCountry] = useState('');
+  // const [zip, setZip] = useState('');
 
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
-    const formData = {
-      username,
-      password,
-      email,
-      phone,
-      firstname,
-      lastname,
-      gender,
-      date,
-      address,
-      city,
-      state,
-      country,
-      zip,
-    };
-    console.log(formData);
+  const handleSubmit = async () => {
+    try {
+      if (!username || !password || !cpassword || !email || !phone) {
+        throw new Error('All fields are required');
+      }
+
+      if (password != cpassword) {
+        setPassword('');
+        setCPassword('');
+        throw new Error('Passwords do not match');
+      }
+
+      const formData = {
+        username,
+        password,
+        email,
+        phone,
+        name,
+        // city,
+        // state,
+        // country,
+        // zip,
+      };
+
+      // Perform the signup
+      await registerUser(formData);
+
+      // Navigate to a success screen or show a success message
+      console.log('User registered successfully!');
+      // navigation.navigate('User');
+    } catch (error) {
+      console.error('Error: ', error.message);
+    }
   };
 
   return (
     <ScrollView backgroundColor="white">
       <FormControl>
         <Box display="flex" padding={'5%'}>
-          <Center marginBottom={20}>
-            <Heading>Signup</Heading>
+          <Center marginTop={40} marginBottom={20}>
+            <Icon name="user" size={100} color={'#222'} />
+            <Heading>Login</Heading>
           </Center>
           <SectionWrapper>
             <FormInput
@@ -72,7 +101,12 @@ export default function Signup(): JSX.Element {
               value={username}
               onChangeText={setUsername}
             />
-
+            <FormInput
+              label=" Name"
+              placeholder="Jon Doe"
+              value={name}
+              onChangeText={setName}
+            />
             <FormInput
               label="Email"
               placeholder="user@email.com"
@@ -102,63 +136,18 @@ export default function Signup(): JSX.Element {
               value={phone}
               onChangeText={setPhone}
             />
+
+            <Button
+              size="sm"
+              alignSelf="center"
+              width={'100%'}
+              marginTop={10}
+              onPress={handleSubmit}>
+              <ButtonText>Sign up</ButtonText>
+            </Button>
           </SectionWrapper>
 
-          <SectionWrapper>
-            <FormInput
-              label="First Name"
-              placeholder="Jon"
-              value={firstname}
-              onChangeText={setFirstname}
-            />
-
-            <FormInput
-              label="Last Name"
-              placeholder="Doe"
-              value={lastname}
-              onChangeText={setLastname}
-            />
-
-            <FormRadioGroup
-              label="Gender: "
-              options={[
-                {value: '1', label: 'Male'},
-                {value: '2', label: 'Female'},
-              ]}
-              value={gender}
-              onChange={setGender}
-            />
-
-            <FormControlLabel mb="$1" mt={5}>
-              <FormControlLabelText>DOB:</FormControlLabelText>
-            </FormControlLabel>
-            <Pressable onPress={() => setShowDatePicker(true)}>
-              <Input isDisabled>
-                <InputField>{date.toDateString()}</InputField>
-              </Input>
-            </Pressable>
-            {showDatePicker && (
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || date;
-                  setDate(currentDate);
-                  setShowDatePicker(false);
-                }}
-              />
-            )}
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <FormInput
-              label="Address"
-              placeholder="Address"
-              value={address}
-              onChangeText={setAddress}
-            />
-
+          {/* <SectionWrapper>
             <FormInput
               label="City"
               placeholder="City"
@@ -186,32 +175,20 @@ export default function Signup(): JSX.Element {
               value={zip}
               onChangeText={setZip}
             />
-          </SectionWrapper>
-
-          <Button
-            size="sm"
-            alignSelf="center"
-            width={'100%'}
-            marginTop={10}
-            onPress={() => {
-              handleSubmit();
-              navigation.navigate('User');
-            }}>
-            <ButtonText>Sign up</ButtonText>
-          </Button>
+          </SectionWrapper> */}
 
           <Button
             size="sm"
             variant="link"
-            marginTop={10}
             onPress={() => navigation.navigate('Login')}>
             <Text>Already have an account? </Text>
             <ButtonText>Login </ButtonText>
           </Button>
 
-          <SignInWith />
+          {/* <SignInWith /> */}
         </Box>
       </FormControl>
+      <View mb={60} />
     </ScrollView>
   );
 }
