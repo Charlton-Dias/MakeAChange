@@ -12,7 +12,7 @@ export default function Profile() {
   const [user, setUser] = useState();
 
   // Handle user state changes
-  function onAuthStateChanged() {
+  function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) {
       setInitializing(false);

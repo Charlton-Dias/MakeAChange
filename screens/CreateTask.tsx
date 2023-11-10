@@ -71,7 +71,6 @@ function CreateTask({onClose}: any) {
 
   const handleSubmit = () => {
     const formData = {taskName, description, points, date, images};
-    console.log(formData);
     onClose();
   };
 

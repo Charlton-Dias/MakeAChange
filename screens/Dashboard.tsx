@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -38,11 +38,12 @@ export default function Dashboard(): JSX.Element {
     setUser(userData.docs[0]._data);
   };
 
-  fetchUser();
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <>
-      {console.log('user: ', user)}
       <ProfileCard user={user?.userData} />
       <Divider alignSelf="center" width={'95%'} marginBottom={5} />
 
@@ -92,7 +93,6 @@ const ProfileCard = (props: any) => {
         />
 
         <VStack marginLeft={20}>
-          {console.log(props.user)}
           <Text size="lg" bold color="black">
             {props?.user?.username}
           </Text>
