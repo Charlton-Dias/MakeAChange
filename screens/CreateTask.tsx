@@ -24,6 +24,8 @@ import {HStack} from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 function Create() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -83,9 +85,21 @@ const CreateTask: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
-    const formData = {taskName, description, points, date, images};
-    console.log(formData);
+  const handleSubmit = async () => {
+    const formData = {taskName, description, points, date};
+    const docRef = await firestore().collection('tasks').add(formData);
+
+    const imageUrls = await Promise.all(
+      images.map(async (image, index) => {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const imageRef = storage().ref(`tasks/${docRef.id}/${index}`);
+        await imageRef.put(blob);
+        return await imageRef.getDownloadURL();
+      }),
+    );
+
+    await docRef.update({images: imageUrls});
     navigation.navigate('Home');
   };
 
