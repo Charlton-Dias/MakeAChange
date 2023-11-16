@@ -1,6 +1,7 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
+  Alert,
   Button,
   ButtonText,
   FormControlLabel,
@@ -10,6 +11,7 @@ import {
   InputField,
   Pressable,
   ScrollView,
+  Text,
   View,
 } from '@gluestack-ui/themed';
 import {ButtonGroup} from '@gluestack-ui/themed';
@@ -20,37 +22,46 @@ import {PermissionsAndroid} from 'react-native';
 import styles from '../styles';
 import {HStack} from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-function CreateTask() {
+function Create() {
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged(user => {
+      setCurrentUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (!currentUser) {
+    return <LoginAlert />;
+  }
+  return <CreateTask />;
+}
+export default Create;
+
+const LoginAlert = () => (
+  <Alert>
+    <Icon name="info-circle" size={24} color={'black'} />
+    <Text ml={10} color="black" textAlign="center">
+      Please Login to continue
+    </Text>
+  </Alert>
+);
+
+const CreateTask: React.FC = () => {
   const navigation = useNavigation();
 
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
   const [points, setPoints] = useState('');
   const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [images, setImages] = useState<string[]>([]);
-
   const [active, setActive] = useState(true);
-  const camera = useRef<Camera>(null);
-  const device = useCameraDevice('back');
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-
-  const handleTakePhoto = async () => {
-    if (camera.current) {
-      const options = {quality: 1, base64: true, enableShutterSound: false};
-      const newPhoto = await camera.current.takePhoto(options);
-      await CameraRoll.save(`file://${newPhoto.path}`, {
-        type: 'photo',
-      });
-      const savedPhoto = await CameraRoll.getPhotos({
-        first: 1,
-        assetType: 'Photos',
-      });
-      setImages([...images, savedPhoto.edges[0].node.image.uri]);
-      setIsCameraOpen(false);
-    }
-  };
 
   const handleOpenCamera = async () => {
     try {
@@ -74,6 +85,7 @@ function CreateTask() {
 
   const handleSubmit = () => {
     const formData = {taskName, description, points, date, images};
+    console.log(formData);
     navigation.navigate('Home');
   };
 
@@ -86,103 +98,36 @@ function CreateTask() {
     navigation.navigate('Home');
   };
 
-  const scrollViewRef = React.useRef<ScrollView>(null);
-
   return (
     <ScrollView padding={10}>
       {isCameraOpen ? (
         <>
-          <Camera
-            style={styles.camera}
-            device={device}
-            isActive={active}
-            enableZoomGesture
-            photo
-            orientation="portrait"
-            ref={camera}
+          <ImageCapture
+            active={active}
+            images={images}
+            setActive={setActive}
+            setImages={setImages}
+            setIsCameraOpen={setIsCameraOpen}
           />
-          <Pressable
-            onPress={() => {
-              handleTakePhoto();
-              setActive(false);
-            }}>
-            <View style={styles.capture}>
-              <View style={styles.capture2} />
-            </View>
-          </Pressable>
         </>
       ) : (
         <>
-          <FormInput
-            label="Task Name"
-            placeholder="Task Name"
-            value={taskName}
-            onChangeText={setTaskName}
+          <FormInputFields
+            taskName={taskName}
+            setTaskName={setTaskName}
+            description={description}
+            setDescription={setDescription}
+            points={points}
+            setPoints={setPoints}
           />
 
-          <FormInput
-            label="Description"
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-            multiline
+          <Deadline date={date} setDate={setDate} />
+
+          <ImageList
+            handleOpenCamera={handleOpenCamera}
+            images={images}
+            setActive={setActive}
           />
-
-          <FormInput
-            label="Points"
-            placeholder="Points"
-            value={points}
-            onChangeText={setPoints}
-          />
-
-          <FormControlLabel mb="$1">
-            <FormControlLabelText>Deadline:</FormControlLabelText>
-          </FormControlLabel>
-          <Pressable onPress={() => setShowDatePicker(true)}>
-            <Input isDisabled borderColor={'$black'} mb={10}>
-              <InputField>{date.toDateString()}</InputField>
-            </Input>
-          </Pressable>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                const currentDate = selectedDate || date;
-                setDate(currentDate);
-                setShowDatePicker(false);
-              }}
-            />
-          )}
-
-          <ScrollView
-            horizontal
-            ref={scrollViewRef}
-            onContentSizeChange={() =>
-              scrollViewRef.current?.scrollToEnd({animated: true})
-            }
-            style={styles.addImageContainer}
-            mb={10}>
-            <HStack alignItems="center" padding={10}>
-              {images.map((image, index) => (
-                <Image
-                  alt={`image_${index}`}
-                  key={index}
-                  source={{uri: image}}
-                  style={styles.addImage}
-                />
-              ))}
-              <Button
-                onPress={() => {
-                  setActive(true);
-                  handleOpenCamera();
-                }}>
-                <ButtonText>+</ButtonText>
-              </Button>
-            </HStack>
-          </ScrollView>
 
           <ButtonGroup w={'100%'}>
             <Button
@@ -200,6 +145,179 @@ function CreateTask() {
       )}
     </ScrollView>
   );
+};
+
+interface DeadlineProps {
+  date: Date;
+  setDate: (date: Date) => void;
 }
 
-export default CreateTask;
+const Deadline: React.FC<DeadlineProps> = ({date, setDate}) => {
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  return (
+    <>
+      <FormControlLabel mb="$1">
+        <FormControlLabelText>Deadline:</FormControlLabelText>
+      </FormControlLabel>
+      <Pressable onPress={() => setShowDatePicker(true)}>
+        <Input isDisabled borderColor={'$black'} mb={10}>
+          <InputField>{date.toDateString()}</InputField>
+        </Input>
+      </Pressable>
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || date;
+            setDate(currentDate);
+            setShowDatePicker(false);
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+interface FormInputFieldsProps {
+  taskName: string;
+  setTaskName: (taskName: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  points: string;
+  setPoints: (points: string) => void;
+}
+
+const FormInputFields: React.FC<FormInputFieldsProps> = ({
+  taskName,
+  setTaskName,
+  description,
+  setDescription,
+  points,
+  setPoints,
+}) => (
+  <>
+    <FormInput
+      label="Task Name"
+      placeholder="Task Name"
+      value={taskName}
+      onChangeText={setTaskName}
+    />
+
+    <FormInput
+      label="Description"
+      placeholder="Description"
+      value={description}
+      onChangeText={setDescription}
+      multiline
+    />
+
+    <FormInput
+      label="Points"
+      placeholder="Points"
+      value={points}
+      onChangeText={setPoints}
+    />
+  </>
+);
+
+interface ImageListProps {
+  handleOpenCamera: () => void;
+  images: string[];
+  setActive: (active: boolean) => void;
+}
+
+const ImageList: React.FC<ImageListProps> = ({
+  handleOpenCamera,
+  images,
+  setActive,
+}) => {
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
+  return (
+    <ScrollView
+      horizontal
+      ref={scrollViewRef}
+      onContentSizeChange={() =>
+        scrollViewRef.current?.scrollToEnd({animated: true})
+      }
+      style={styles.addImageContainer}
+      mb={10}>
+      <HStack alignItems="center" padding={10}>
+        {images.map((image, index) => (
+          <Image
+            alt={`image_${index}`}
+            key={index}
+            source={{uri: image}}
+            style={styles.addImage}
+          />
+        ))}
+        <Button
+          onPress={() => {
+            setActive(true);
+            handleOpenCamera();
+          }}>
+          <ButtonText>+</ButtonText>
+        </Button>
+      </HStack>
+    </ScrollView>
+  );
+};
+
+interface ImageCaptureProps {
+  active: boolean;
+  images: string[];
+  setActive: (active: boolean) => void;
+  setImages: (images: string[]) => void;
+  setIsCameraOpen: (isCameraOpen: boolean) => void;
+}
+
+const ImageCapture: React.FC<ImageCaptureProps> = ({
+  active,
+  images,
+  setActive,
+  setImages,
+  setIsCameraOpen,
+}) => {
+  const camera = useRef<Camera>(null);
+  const device = useCameraDevice('back');
+
+  const handleTakePhoto = async () => {
+    if (camera.current) {
+      const options = {quality: 1, base64: true, enableShutterSound: false};
+      const newPhoto = await camera.current.takePhoto(options);
+      await CameraRoll.save(`file://${newPhoto.path}`, {
+        type: 'photo',
+      });
+      const savedPhoto = await CameraRoll.getPhotos({
+        first: 1,
+        assetType: 'Photos',
+      });
+      setImages([...images, savedPhoto.edges[0].node.image.uri]);
+      setIsCameraOpen(false);
+    }
+  };
+  return (
+    <>
+      <Camera
+        style={styles.camera}
+        device={device}
+        isActive={active}
+        enableZoomGesture
+        photo
+        orientation="portrait"
+        ref={camera}
+      />
+      <Pressable
+        onPress={() => {
+          handleTakePhoto();
+          setActive(false);
+        }}>
+        <View style={styles.capture}>
+          <View style={styles.capture2} />
+        </View>
+      </Pressable>
+    </>
+  );
+};

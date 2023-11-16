@@ -11,7 +11,7 @@ import LeaderBoard from '../screens/LeaderBoard';
 import Profile from '../screens/Profile';
 import styles from '../styles';
 import Tasks from '../screens/Tasks';
-import CreateTask from '../screens/CreateTask';
+import Create from '../screens/CreateTask';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +34,7 @@ export default function BottomTabs() {
       sceneContainerStyle={styles.sceneContainerStyle}>
       <Tab.Screen name="Home" component={Home} options={{title: 'Taskify'}} />
       <Tab.Screen name="Tasks" component={Tasks} />
-      <Tab.Screen name="Create Task" component={CreateTask} />
+      <Tab.Screen name="Create Task" component={Create} />
       <Tab.Screen name="LeaderBoard" component={LeaderBoard} />
       <Tab.Screen
         name="Profile"
