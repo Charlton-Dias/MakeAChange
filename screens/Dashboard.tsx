@@ -12,15 +12,12 @@ import {
   ScrollView,
   Modal,
   Heading,
-  Fab,
 } from '@gluestack-ui/themed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import dummyData from '../dummyData';
 import Card from '../components/Card';
 import styles from '../styles';
-import CreateTask from './CreateTask';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
@@ -33,7 +30,7 @@ export default function Dashboard(): JSX.Element {
   const fetchUser = async () => {
     const userData = await firestore()
       .collection('users')
-      .where('uid', '==', currentUser.uid)
+      .where('uid', '==', currentUser?.uid)
       .get();
     setUser(userData.docs[0]._data);
   };
@@ -64,11 +61,6 @@ export default function Dashboard(): JSX.Element {
 }
 const ProfileCard = (props: any) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  const handleLogout = () => {
-    auth().signOut();
-    setShowLogoutModal(false);
-  };
 
   return (
     <View
@@ -113,97 +105,63 @@ const ProfileCard = (props: any) => {
         </Button>
       </ButtonGroup>
 
-      <Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)}>
-        <Modal.Backdrop />
-        <Modal.Content>
-          <Modal.Header>
-            <Heading>Logout</Heading>
-            <Modal.CloseButton>
-              <Icon name="close" color={'black'} size={24} />
-            </Modal.CloseButton>
-          </Modal.Header>
-          <Modal.Body>
-            <Text>Are you sure you want to logout?</Text>
-          </Modal.Body>
-          <Modal.Footer>
-            <ButtonGroup>
-              <Button
-                action="secondary"
-                variant="outline"
-                w={'48%'}
-                onPress={() => setShowLogoutModal(false)}>
-                <ButtonText>Cancel</ButtonText>
-              </Button>
-              <Button action="negative" w={'48%'} onPress={handleLogout}>
-                <ButtonText>Logout</ButtonText>
-              </Button>
-            </ButtonGroup>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
+      <LogoutModal
+        showLogoutModal={showLogoutModal}
+        setShowLogoutModal={setShowLogoutModal}
+      />
     </View>
   );
 };
 
-function CreatedList() {
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  return (
-    <>
-      <ScrollView contentContainerStyle={styles.profileCardContainter}>
-        {dummyData.map((item, index) => (
-          <Card key={index} title={item.title} description={item.desc} />
-        ))}
-        <Divider h={0} mb={60} />
-      </ScrollView>
-      <Fab
-        placement="bottom right"
-        shadowColor="black"
-        borderColor="white"
-        bgColor="black"
-        borderWidth={1}
-        onPress={() => setShowCreateModal(!showcreateModal)}
-        mr={0}
-        mb={60}>
-        <MaterialIcons name="add" size={28} color="white" />
-      </Fab>
+const LogoutModal = ({showLogoutModal, setShowLogoutModal}) => {
+  const handleLogout = () => {
+    auth().signOut();
+    setShowLogoutModal(false);
+  };
 
-      <Modal isOpen={showcreateModal} onClose={() => setShowCreateModal(false)}>
-        <Modal.Backdrop />
-        <Modal.Content>
-          <Modal.Header>
-            <Heading>Create a new task</Heading>
-            <Modal.CloseButton>
-              <Icon name="close" color={'black'} size={24} />
-            </Modal.CloseButton>
-          </Modal.Header>
-          <Divider height={2} />
-          <Modal.Body>
-            <CreateTask onClose={() => setShowCreateModal(false)} />
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
-    </>
-  );
-}
-
-function SelectedList() {
   return (
-    <ScrollView contentContainerStyle={styles.profileCardContainter}>
-      {dummyData.map((item, index) => (
-        <Card key={index} title={item.title} description={item.desc} />
-      ))}
-      <Divider h={0} mb={60} />
-    </ScrollView>
+    <Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)}>
+      <Modal.Backdrop />
+      <Modal.Content>
+        <Modal.Header>
+          <Heading>Logout</Heading>
+          <Modal.CloseButton>
+            <Icon name="close" color={'black'} size={24} />
+          </Modal.CloseButton>
+        </Modal.Header>
+        <Modal.Body>
+          <Text>Are you sure you want to logout?</Text>
+        </Modal.Body>
+        <Modal.Footer>
+          <ButtonGroup>
+            <Button
+              action="secondary"
+              variant="outline"
+              w={'48%'}
+              onPress={() => setShowLogoutModal(false)}>
+              <ButtonText>Cancel</ButtonText>
+            </Button>
+            <Button action="negative" w={'48%'} onPress={handleLogout}>
+              <ButtonText>Logout</ButtonText>
+            </Button>
+          </ButtonGroup>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal>
   );
-}
+};
 
-function CompletedList() {
-  return (
-    <ScrollView contentContainerStyle={styles.profileCardContainter}>
-      {dummyData.map((item, index) => (
-        <Card key={index} title={item.title} description={item.desc} />
-      ))}
-      <Divider h={0} mb={60} />
-    </ScrollView>
-  );
-}
+const CreatedList = () => <ItemList data={dummyData} />;
+
+const SelectedList = () => <ItemList data={dummyData} />;
+
+const CompletedList = () => <ItemList data={dummyData} />;
+
+const ItemList = ({data}) => (
+  <ScrollView contentContainerStyle={styles.profileCardContainter}>
+    {data?.map((item, index) => (
+      <Card key={index} title={item.title} description={item.desc} />
+    ))}
+    <Divider h={0} mb={60} />
+  </ScrollView>
+);

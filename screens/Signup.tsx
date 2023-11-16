@@ -100,7 +100,7 @@ export default function Signup(): JSX.Element {
         <Box display="flex" padding={'5%'}>
           <Center marginTop={40} marginBottom={20}>
             <Icon name="user" size={100} color={'#222'} />
-            <Heading>Login</Heading>
+            <Heading>Sign up</Heading>
           </Center>
           <SectionWrapper>
             <FormInput

@@ -8,47 +8,35 @@ const Tasks = () => {
   return (
     <>
       <ScrollView px={10} contentContainerStyle={styles.taskContainer}>
-        <Heading ml={10} size="xl">
-          Available
-        </Heading>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          marginBottom={20}>
-          <VStack display="flex" flexDirection="row">
-            {dummyData.map((item, index) => (
-              <Card key={index} title={item.title} description={item.desc} />
-            ))}
-          </VStack>
-        </ScrollView>
-
-        <Heading ml={10} size="xl">
-          Nearby
-        </Heading>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          marginBottom={20}>
-          <VStack display="flex" flexDirection="row">
-            {dummyData.map((item, index) => (
-              <Card key={index} title={item.title} description={item.desc} />
-            ))}
-          </VStack>
-        </ScrollView>
-
-        <Heading ml={10} size="xl">
-          Completed
-        </Heading>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} mb={60}>
-          <VStack display="flex" flexDirection="row">
-            {dummyData.map((item, index) => (
-              <Card key={index} title={item.title} description={item.desc} />
-            ))}
-          </VStack>
-        </ScrollView>
+        <TaskSection title="Available" data={dummyData} />
+        <TaskSection title="Completed" data={dummyData} />
       </ScrollView>
     </>
   );
 };
 
 export default Tasks;
+
+interface TaskSectionProps {
+  title: string;
+  data: typeof dummyData;
+}
+
+const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
+  <>
+    <Heading ml={10} size="xl">
+      {title}
+    </Heading>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator
+      indicatorStyle="black"
+      marginBottom={20}>
+      <VStack display="flex" flexDirection="row" marginBottom={2}>
+        {data.map((item, index) => (
+          <Card key={index} title={item.title} description={item.desc} />
+        ))}
+      </VStack>
+    </ScrollView>
+  </>
+);

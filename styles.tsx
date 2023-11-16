@@ -40,16 +40,16 @@ const styles = StyleSheet.create({
   },
   navBar: {
     width: '95%',
+    maxWidth: 400,
     alignSelf: 'center',
     borderColor: '#005DB4',
-    opacity: 0.9,
     borderWidth: 1,
     borderRadius: 10,
     height: 60,
     paddingVertical: 0,
     paddingHorizontal: 20,
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
@@ -57,9 +57,11 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   navBarActiveTab: {
-    backgroundColor: '#1A6EBC',
+    backgroundColor: 'rgba(26, 110, 188, 0.9)',
     borderRadius: 10,
-    padding: 10,
+    opacity: 1,
+    margin: -12,
+    padding: 12,
     color: 'white',
   },
   navBarActiveTabText: {
@@ -71,6 +73,9 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+  },
+  navHeader: {
+    height: 40,
   },
   profileAvatar: {
     width: 100,
@@ -84,7 +89,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   profileTabBarIndicatorStyle: {
-    backgroundColor: '#1A6EBC',
+    backgroundColor: 'rgba(26, 110, 188, 0.9)',
     height: '100%',
     borderRadius: 10,
   },
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
     borderWidth: 1,
-    borderColor: '#1A6EBC',
+    borderColor: 'rgba(26, 110, 188, 0.9)',
   },
   profileTabBarLabelStyle: {
     fontSize: 14,

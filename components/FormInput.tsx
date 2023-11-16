@@ -36,7 +36,7 @@ const FormInput = ({
     <FormControlLabel mb="$1">
       <FormControlLabelText>{label}:</FormControlLabelText>
     </FormControlLabel>
-    <Input>
+    <Input borderColor="black">
       <InputField
         type={type}
         placeholder={placeholder}

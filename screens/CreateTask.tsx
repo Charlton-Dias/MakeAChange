@@ -19,8 +19,11 @@ import FormInput from '../components/FormInput';
 import {PermissionsAndroid} from 'react-native';
 import styles from '../styles';
 import {HStack} from '@gluestack-ui/themed';
+import {useNavigation} from '@react-navigation/native';
 
-function CreateTask({onClose}: any) {
+function CreateTask() {
+  const navigation = useNavigation();
+
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
   const [points, setPoints] = useState('');
@@ -71,13 +74,22 @@ function CreateTask({onClose}: any) {
 
   const handleSubmit = () => {
     const formData = {taskName, description, points, date, images};
-    onClose();
+    navigation.navigate('Home');
+  };
+
+  const handleDiscard = () => {
+    setTaskName('');
+    setDescription('');
+    setPoints('');
+    setDate(new Date());
+    setImages([]);
+    navigation.navigate('Home');
   };
 
   const scrollViewRef = React.useRef<ScrollView>(null);
 
   return (
-    <ScrollView>
+    <ScrollView padding={10}>
       {isCameraOpen ? (
         <>
           <Camera
@@ -127,7 +139,7 @@ function CreateTask({onClose}: any) {
             <FormControlLabelText>Deadline:</FormControlLabelText>
           </FormControlLabel>
           <Pressable onPress={() => setShowDatePicker(true)}>
-            <Input isDisabled mb={10}>
+            <Input isDisabled borderColor={'$black'} mb={10}>
               <InputField>{date.toDateString()}</InputField>
             </Input>
           </Pressable>
@@ -177,7 +189,7 @@ function CreateTask({onClose}: any) {
               w="48%"
               variant="outline"
               action="negative"
-              onPress={onClose}>
+              onPress={handleDiscard}>
               <ButtonText>Discard</ButtonText>
             </Button>
             <Button w="48%" onPress={handleSubmit}>

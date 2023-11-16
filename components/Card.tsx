@@ -9,13 +9,13 @@ const Card = ({...props}) => {
       margin={5}
       borderWidth={1}
       backgroundColor="white"
-      maxWidth={175}>
+      maxWidth={200}>
       <Image
-        width={200}
+        width={180}
         height={150}
         borderTopLeftRadius={10}
         borderTopRightRadius={10}
-        alt={'Task Image'}
+        alt={props?.title}
         source={{
           uri:
             props?.image ||

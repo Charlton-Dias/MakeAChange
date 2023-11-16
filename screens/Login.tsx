@@ -14,8 +14,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import SectionWrapper from '../components/SectionWrapper';
 import FormInput from '../components/FormInput';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 
-export default function Login({navigation}: any): JSX.Element {
+export default function Login(): JSX.Element {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,7 +30,6 @@ export default function Login({navigation}: any): JSX.Element {
         throw new Error('Enter email and password');
       }
       await auth().signInWithEmailAndPassword(email, password);
-      // navigation.navigate('User');
       console.log('success');
     } catch (error) {
       alert('Email or Password is incorrect!');

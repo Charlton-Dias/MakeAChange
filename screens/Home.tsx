@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {PermissionsAndroid} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import Leaflet, {Layers, Markers, TileOptions} from 'react-native-leaflet-ts';
-import {Fab, Heading} from '@gluestack-ui/themed';
+import {Fab} from '@gluestack-ui/themed';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Home = () => {
@@ -48,11 +48,6 @@ const Home = () => {
 
   const mapLayers: Layers[] = [
     {
-      name: 'Satellite View',
-      src: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      tileOptions: options,
-    },
-    {
       name: 'Street View',
       src: 'https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}',
       tileOptions: options,
@@ -73,7 +68,6 @@ const Home = () => {
 
   return (
     <>
-      <Heading textAlign="center">Taskify</Heading>
       <Fab
         size="md"
         placement="bottom right"
