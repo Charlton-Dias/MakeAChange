@@ -1,10 +1,10 @@
 const dummyData = [
-  {title: 'Task 1', desc: 'Task description here'},
-  {title: 'Task 2', desc: 'Task description here'},
-  {title: 'Task 3', desc: 'Task description here'},
-  {title: 'Task 4', desc: 'Task description here'},
-  {title: 'Task 5', desc: 'Task description here'},
-  {title: 'Task 6', desc: 'Task description here'},
+  {taskName: 'Task 1', description: 'Task description here'},
+  {taskName: 'Task 2', description: 'Task description here'},
+  {taskName: 'Task 3', description: 'Task description here'},
+  {taskName: 'Task 4', description: 'Task description here'},
+  {taskName: 'Task 5', description: 'Task description here'},
+  {taskName: 'Task 6', description: 'Task description here'},
 ];
 
 export default dummyData;

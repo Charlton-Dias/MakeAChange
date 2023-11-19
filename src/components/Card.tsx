@@ -11,10 +11,11 @@ const Card = ({...props}) => {
       backgroundColor="white"
       maxWidth={200}>
       <Image
-        width={180}
+        minWidth={180}
         height={150}
         borderTopLeftRadius={10}
         borderTopRightRadius={10}
+        size="full"
         alt={props?.title}
         source={{
           uri:
