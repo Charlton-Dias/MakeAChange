@@ -1,7 +1,7 @@
 import React from 'react';
 import {Heading, ScrollView, VStack} from '@gluestack-ui/themed';
 import Card from '../components/Card';
-import dummyData from '../dummyData';
+import dummyData from '../../dummyData';
 import styles from '../styles';
 
 const Tasks = () => {

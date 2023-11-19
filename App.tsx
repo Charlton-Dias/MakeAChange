@@ -1,5 +1,5 @@
 import React from 'react';
-import BottomTabs from './components/BottomTabs';
+import BottomTabs from './src/components/BottomTabs';
 import {View} from '@gluestack-ui/themed';
 
 export default function App(): JSX.Element {

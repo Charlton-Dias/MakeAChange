@@ -14,7 +14,7 @@ import {
   Heading,
 } from '@gluestack-ui/themed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import dummyData from '../dummyData';
+import dummyData from '../../dummyData';
 import Card from '../components/Card';
 import styles from '../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
