@@ -5,20 +5,21 @@ import dummyData from '../../dummyData';
 import styles from '../styles';
 import firestore from '@react-native-firebase/firestore';
 import {RefreshControl} from 'react-native';
+import NoTaskNotice from '../components/NoTaskNotice';
 
-type Data = {
+export type TaskDataProps = {
   taskName: string;
   description: string;
   images?: string[];
 };
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState<Data[]>([]);
+  const [tasks, setTasks] = useState<TaskDataProps[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchTasks = async () => {
     const tasksCollection = await firestore().collection('tasks').get();
-    setTasks(tasksCollection.docs.map(doc => doc.data() as Data));
+    setTasks(tasksCollection.docs.map(doc => doc.data() as TaskDataProps));
   };
 
   const onRefresh = React.useCallback(async () => {
@@ -50,7 +51,7 @@ export default Tasks;
 
 type TaskSectionProps = {
   title: string;
-  data: Data[];
+  data: TaskDataProps[];
 };
 
 const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
@@ -58,27 +59,25 @@ const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
     <Heading ml={10} size="xl">
       {title}
     </Heading>
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator
-      indicatorStyle="black"
-      marginBottom={20}>
-      <VStack display="flex" flexDirection="row" marginBottom={2}>
-        {data?.length > 0 ? (
-          data.map((item, index) => (
+    {data?.length > 0 ? (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator
+        indicatorStyle="black"
+        marginBottom={20}>
+        <VStack display="flex" flexDirection="row" marginBottom={2}>
+          {data.map((item, index) => (
             <Card
               key={index}
               title={item.taskName}
               description={item.description}
               image={item?.images?.[0]}
             />
-          ))
-        ) : (
-          <View height={100} width={'100%'} borderWidth={1} borderColor="black">
-            <Heading>There are no {title} Tasks</Heading>
-          </View>
-        )}
-      </VStack>
-    </ScrollView>
+          ))}
+        </VStack>
+      </ScrollView>
+    ) : (
+      <NoTaskNotice title={title} />
+    )}
   </>
 );

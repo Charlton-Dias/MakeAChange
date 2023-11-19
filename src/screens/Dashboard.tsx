@@ -20,28 +20,30 @@ import styles from '../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import NoTaskNotice from '../components/NoTaskNotice';
+import {TaskDataProps} from './Tasks';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function Dashboard(): JSX.Element {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<object | null>();
   const currentUser = auth().currentUser;
 
-  const fetchUser = async () => {
-    const userData = await firestore()
-      .collection('users')
-      .where('uid', '==', currentUser?.uid)
-      .get();
-    setUser(userData.docs[0]._data);
-  };
-
   useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await firestore()
+        .collection('users')
+        .where('uid', '==', currentUser?.uid)
+        .get();
+      setUser(userData.docs[0].data());
+    };
+
     fetchUser();
-  }, []);
+  }, [currentUser?.uid]);
 
   return (
     <>
-      <ProfileCard user={user?.userData} />
+      <ProfileCard user={user} />
       <Divider alignSelf="center" width={'95%'} marginBottom={5} />
 
       <Tab.Navigator
@@ -75,7 +77,7 @@ const ProfileCard = (props: any) => {
           borderWidth={2}
           borderColor="black"
           source={{
-            uri: props?.user?.avatar
+            uri: props?.userData?.user?.avatar
               ? props?.avatar
               : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
           }}
@@ -83,14 +85,15 @@ const ProfileCard = (props: any) => {
           style={styles.profileAvatar}
           borderRadius={50}
         />
-
         <VStack marginLeft={20}>
           <Text size="lg" bold color="black">
-            {props?.user?.username}
+            {props.user?.userData?.username}
           </Text>
-          <Text color="black">{props?.user?.name}</Text>
-          <Text color="black">points: {props?.points || 0}</Text>
-          <Text color="black">{props?.address}</Text>
+          <Text color="black">{props.user?.userData?.name}</Text>
+          <Text color="black">
+            points: {props?.user?.userData?.points || 0}
+          </Text>
+          <Text color="black">{props?.user?.userData?.address}</Text>
         </VStack>
       </HStack>
       <ButtonGroup>
@@ -113,7 +116,15 @@ const ProfileCard = (props: any) => {
   );
 };
 
-const LogoutModal = ({showLogoutModal, setShowLogoutModal}) => {
+type LogoutModalProps = {
+  showLogoutModal: boolean;
+  setShowLogoutModal: (showLogoutModal: boolean) => void;
+};
+
+const LogoutModal = ({
+  showLogoutModal,
+  setShowLogoutModal,
+}: LogoutModalProps) => {
   const handleLogout = () => {
     auth().signOut();
     setShowLogoutModal(false);
@@ -151,17 +162,33 @@ const LogoutModal = ({showLogoutModal, setShowLogoutModal}) => {
   );
 };
 
-const CreatedList = () => <ItemList data={dummyData} />;
+const CreatedList = () => <ItemList data={dummyData} section={'Created'} />;
 
-const SelectedList = () => <ItemList data={dummyData} />;
+const SelectedList = () => <ItemList data={dummyData} section={'Selected'} />;
 
-const CompletedList = () => <ItemList data={dummyData} />;
+const CompletedList = () => <ItemList data={dummyData} section={'Completed'} />;
 
-const ItemList = ({data}) => (
-  <ScrollView contentContainerStyle={styles.profileCardContainter}>
-    {data?.map((item, index) => (
-      <Card key={index} title={item.title} description={item.desc} />
-    ))}
-    <Divider h={0} mb={60} />
-  </ScrollView>
+type ItemListProps = {
+  data: TaskDataProps[];
+  section: string;
+};
+const ItemList = ({data, section}: ItemListProps) => (
+  <>
+    {data?.length > 0 ? (
+      <ScrollView contentContainerStyle={styles.profileCardContainter}>
+        {data?.map((item, index) => (
+          <Card
+            key={index}
+            title={item.taskName}
+            description={item.description}
+          />
+        ))}
+        <Divider h={0} mb={60} />
+      </ScrollView>
+    ) : (
+      <View p={10}>
+        <NoTaskNotice title={section} profile />
+      </View>
+    )}
+  </>
 );

@@ -22,13 +22,17 @@ import {PermissionsAndroid} from 'react-native';
 import styles from '../styles';
 import {HStack} from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import {TabsParamList} from '../types';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
 function Create() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<FirebaseAuthTypes.User | null>(
+    null,
+  );
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
@@ -54,8 +58,13 @@ const LoginAlert = () => (
   </Alert>
 );
 
+type CreateTaskScreenNavigationProp = BottomTabNavigationProp<
+  TabsParamList,
+  'CreateTask'
+>;
+
 const CreateTask: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<CreateTaskScreenNavigationProp>();
 
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
@@ -314,15 +323,17 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
   };
   return (
     <>
-      <Camera
-        style={styles.camera}
-        device={device}
-        isActive={active}
-        enableZoomGesture
-        photo
-        orientation="portrait"
-        ref={camera}
-      />
+      {device && (
+        <Camera
+          style={styles.camera}
+          device={device}
+          isActive={active}
+          enableZoomGesture
+          photo
+          orientation="portrait"
+          ref={camera}
+        />
+      )}
       <Pressable
         onPress={() => {
           handleTakePhoto();
