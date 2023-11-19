@@ -13,11 +13,12 @@ import {
 } from '@gluestack-ui/themed';
 // import SignInWith from '../components/SignInWith';
 import SectionWrapper from '../components/SectionWrapper';
-import {useNavigation} from '@react-navigation/native';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import FormInput from '../components/FormInput';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import type {StackParamList} from '../types';
 
 const registerUser = async ({userAuth, userData}: any) => {
   try {
@@ -40,7 +41,9 @@ const registerUser = async ({userAuth, userData}: any) => {
   }
 };
 
-export default function Signup(): JSX.Element {
+type Props = NativeStackScreenProps<StackParamList, 'Signup'>;
+
+export default function Signup({navigation}: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -52,8 +55,6 @@ export default function Signup(): JSX.Element {
   // const [state, setState] = useState('');
   // const [country, setCountry] = useState('');
   // const [zip, setZip] = useState('');
-
-  const navigation = useNavigation();
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -90,7 +91,7 @@ export default function Signup(): JSX.Element {
       setLoading(false);
       console.log('User registered successfully!');
     } catch (error) {
-      console.error('Error: ', error.message);
+      // console.error('Error: ', error.message);
     }
   };
 

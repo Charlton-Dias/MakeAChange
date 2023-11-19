@@ -12,13 +12,14 @@ import Profile from '../screens/Profile';
 import styles from '../styles';
 import Tasks from '../screens/Tasks';
 import Create from '../screens/CreateTask';
+import {TabsParamList} from '../types';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabsParamList>();
 
 const ICON_NAMES: {[key: string]: string} = {
   Home: 'home',
   Tasks: 'list-ul',
-  'Create Task': 'plus',
+  CreateTask: 'plus',
   LeaderBoard: 'trophy',
   Profile: 'user',
 };
@@ -34,7 +35,11 @@ export default function BottomTabs() {
       sceneContainerStyle={styles.sceneContainerStyle}>
       <Tab.Screen name="Home" component={Home} options={{title: 'Taskify'}} />
       <Tab.Screen name="Tasks" component={Tasks} />
-      <Tab.Screen name="Create Task" component={Create} />
+      <Tab.Screen
+        name="CreateTask"
+        component={Create}
+        options={{title: 'Create Task'}}
+      />
       <Tab.Screen name="LeaderBoard" component={LeaderBoard} />
       <Tab.Screen
         name="Profile"

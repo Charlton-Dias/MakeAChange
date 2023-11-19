@@ -1,14 +1,5 @@
-import {
-  Box,
-  ButtonIcon,
-  ButtonText,
-  Center,
-  Heading,
-  View,
-} from '@gluestack-ui/themed';
-import {Pressable} from '@gluestack-ui/themed';
+import {Box, ButtonText, Center, Heading, View} from '@gluestack-ui/themed';
 import {Button} from '@gluestack-ui/themed';
-import {Text} from '@gluestack-ui/themed';
 import {Divider} from '@gluestack-ui/themed';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';

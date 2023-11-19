@@ -3,23 +3,18 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
-import auth from '@react-native-firebase/auth';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import {StackParamList} from '../types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<StackParamList>();
 
 export default function Profile() {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-
-  // Handle user state changes
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) {
-      setInitializing(false);
-    }
-  }
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
 
   useEffect(() => {
+    function onAuthStateChanged(_user: any) {
+      setUser(_user);
+    }
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
@@ -41,7 +36,7 @@ export default function Profile() {
               options={{headerShown: false}}
             />
             <Stack.Screen
-              name="Sign up"
+              name="Signup"
               component={Signup}
               options={{headerShown: false}}
             />
