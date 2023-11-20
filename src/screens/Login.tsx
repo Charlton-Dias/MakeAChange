@@ -14,11 +14,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import SectionWrapper from '../components/SectionWrapper';
 import FormInput from '../components/FormInput';
 import auth from '@react-native-firebase/auth';
-import {useNavigation} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackParamList} from '../types';
 
-export default function Login(): JSX.Element {
-  const navigation = useNavigation();
+type Props = NativeStackScreenProps<StackParamList, 'Signup'>;
 
+export default function Login({navigation}: Props): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -78,7 +79,7 @@ export default function Login(): JSX.Element {
         <Button
           size="sm"
           variant="link"
-          onPress={() => navigation.navigate('Sign up')}>
+          onPress={() => navigation.navigate('Signup')}>
           <Text>Don't have an account? </Text>
           <ButtonText>Sign up</ButtonText>
         </Button>
