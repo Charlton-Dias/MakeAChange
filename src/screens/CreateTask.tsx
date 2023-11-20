@@ -1,4 +1,3 @@
-// Import necessary modules at the beginning of your file
 import React, {useEffect, useRef, useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
@@ -26,7 +25,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
-import ImageCropPicker from 'react-native-image-crop-picker';
+import ImageCropPicker from 'react-native-image-crop-picker'; // Add this import
 
 import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
@@ -50,7 +49,6 @@ function Create() {
   }
   return <CreateTask user={currentUser} />;
 }
-
 export default Create;
 
 const LoginAlert = () => (
@@ -103,46 +101,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   };
 
   const [loading, setLoading] = useState(false);
-
-  const openImageCropper = async (imagePath: string) => {
-    try {
-      const croppedImage = await ImageCropPicker.openCropper({
-        path: imagePath,
-        width: 300,
-        height: 400,
-      });
-
-      await CameraRoll.save(`file://${croppedImage.path}`, {
-        type: 'photo',
-      });
-
-      const savedPhoto = await CameraRoll.getPhotos({
-        first: 1,
-        assetType: 'Photos',
-      });
-
-      return savedPhoto.edges[0].node.image.uri;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-
-  const handleTakePhoto = async () => {
-    if (camera.current) {
-      const options = {quality: 1, base64: true, enableShutterSound: false};
-      const newPhoto = await camera.current.takePhoto(options);
-
-      try {
-        const croppedImageUri = await openImageCropper(newPhoto.path);
-        setImages([...images, croppedImageUri]);
-        setIsCameraOpen(false);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
     const formData = {creator, taskName, description, points, date};
@@ -212,9 +170,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
                   cropping: true,
                 });
 
-                const croppedImageUri = await openImageCropper(image.path);
-
-                setImages([...images, croppedImageUri]);
+                setImages([...images, image.path]);
               } catch (error) {
                 console.log(error);
               }
@@ -385,33 +341,19 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
   const camera = useRef<Camera>(null);
   const device = useCameraDevice('back');
 
-  const openImageCropper = async (imagePath: string) => {
-    try {
-      const croppedImage = await ImageCropPicker.openCropper({
-        path: imagePath,
-        width: 300,
-        height: 400,
-      });
-
-      return croppedImage.path;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-
   const handleTakePhoto = async () => {
     if (camera.current) {
       const options = {quality: 1, base64: true, enableShutterSound: false};
       const newPhoto = await camera.current.takePhoto(options);
-
-      try {
-        const croppedImageUri = await openImageCropper(newPhoto.path);
-        setImages([...images, croppedImageUri]);
-        setIsCameraOpen(false);
-      } catch (error) {
-        console.log(error);
-      }
+      await CameraRoll.save(`file://${newPhoto.path}`, {
+        type: 'photo',
+      });
+      const savedPhoto = await CameraRoll.getPhotos({
+        first: 1,
+        assetType: 'Photos',
+      });
+      setImages([...images, savedPhoto.edges[0].node.image.uri]);
+      setIsCameraOpen(false);
     }
   };
 
