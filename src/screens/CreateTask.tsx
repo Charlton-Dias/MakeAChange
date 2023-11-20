@@ -25,6 +25,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
+import ImageCropPicker from 'react-native-image-crop-picker'; // Add this import
 
 import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
@@ -156,6 +157,24 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
 
           <ImageList
             handleOpenCamera={handleOpenCamera}
+            handleRemoveImage={index => {
+              const newImages = [...images];
+              newImages.splice(index, 1);
+              setImages(newImages);
+            }}
+            handlePickImageFromGallery={async () => {
+              try {
+                const image = await ImageCropPicker.openPicker({
+                  width: 300,
+                  height: 400,
+                  cropping: true,
+                });
+
+                setImages([...images, image.path]);
+              } catch (error) {
+                console.log(error);
+              }
+            }}
             images={images}
             setActive={setActive}
           />
@@ -261,34 +280,37 @@ const FormInputFields: React.FC<FormInputFieldsProps> = ({
 
 interface ImageListProps {
   handleOpenCamera: () => void;
+  handlePickImageFromGallery: () => void;
+  handleRemoveImage: (index: number) => void;
   images: string[];
   setActive: (active: boolean) => void;
 }
 
 const ImageList: React.FC<ImageListProps> = ({
   handleOpenCamera,
+  handlePickImageFromGallery,
+  handleRemoveImage,
   images,
   setActive,
 }) => {
-  const scrollViewRef = React.useRef<ScrollView>(null);
-
   return (
-    <ScrollView
-      horizontal
-      ref={scrollViewRef}
-      onContentSizeChange={() =>
-        scrollViewRef?.current?.scrollToEnd({animated: true})
-      }
-      style={styles.addImageContainer}>
+    <ScrollView horizontal style={styles.addImageContainer}>
       <HStack alignItems="center" padding={10}>
         {images.map((image, index) => (
-          <Image
-            alt={`image_${index}`}
-            key={index}
-            source={{uri: image}}
-            style={styles.addImage}
-          />
+          <View key={index}>
+            <Image
+              alt={`image_${index}`}
+              source={{uri: image}}
+              style={styles.addImage}
+            />
+            <Pressable onPress={() => handleRemoveImage(index)}>
+              <Text style={{color: 'red'}}>Remove</Text>
+            </Pressable>
+          </View>
         ))}
+        <Pressable onPress={handlePickImageFromGallery}>
+          <Text style={{color: 'blue'}}>Add from Gallery </Text>
+        </Pressable>
         <Button
           onPress={() => {
             setActive(true);
@@ -334,6 +356,7 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
       setIsCameraOpen(false);
     }
   };
+
   return (
     <>
       {device && (

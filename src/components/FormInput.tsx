@@ -31,6 +31,7 @@ const FormInput = ({
   value,
   onChangeText,
   type,
+  error
 }: FormInputProps) => (
   <FormControl size="md" my={5} mb={10}>
     <FormControlLabel mb="$1">
