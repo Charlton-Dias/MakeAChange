@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Heading, ScrollView, VStack, View} from '@gluestack-ui/themed';
 import Card from '../components/Card';
-import dummyData from '../../dummyData';
 import styles from '../styles';
 import firestore from '@react-native-firebase/firestore';
 import {RefreshControl} from 'react-native';
@@ -11,12 +10,14 @@ export type TaskDataProps = {
   taskName: string;
   description: string;
   images?: string[];
-  date: Date;
+  date: any;
+  status: string;
 };
 
 const Tasks = () => {
   const [activeTasks, setActiveTasks] = useState<TaskDataProps[]>([]);
   const [expiredTasks, setExpiredTasks] = useState<TaskDataProps[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<TaskDataProps[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchTasks = async () => {
@@ -26,17 +27,18 @@ const Tasks = () => {
     setActiveTasks(
       _tasks.filter(
         task =>
-          task.date.toDate().toLocaleDateString() >=
-          new Date().toLocaleDateString(),
+          task.date.toDate().toLocaleDateString() <=
+            new Date().toLocaleDateString() && task.status !== 'completed',
       ),
     );
     setExpiredTasks(
       _tasks.filter(
         task =>
-          task.date.toDate().toLocaleDateString() <
-          new Date().toLocaleDateString(),
+          task.date.toDate().toLocaleDateString() >
+            new Date().toLocaleDateString() && task.status !== 'completed',
       ),
     );
+    setCompletedTasks(_tasks.filter(task => task.status === 'completed'));
   };
 
   const onRefresh = React.useCallback(async () => {
@@ -57,7 +59,7 @@ const Tasks = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <TaskSection title="Available" data={activeTasks} />
-        <TaskSection title="Completed" data={dummyData} />
+        <TaskSection title="Completed" data={completedTasks} />
         {expiredTasks.length > 0 && (
           <TaskSection title="Expired" data={expiredTasks} />
         )}

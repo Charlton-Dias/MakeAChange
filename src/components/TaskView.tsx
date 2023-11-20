@@ -73,7 +73,9 @@ const TaskLayout = ({task}: TaskLayoutProps) => (
       p={10}
       mb={20}>
       {task?.date && (
-        <Text bold>Deadline: {task?.date.toDate().toLocaleDateString()}</Text>
+        <Text bold>
+          Deadline: {task?.date.toDate().toLocaleDateString('en-IN')}
+        </Text>
       )}
       <Text bold mt={10}>
         Task description:

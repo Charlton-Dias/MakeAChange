@@ -73,7 +73,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const creator = user.uid;
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
-  const [points, setPoints] = useState('');
   const [date, setDate] = useState(new Date());
   const [images, setImages] = useState<string[]>([]);
   const [active, setActive] = useState(true);
@@ -102,7 +101,8 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
     setLoading(true);
-    const formData = {creator, taskName, description, points, date};
+    const status = 'new';
+    const formData = {creator, taskName, description, date, status};
     const docRef = await firestore().collection('tasks').add(formData);
 
     const imageUrls = await Promise.all(
@@ -117,13 +117,13 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
 
     await docRef.update({images: imageUrls});
     setLoading(false);
+    handleDiscard();
     navigation.navigate('Home');
   };
 
   const handleDiscard = () => {
     setTaskName('');
     setDescription('');
-    setPoints('');
     setDate(new Date());
     setImages([]);
     navigation.navigate('Home');
@@ -148,10 +148,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
             setTaskName={setTaskName}
             description={description}
             setDescription={setDescription}
-            points={points}
-            setPoints={setPoints}
           />
-
           <Deadline date={date} setDate={setDate} />
 
           <ImageList
@@ -223,8 +220,6 @@ interface FormInputFieldsProps {
   setTaskName: (taskName: string) => void;
   description: string;
   setDescription: (description: string) => void;
-  points: string;
-  setPoints: (points: string) => void;
 }
 
 const FormInputFields: React.FC<FormInputFieldsProps> = ({
@@ -232,8 +227,6 @@ const FormInputFields: React.FC<FormInputFieldsProps> = ({
   setTaskName,
   description,
   setDescription,
-  points,
-  setPoints,
 }) => (
   <>
     <FormInput
@@ -248,13 +241,6 @@ const FormInputFields: React.FC<FormInputFieldsProps> = ({
       placeholder="Description"
       value={description}
       onChangeText={setDescription}
-    />
-
-    <FormInput
-      label="Points"
-      placeholder="Points"
-      value={points}
-      onChangeText={setPoints}
     />
   </>
 );
