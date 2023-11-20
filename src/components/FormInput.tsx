@@ -13,6 +13,8 @@ import {
   RadioIndicator,
   RadioLabel,
   Text,
+  Textarea,
+  TextareaInput,
 } from '@gluestack-ui/themed';
 
 type FormInputProps = {
@@ -21,7 +23,6 @@ type FormInputProps = {
   value: string;
   onChangeText: (text: string) => void;
   type?: 'text' | 'password';
-  multiline?: false | true;
 };
 
 const FormInput = ({
@@ -30,7 +31,6 @@ const FormInput = ({
   value,
   onChangeText,
   type,
-  multiline,
 }: FormInputProps) => (
   <FormControl size="md" my={5} mb={10}>
     <FormControlLabel mb="$1">
@@ -42,9 +42,28 @@ const FormInput = ({
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        multiline={multiline}
       />
     </Input>
+  </FormControl>
+);
+
+const FormTextArea = ({
+  label,
+  placeholder,
+  value,
+  onChangeText,
+}: FormInputProps) => (
+  <FormControl size="md" my={5} mb={10}>
+    <FormControlLabel mb="$1">
+      <FormControlLabelText>{label}:</FormControlLabelText>
+    </FormControlLabel>
+    <Textarea>
+      <TextareaInput
+        placeholder={placeholder}
+        value={value}
+        onChangeText={onChangeText}
+      />
+    </Textarea>
   </FormControl>
 );
 
@@ -80,4 +99,4 @@ const FormRadioGroup = ({
 
 export default FormInput;
 
-export {FormRadioGroup};
+export {FormRadioGroup, FormTextArea};

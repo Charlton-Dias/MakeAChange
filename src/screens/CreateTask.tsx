@@ -17,7 +17,7 @@ import {
 import {ButtonGroup} from '@gluestack-ui/themed';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import FormInput from '../components/FormInput';
+import FormInput, {FormTextArea} from '../components/FormInput';
 import {PermissionsAndroid} from 'react-native';
 import styles from '../styles';
 import {HStack} from '@gluestack-ui/themed';
@@ -228,12 +228,11 @@ const FormInputFields: React.FC<FormInputFieldsProps> = ({
       onChangeText={setTaskName}
     />
 
-    <FormInput
+    <FormTextArea
       label="Description"
       placeholder="Description"
       value={description}
       onChangeText={setDescription}
-      multiline
     />
 
     <FormInput
