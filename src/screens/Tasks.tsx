@@ -41,6 +41,7 @@ const Tasks = () => {
         }>
         <TaskSection title="Available" data={tasks} />
         <TaskSection title="Completed" data={dummyData} />
+        {true && <TaskSection title="Expired" data={dummyData} />}
         <View mb={40} />
       </ScrollView>
     </>

@@ -3,31 +3,32 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Alert,
   Button,
+  ButtonGroup,
+  ButtonSpinner,
   ButtonText,
   FormControlLabel,
   FormControlLabelText,
+  HStack,
   Image,
   Input,
   InputField,
   Pressable,
-  ScrollView,
   Text,
   View,
 } from '@gluestack-ui/themed';
-import {ButtonGroup} from '@gluestack-ui/themed';
-import {Camera, useCameraDevice} from 'react-native-vision-camera';
+import {PermissionsAndroid, ScrollView} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import FormInput, {FormTextArea} from '../components/FormInput';
-import {PermissionsAndroid} from 'react-native';
-import styles from '../styles';
-import {HStack} from '@gluestack-ui/themed';
-import {useNavigation} from '@react-navigation/native';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import {TabsParamList} from '../types';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {useNavigation} from '@react-navigation/native';
+
+import styles from '../styles';
+import FormInput, {FormTextArea} from '../components/FormInput';
+import {TabsParamList} from '../types';
 
 function Create() {
   const [currentUser, setCurrentUser] = useState<FirebaseAuthTypes.User | null>(
@@ -40,12 +41,12 @@ function Create() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [currentUser]);
 
   if (!currentUser) {
     return <LoginAlert />;
   }
-  return <CreateTask />;
+  return <CreateTask user={currentUser} />;
 }
 export default Create;
 
@@ -63,9 +64,13 @@ type CreateTaskScreenNavigationProp = BottomTabNavigationProp<
   'CreateTask'
 >;
 
-const CreateTask: React.FC = () => {
-  const navigation = useNavigation<CreateTaskScreenNavigationProp>();
+type CreateTaskProps = {
+  user: any;
+};
 
+const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
+  const navigation = useNavigation<CreateTaskScreenNavigationProp>();
+  const creator = user.uid;
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
   const [points, setPoints] = useState('');
@@ -94,8 +99,10 @@ const CreateTask: React.FC = () => {
     }
   };
 
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
-    const formData = {taskName, description, points, date};
+    setLoading(true);
+    const formData = {creator, taskName, description, points, date};
     const docRef = await firestore().collection('tasks').add(formData);
 
     const imageUrls = await Promise.all(
@@ -109,6 +116,7 @@ const CreateTask: React.FC = () => {
     );
 
     await docRef.update({images: imageUrls});
+    setLoading(false);
     navigation.navigate('Home');
   };
 
@@ -122,7 +130,7 @@ const CreateTask: React.FC = () => {
   };
 
   return (
-    <ScrollView padding={10}>
+    <ScrollView style={styles.p10}>
       {isCameraOpen ? (
         <>
           <ImageCapture
@@ -161,7 +169,14 @@ const CreateTask: React.FC = () => {
               <ButtonText>Discard</ButtonText>
             </Button>
             <Button w="48%" onPress={handleSubmit}>
-              <ButtonText>Create</ButtonText>
+              {loading ? (
+                <>
+                  <ButtonText>Creating</ButtonText>
+                  <ButtonSpinner />
+                </>
+              ) : (
+                <ButtonText>Create</ButtonText>
+              )}
             </Button>
           </ButtonGroup>
         </>
@@ -262,10 +277,9 @@ const ImageList: React.FC<ImageListProps> = ({
       horizontal
       ref={scrollViewRef}
       onContentSizeChange={() =>
-        scrollViewRef.current?.scrollToEnd({animated: true})
+        scrollViewRef?.current?.scrollToEnd({animated: true})
       }
-      style={styles.addImageContainer}
-      mb={10}>
+      style={styles.addImageContainer}>
       <HStack alignItems="center" padding={10}>
         {images.map((image, index) => (
           <Image

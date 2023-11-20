@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     height: 130,
+    marginBottom: 10,
   },
   camera: {
     minHeight: 600,
@@ -76,6 +77,9 @@ const styles = StyleSheet.create({
   },
   navHeader: {
     height: 40,
+  },
+  p10: {
+    padding: 10,
   },
   profileAvatar: {
     width: 100,
