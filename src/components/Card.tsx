@@ -4,13 +4,13 @@ import TaskView from './TaskView';
 
 const Card = ({...props}) => {
   const [showTask, setShowTask] = useState(false);
-  const {title, description, image} = props;
+  const {title, description, image, date} = props;
   return (
     <>
       <TaskView
         setShow={setShowTask}
         show={showTask}
-        task={{title, description, image}}
+        task={{title, description, image, date}}
       />
 
       <Pressable onPress={() => setShowTask(true)}>
@@ -20,7 +20,8 @@ const Card = ({...props}) => {
           margin={5}
           borderWidth={1}
           backgroundColor="white"
-          maxWidth={200}>
+          maxWidth={200}
+          height={240}>
           <Image
             minWidth={180}
             height={150}

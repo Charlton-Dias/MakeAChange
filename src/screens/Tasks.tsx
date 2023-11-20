@@ -11,15 +11,32 @@ export type TaskDataProps = {
   taskName: string;
   description: string;
   images?: string[];
+  date: Date;
 };
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState<TaskDataProps[]>([]);
+  const [activeTasks, setActiveTasks] = useState<TaskDataProps[]>([]);
+  const [expiredTasks, setExpiredTasks] = useState<TaskDataProps[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchTasks = async () => {
     const tasksCollection = await firestore().collection('tasks').get();
-    setTasks(tasksCollection.docs.map(doc => doc.data() as TaskDataProps));
+    const _tasks = tasksCollection.docs.map(doc => doc.data() as TaskDataProps);
+
+    setActiveTasks(
+      _tasks.filter(
+        task =>
+          task.date.toDate().toLocaleDateString() >=
+          new Date().toLocaleDateString(),
+      ),
+    );
+    setExpiredTasks(
+      _tasks.filter(
+        task =>
+          task.date.toDate().toLocaleDateString() <
+          new Date().toLocaleDateString(),
+      ),
+    );
   };
 
   const onRefresh = React.useCallback(async () => {
@@ -39,9 +56,11 @@ const Tasks = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <TaskSection title="Available" data={tasks} />
+        <TaskSection title="Available" data={activeTasks} />
         <TaskSection title="Completed" data={dummyData} />
-        {true && <TaskSection title="Expired" data={dummyData} />}
+        {expiredTasks.length > 0 && (
+          <TaskSection title="Expired" data={expiredTasks} />
+        )}
         <View mb={40} />
       </ScrollView>
     </>
@@ -73,6 +92,7 @@ const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
               title={item.taskName}
               description={item.description}
               image={item?.images?.[0]}
+              date={item?.date}
             />
           ))}
         </VStack>

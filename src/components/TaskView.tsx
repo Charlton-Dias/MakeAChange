@@ -18,6 +18,7 @@ type TaskProps = {
   title: string;
   description: string;
   image: string;
+  date: Date;
 };
 type TaskViewProps = {
   show: boolean;
@@ -70,7 +71,10 @@ const TaskLayout = ({task}: TaskLayoutProps) => (
       borderTopWidth={0}
       p={10}
       mb={20}>
-      <Text>{task?.description}</Text>
+      {task?.date && (
+        <Text bold>Deadline: {task?.date.toDate().toLocaleDateString()}</Text>
+      )}
+      <Text>Description:{task?.description}</Text>
       <Button mt={10}>
         <ButtonText>Accept Task</ButtonText>
       </Button>
