@@ -91,7 +91,7 @@ const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
               key={index}
               title={item.taskName}
               description={item.description}
-              image={item?.images?.[0]}
+              images={item?.images}
               date={item?.date}
             />
           ))}

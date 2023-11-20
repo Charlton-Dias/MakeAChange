@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   ButtonText,
+  HStack,
   Heading,
   Image,
   ScrollView,
@@ -17,7 +18,7 @@ import React from 'react';
 type TaskProps = {
   title: string;
   description: string;
-  image: string;
+  images: string[];
   date: Date;
 };
 type TaskViewProps = {
@@ -28,7 +29,7 @@ type TaskViewProps = {
 const TaskView: React.FC<TaskViewProps> = ({setShow, show, task}) => {
   const handleClose = () => setShow(false);
   return (
-    <Actionsheet isOpen={show} onClose={handleClose} snapPoints={[90, 30]}>
+    <Actionsheet isOpen={show} onClose={handleClose} snapPoints={[90]}>
       <ActionsheetBackdrop />
       <ActionsheetContent>
         <ActionsheetDragIndicatorWrapper>
@@ -57,7 +58,7 @@ const TaskLayout = ({task}: TaskLayoutProps) => (
       alt={task?.title}
       source={{
         uri:
-          task?.image ||
+          task?.images?.[0] ||
           'https://i2.wp.com/www.differencebetween.com/wp-content/uploads/2011/07/Difference-Between-Environment-and-Ecosystem-fig-1.jpg?w=640&ssl=1',
       }}
       flex={1}
@@ -74,8 +75,33 @@ const TaskLayout = ({task}: TaskLayoutProps) => (
       {task?.date && (
         <Text bold>Deadline: {task?.date.toDate().toLocaleDateString()}</Text>
       )}
-      <Text>Description:{task?.description}</Text>
-      <Button mt={10}>
+      <Text bold mt={10}>
+        Task description:
+      </Text>
+      <Text>{task?.description}</Text>
+      <Text bold mt={10}>
+        Task Images:
+      </Text>
+      <ScrollView horizontal>
+        <HStack alignItems="center" padding={0}>
+          {task?.images?.map((image, index) => (
+            <Image
+              key={index}
+              borderWidth={1}
+              borderRadius={10}
+              size="2xl"
+              alt={task?.title}
+              source={{
+                uri: image,
+              }}
+              flex={1}
+              resizeMode="center"
+              m={10}
+            />
+          ))}
+        </HStack>
+      </ScrollView>
+      <Button>
         <ButtonText>Accept Task</ButtonText>
       </Button>
     </Box>
