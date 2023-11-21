@@ -39,6 +39,9 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     alignSelf: 'center',
   },
+  flatListContainer: {
+    paddingBottom: 80,
+  },
   navBar: {
     width: '95%',
     maxWidth: 400,

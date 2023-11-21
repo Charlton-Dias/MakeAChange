@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
-import {View, ScrollView} from '@gluestack-ui/themed';
+import {View} from '@gluestack-ui/themed';
 import Card from '../components/Card';
 import styles from '../styles';
 import auth from '@react-native-firebase/auth';
@@ -88,24 +88,22 @@ type RenderList = {item: TaskDataProps; index: number};
 const ItemList = ({data, section}: ItemListProps) => (
   <>
     {data?.length > 0 ? (
-      <ScrollView>
-        <FlatList<TaskDataProps>
-          style={styles.p10}
-          numColumns={2}
-          data={data}
-          renderItem={({item, index}: RenderList) => (
-            <Card
-              key={index}
-              title={item?.taskName}
-              description={item?.description}
-              date={item?.date}
-              images={item?.images}
-              status={item?.status}
-            />
-          )}
-        />
-        <View mb={60} />
-      </ScrollView>
+      <FlatList<TaskDataProps>
+        style={styles.p10}
+        numColumns={2}
+        data={data}
+        contentContainerStyle={styles.flatListContainer}
+        renderItem={({item, index}: RenderList) => (
+          <Card
+            key={index}
+            title={item?.taskName}
+            description={item?.description}
+            date={item?.date}
+            images={item?.images}
+            status={item?.status}
+          />
+        )}
+      />
     ) : (
       <View p={10}>
         <NoTaskNotice title={section} profile />
