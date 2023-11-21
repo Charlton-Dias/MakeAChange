@@ -14,7 +14,6 @@ import {
   Heading,
 } from '@gluestack-ui/themed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import dummyData from '../../dummyData';
 import Card from '../components/Card';
 import styles from '../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -180,14 +179,56 @@ const CreatedList = () => {
   };
   useEffect(() => {
     getAllLists();
-  }, []);
+  });
 
   return <ItemList data={createdLists} section={'Created'} />;
 };
 
-const SelectedList = () => <ItemList data={dummyData} section={'Selected'} />;
+const SelectedList = () => {
+  const [selectedList, setSelectedList] = useState<TaskDataProps[]>([]);
+  const currentUser = auth().currentUser;
+  const getAllLists = async () => {
+    const lists = await firestore()
+      .collection('tasks')
+      .where('selected', '==', currentUser?.uid)
+      .get();
+    const tasks = lists.docs.map(
+      doc =>
+        ({
+          ...doc.data(),
+        } as TaskDataProps),
+    );
+    setSelectedList(tasks);
+  };
+  useEffect(() => {
+    getAllLists();
+  });
+  return <ItemList data={selectedList} section={'Selected'} />;
+};
 
-const CompletedList = () => <ItemList data={dummyData} section={'Completed'} />;
+const CompletedList = () => {
+  const [completedList, setCompletedList] = useState<TaskDataProps[]>([]);
+  const currentUser = auth().currentUser;
+  const getCompletedList = async () => {
+    const lists = await firestore()
+      .collection('tasks')
+      .where('selected', '==', currentUser?.uid)
+      .where('status', '==', 'completed')
+      .get();
+    const tasks = lists.docs.map(
+      doc =>
+        ({
+          ...doc.data(),
+        } as TaskDataProps),
+    );
+    setCompletedList(tasks);
+  };
+  useEffect(() => {
+    getCompletedList();
+  });
+
+  return <ItemList data={completedList} section={'Completed'} />;
+};
 
 type ItemListProps = {
   data: TaskDataProps[];

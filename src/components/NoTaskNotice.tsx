@@ -13,7 +13,7 @@ const NoTaskNotice = ({title, profile}: NoTaskNoticeProps) => {
         <>
           <Heading>You haven't {title.toLowerCase()} any tasks!</Heading>
           <Text color="black" textAlign="left">
-            You could try {title.slice(0, -2).toLowerCase()}ing a task.
+            Tasks {title.toLowerCase()} by you will appear here.
           </Text>
         </>
       ) : (
