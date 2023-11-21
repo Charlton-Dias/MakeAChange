@@ -162,7 +162,28 @@ const LogoutModal = ({
   );
 };
 
-const CreatedList = () => <ItemList data={dummyData} section={'Created'} />;
+const CreatedList = () => {
+  const [createdLists, setCreatedLists] = useState<TaskDataProps[]>([]);
+  const currentUser = auth().currentUser;
+  const getAllLists = async () => {
+    const lists = await firestore()
+      .collection('tasks')
+      .where('creator', '==', currentUser?.uid)
+      .get();
+    const tasks = lists.docs.map(
+      doc =>
+        ({
+          ...doc.data(),
+        } as TaskDataProps),
+    );
+    setCreatedLists(tasks);
+  };
+  useEffect(() => {
+    getAllLists();
+  }, []);
+
+  return <ItemList data={createdLists} section={'Created'} />;
+};
 
 const SelectedList = () => <ItemList data={dummyData} section={'Selected'} />;
 
@@ -179,8 +200,11 @@ const ItemList = ({data, section}: ItemListProps) => (
         {data?.map((item, index) => (
           <Card
             key={index}
-            title={item.taskName}
-            description={item.description}
+            title={item?.taskName}
+            description={item?.description}
+            date={item?.date}
+            images={item?.images}
+            status={item?.status}
           />
         ))}
         <Divider h={0} mb={60} />
