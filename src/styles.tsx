@@ -85,13 +85,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-  profileCardContainter: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
-    padding: 10,
-  },
   profileTabBarIndicatorStyle: {
     backgroundColor: 'rgba(26, 110, 188, 0.9)',
     height: '100%',

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {View, Divider, ScrollView} from '@gluestack-ui/themed';
+import {FlatList} from 'react-native';
+import {View, ScrollView} from '@gluestack-ui/themed';
 import Card from '../components/Card';
 import styles from '../styles';
 import auth from '@react-native-firebase/auth';
@@ -81,21 +82,29 @@ type ItemListProps = {
   data: TaskDataProps[];
   section: string;
 };
+
+type RenderList = {item: TaskDataProps; index: number};
+
 const ItemList = ({data, section}: ItemListProps) => (
   <>
     {data?.length > 0 ? (
-      <ScrollView contentContainerStyle={styles.profileCardContainter}>
-        {data?.map((item, index) => (
-          <Card
-            key={index}
-            title={item?.taskName}
-            description={item?.description}
-            date={item?.date}
-            images={item?.images}
-            status={item?.status}
-          />
-        ))}
-        <Divider h={0} mb={60} />
+      <ScrollView>
+        <FlatList<TaskDataProps>
+          style={styles.p10}
+          numColumns={2}
+          data={data}
+          renderItem={({item, index}: RenderList) => (
+            <Card
+              key={index}
+              title={item?.taskName}
+              description={item?.description}
+              date={item?.date}
+              images={item?.images}
+              status={item?.status}
+            />
+          )}
+        />
+        <View mb={60} />
       </ScrollView>
     ) : (
       <View p={10}>
