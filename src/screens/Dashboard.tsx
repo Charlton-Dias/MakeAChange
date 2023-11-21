@@ -71,7 +71,7 @@ const ProfileCard = (props: any) => {
       borderRadius={10}
       borderWidth={1}
       borderColor="#8DEBFF">
-      <HStack display="flex" flexDirection="row" mb={10}>
+      <HStack display="flex" flexDirection="row">
         <Image
           borderWidth={2}
           borderColor="black"
@@ -88,24 +88,20 @@ const ProfileCard = (props: any) => {
           <Text size="lg" bold color="black">
             {props.user?.userData?.username}
           </Text>
+
           <Text color="black">{props.user?.userData?.name}</Text>
-          <Text color="black">
-            points: {props?.user?.userData?.points || 0}
-          </Text>
-          <Text color="black">{props?.user?.userData?.address}</Text>
+          <ButtonGroup mt={10}>
+            <Button isDisabled action="secondary">
+              <Icon name="edit" size={20} color={'white'} />
+              <ButtonText ml={5}>Edit</ButtonText>
+            </Button>
+            <Button action="negative" onPress={() => setShowLogoutModal(true)}>
+              <Icon name="sign-out" size={20} color={'white'} />
+              <ButtonText ml={5}>Logout</ButtonText>
+            </Button>
+          </ButtonGroup>
         </VStack>
       </HStack>
-      <ButtonGroup>
-        <Button isDisabled w={'48%'} action="secondary">
-          <ButtonText>Edit Profile</ButtonText>
-        </Button>
-        <Button
-          action="negative"
-          w={'48%'}
-          onPress={() => setShowLogoutModal(true)}>
-          <ButtonText>Logout</ButtonText>
-        </Button>
-      </ButtonGroup>
 
       <LogoutModal
         showLogoutModal={showLogoutModal}
@@ -190,7 +186,8 @@ const SelectedList = () => {
   const getAllLists = async () => {
     const lists = await firestore()
       .collection('tasks')
-      .where('selected', '==', currentUser?.uid)
+      .where('selectedBy', '==', currentUser?.uid)
+      .where('status', '!=', 'completed')
       .get();
     const tasks = lists.docs.map(
       doc =>
@@ -212,7 +209,7 @@ const CompletedList = () => {
   const getCompletedList = async () => {
     const lists = await firestore()
       .collection('tasks')
-      .where('selected', '==', currentUser?.uid)
+      .where('selectedBy', '==', currentUser?.uid)
       .where('status', '==', 'completed')
       .get();
     const tasks = lists.docs.map(
