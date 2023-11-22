@@ -2,7 +2,6 @@ export type TabsParamList = {
   Home: undefined;
   Tasks: undefined;
   CreateTask: undefined;
-  LeaderBoard: undefined;
   Profile: undefined;
 };
 

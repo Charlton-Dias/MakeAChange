@@ -7,7 +7,6 @@ import {View} from '@gluestack-ui/themed';
 import {TouchableOpacity} from 'react-native';
 import Home from '../screens/Home';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import LeaderBoard from '../screens/LeaderBoard';
 import Profile from '../screens/Profile';
 import styles from '../styles';
 import Tasks from '../screens/Tasks';
@@ -20,7 +19,6 @@ const ICON_NAMES: {[key: string]: string} = {
   Home: 'home',
   Tasks: 'list-ul',
   CreateTask: 'plus',
-  LeaderBoard: 'trophy',
   Profile: 'user',
 };
 
@@ -40,7 +38,6 @@ export default function BottomTabs() {
         component={Create}
         options={{title: 'Create Task'}}
       />
-      <Tab.Screen name="LeaderBoard" component={LeaderBoard} />
       <Tab.Screen
         name="Profile"
         component={Profile}

@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, {WhereFilterOp} from '@react-native-firebase/firestore';
 import {TaskDataProps} from '../screens/Tasks';
 
 const deleteTask = async (id: string) => {
@@ -35,11 +35,10 @@ const fetchTasks = async () => {
   };
 };
 
-
 //Profile data
 const fetchProfileTasks = async (
   field: string,
-  condition: string,
+  condition: WhereFilterOp,
   value: string | null,
 ) => {
   const lists = await firestore()

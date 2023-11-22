@@ -4,13 +4,23 @@ import TaskView from './TaskView';
 
 const Card = ({...props}) => {
   const [showTask, setShowTask] = useState(false);
-  const {taskName, description, id, images, date, status, creator} = props;
+  const {taskName, description, id, images, date, status, creator, selectedBy} =
+    props;
   return (
     <>
       <TaskView
         setShow={setShowTask}
         show={showTask}
-        task={{taskName, description, id, images, date, status, creator}}
+        task={{
+          taskName,
+          description,
+          id,
+          images,
+          date,
+          status,
+          creator,
+          selectedBy,
+        }}
         fetchData={props.fetchData}
       />
 
