@@ -39,10 +39,6 @@ export default function Dashboard(): JSX.Element {
           tabBarLabelStyle: styles.profileTabBarLabelStyle,
           tabBarStyle: styles.profileTabBarStyle,
         }}>
-        {/* <Tab.Screen name="Created" component={CreatedList} />
-        <Tab.Screen name="Selected" component={SelectedList} />
-        <Tab.Screen name="Completed" component={CompletedList} /> */}
-
         <Tab.Screen
           name="Created"
           children={() => (

@@ -47,22 +47,23 @@ const ProfileItemList = ({filter, section, type}: ProfileItemListProps) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          style={styles.p10}
           numColumns={2}
           data={tasks}
           contentContainerStyle={styles.flatListContainer}
           renderItem={({item, index}: RenderList) => (
-            <Card
-              key={index}
-              creator={item.creator}
-              date={item.date}
-              description={item?.description}
-              id={item.id}
-              images={item?.images}
-              status={item?.status}
-              taskName={item.taskName}
-              fetchData={getdata}
-            />
+            <View flex={1}>
+              <Card
+                key={index}
+                creator={item.creator}
+                date={item.date}
+                description={item?.description}
+                id={item.id}
+                images={item?.images}
+                status={item?.status}
+                taskName={item.taskName}
+                fetchData={getdata}
+              />
+            </View>
           )}
         />
       ) : (

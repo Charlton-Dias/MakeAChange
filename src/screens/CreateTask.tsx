@@ -134,7 +134,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
     setDescription('');
     setDate(new Date());
     setImages([]);
-    navigation.navigate('Home');
+    navigation.navigate('Tasks');
   };
 
   return (
@@ -360,7 +360,7 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
           setActive(false);
         }}>
         <View style={styles.capture}>
-          <View style={styles.capture2} />
+          <MaterialIcons name="camera" size={45} color={'white'} />
         </View>
       </Pressable>
     </>
