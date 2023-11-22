@@ -13,11 +13,13 @@ import {
   Image,
   ScrollView,
   Text,
+  View,
 } from '@gluestack-ui/themed';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {TaskDataProps} from '../screens/Tasks';
-import {deleteTask} from '../functions/tasks';
+import {acceptTask, deleteTask} from '../functions/tasks';
+import {Alert} from 'react-native';
 
 type TaskViewProps = {
   show: boolean;
@@ -60,7 +62,44 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
   const currentUser = auth().currentUser?.uid;
   const isOwner = currentUser === task?.creator;
   const id = task.id;
+  const [buttonMessage, setButtonMessage] = useState('Accept Task');
 
+  const getButtonMessage = () => {
+    switch (task.status) {
+      case 'taken':
+        setButtonMessage('Task Taken');
+        break;
+      case 'completed':
+        setButtonMessage('Task Completed');
+        break;
+      default:
+        setButtonMessage(currentUser ? 'Accept Task' : 'Login to Accept Task');
+        break;
+    }
+  };
+
+  const handleAcceptTask = () => {
+    if (task.status === 'taken' || task.status === 'completed') {
+      getButtonMessage();
+      Alert.alert(
+        `Task Already ${
+          task.status.charAt(0).toUpperCase() + task.status.slice(1)
+        }`,
+        `This task has already been ${task.status} by someone else`,
+      );
+      return;
+    }
+    if (currentUser) {
+      acceptTask(id, currentUser);
+      handleClose();
+    } else {
+      Alert.alert('Login', 'Please Login to continue');
+    }
+  };
+
+  useEffect(() => {
+    getButtonMessage();
+  }, [task.status, currentUser]);
   return (
     <ScrollView minWidth={350} p={10}>
       <Image
@@ -137,11 +176,14 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
             </Button>
           </ButtonGroup>
         ) : (
-          <Button isDisabled>
-            <ButtonText>Accept Task</ButtonText>
-          </Button>
+          <>
+            <Button onPress={handleAcceptTask}>
+              <ButtonText>{buttonMessage}</ButtonText>
+            </Button>
+          </>
         )}
       </Box>
+      <View mb={20} />
     </ScrollView>
   );
 };

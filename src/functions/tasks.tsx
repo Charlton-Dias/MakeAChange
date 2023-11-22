@@ -6,6 +6,14 @@ const deleteTask = async (id: string) => {
   console.log('Task Deleted');
 };
 
+const acceptTask = async (id: string, userId: string) => {
+  await firestore()
+    .collection('tasks')
+    .doc(id)
+    .update({selectedBy: userId, status: 'taken'});
+  console.log('Task Selected by: ', userId);
+};
+
 //Tasks data
 const fetchTasks = async () => {
   const tasksCollection = await firestore().collection('tasks').get();
@@ -55,4 +63,4 @@ const fetchProfileTasks = async (
   );
 };
 
-export {deleteTask, fetchTasks, fetchProfileTasks};
+export {acceptTask, deleteTask, fetchTasks, fetchProfileTasks};
