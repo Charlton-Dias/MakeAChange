@@ -7,11 +7,13 @@ import {RefreshControl} from 'react-native';
 import NoTaskNotice from '../components/NoTaskNotice';
 
 export type TaskDataProps = {
-  taskName: string;
-  description: string;
-  images?: string[];
+  id: string;
+  creator: string;
   date: any;
-  status: string;
+  description?: string;
+  images?: string[];
+  status?: string;
+  taskName: string;
 };
 
 const Tasks = () => {
@@ -22,20 +24,25 @@ const Tasks = () => {
 
   const fetchTasks = async () => {
     const tasksCollection = await firestore().collection('tasks').get();
-    const _tasks = tasksCollection.docs.map(doc => doc.data() as TaskDataProps);
+    const _tasks = tasksCollection.docs.map(
+      doc => ({id: doc.id, ...doc.data()} as TaskDataProps),
+    );
 
     setActiveTasks(
       _tasks.filter(
         task =>
-          task.date.toDate().toLocaleDateString() <=
-            new Date().toLocaleDateString() && task.status !== 'completed',
+          task.date.toDate().toLocaleDateString() >=
+            new Date().toLocaleDateString() &&
+          task.status !== 'completed' &&
+          task.status !== 'deleted',
       ),
     );
     setExpiredTasks(
       _tasks.filter(
         task =>
-          task.date.toDate().toLocaleDateString() >
-            new Date().toLocaleDateString() && task.status !== 'completed',
+          task.date.toDate() < new Date() &&
+          task.status !== 'completed' &&
+          task.status !== 'deleted',
       ),
     );
     setCompletedTasks(_tasks.filter(task => task.status === 'completed'));
@@ -91,10 +98,13 @@ const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
           {data.map((item, index) => (
             <Card
               key={index}
-              title={item.taskName}
-              description={item.description}
+              creator={item.creator}
+              date={item.date}
+              description={item?.description}
+              id={item.id}
               images={item?.images}
-              date={item?.date}
+              status={item?.status}
+              taskName={item.taskName}
             />
           ))}
         </VStack>

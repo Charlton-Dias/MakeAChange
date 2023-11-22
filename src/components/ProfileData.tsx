@@ -19,6 +19,7 @@ const CreatedList = () => {
     const tasks = lists.docs.map(
       doc =>
         ({
+          id: doc.id,
           ...doc.data(),
         } as TaskDataProps),
     );
@@ -26,7 +27,7 @@ const CreatedList = () => {
   };
   useEffect(() => {
     getAllLists();
-  });
+  }, []);
 
   return <ItemList data={createdLists} section={'Created'} />;
 };
@@ -50,7 +51,7 @@ const SelectedList = () => {
   };
   useEffect(() => {
     getAllLists();
-  });
+  }, []);
   return <ItemList data={selectedList} section={'Selected'} />;
 };
 
@@ -73,7 +74,7 @@ const CompletedList = () => {
   };
   useEffect(() => {
     getCompletedList();
-  });
+  }, []);
 
   return <ItemList data={completedList} section={'Completed'} />;
 };
@@ -96,11 +97,13 @@ const ItemList = ({data, section}: ItemListProps) => (
         renderItem={({item, index}: RenderList) => (
           <Card
             key={index}
-            title={item?.taskName}
+            creator={item.creator}
+            date={item.date}
             description={item?.description}
-            date={item?.date}
+            id={item.id}
             images={item?.images}
             status={item?.status}
+            taskName={item.taskName}
           />
         )}
       />
