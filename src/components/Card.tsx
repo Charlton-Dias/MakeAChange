@@ -11,6 +11,7 @@ const Card = ({...props}) => {
         setShow={setShowTask}
         show={showTask}
         task={{taskName, description, id, images, date, status, creator}}
+        fetchData={props.fetchData}
       />
 
       <Pressable onPress={() => setShowTask(true)}>

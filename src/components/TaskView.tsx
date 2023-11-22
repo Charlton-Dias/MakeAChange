@@ -23,8 +23,14 @@ type TaskViewProps = {
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   task: TaskDataProps;
+  fetchData: () => void;
 };
-const TaskView: React.FC<TaskViewProps> = ({setShow, show, task}) => {
+const TaskView: React.FC<TaskViewProps> = ({
+  setShow,
+  show,
+  task,
+  fetchData,
+}) => {
   const handleClose = () => setShow(false);
   return (
     <Actionsheet isOpen={show} onClose={handleClose} snapPoints={[90]}>
@@ -34,7 +40,11 @@ const TaskView: React.FC<TaskViewProps> = ({setShow, show, task}) => {
           <ActionsheetDragIndicator />
         </ActionsheetDragIndicatorWrapper>
         <Heading size={'lg'}>{task?.taskName || 'Task'}</Heading>
-        <TaskLayout task={task} handleClose={handleClose} />
+        <TaskLayout
+          task={task}
+          handleClose={handleClose}
+          fetchData={fetchData}
+        />
       </ActionsheetContent>
     </Actionsheet>
   );
@@ -44,8 +54,9 @@ export default TaskView;
 type TaskLayoutProps = {
   task: TaskDataProps;
   handleClose: () => void;
+  fetchData: () => void;
 };
-const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
+const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
   const currentUser = auth().currentUser?.uid;
   const isOwner = currentUser === task?.creator;
   const id = task.id;
@@ -115,7 +126,9 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
               action="negative"
               variant="outline"
               onPress={() => {
-                deleteTask(id), handleClose();
+                deleteTask(id);
+                handleClose();
+                fetchData();
               }}>
               <ButtonText>Delete Task</ButtonText>
             </Button>

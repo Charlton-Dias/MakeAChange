@@ -5,6 +5,7 @@ import styles from '../styles';
 import firestore from '@react-native-firebase/firestore';
 import {RefreshControl} from 'react-native';
 import NoTaskNotice from '../components/NoTaskNotice';
+import {fetchTasks} from '../functions/tasks';
 
 export type TaskDataProps = {
   id: string;
@@ -22,40 +23,21 @@ const Tasks = () => {
   const [completedTasks, setCompletedTasks] = useState<TaskDataProps[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchTasks = async () => {
-    const tasksCollection = await firestore().collection('tasks').get();
-    const _tasks = tasksCollection.docs.map(
-      doc => ({id: doc.id, ...doc.data()} as TaskDataProps),
-    );
-
-    setActiveTasks(
-      _tasks.filter(
-        task =>
-          task.date.toDate().toLocaleDateString() >=
-            new Date().toLocaleDateString() &&
-          task.status !== 'completed' &&
-          task.status !== 'deleted',
-      ),
-    );
-    setExpiredTasks(
-      _tasks.filter(
-        task =>
-          task.date.toDate() < new Date() &&
-          task.status !== 'completed' &&
-          task.status !== 'deleted',
-      ),
-    );
-    setCompletedTasks(_tasks.filter(task => task.status === 'completed'));
-  };
-
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    await fetchTasks();
+    await fetchData();
     setRefreshing(false);
   }, []);
 
+  const fetchData = async () => {
+    const {active, expired, completed} = await fetchTasks();
+    setActiveTasks(active);
+    setExpiredTasks(expired);
+    setCompletedTasks(completed);
+  };
+
   useEffect(() => {
-    fetchTasks();
+    fetchData();
   }, []);
   return (
     <>
@@ -65,10 +47,22 @@ const Tasks = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <TaskSection title="Available" data={activeTasks} />
-        <TaskSection title="Completed" data={completedTasks} />
+        <TaskSection
+          title="Available"
+          data={activeTasks}
+          fetchData={fetchData}
+        />
+        <TaskSection
+          title="Completed"
+          data={completedTasks}
+          fetchData={fetchData}
+        />
         {expiredTasks.length > 0 && (
-          <TaskSection title="Expired" data={expiredTasks} />
+          <TaskSection
+            title="Expired"
+            data={expiredTasks}
+            fetchData={fetchData}
+          />
         )}
         <View mb={40} />
       </ScrollView>
@@ -81,9 +75,10 @@ export default Tasks;
 type TaskSectionProps = {
   title: string;
   data: TaskDataProps[];
+  fetchData: () => void;
 };
 
-const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
+const TaskSection: React.FC<TaskSectionProps> = ({title, data, fetchData}) => (
   <>
     <Heading ml={10} size="xl">
       {title}
@@ -105,6 +100,7 @@ const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
               images={item?.images}
               status={item?.status}
               taskName={item.taskName}
+              fetchData={fetchData}
             />
           ))}
         </VStack>
