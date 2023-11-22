@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {Heading, ScrollView, VStack, View} from '@gluestack-ui/themed';
 import Card from '../components/Card';
 import styles from '../styles';
-import firestore from '@react-native-firebase/firestore';
 import {RefreshControl} from 'react-native';
 import NoTaskNotice from '../components/NoTaskNotice';
 import {fetchTasks} from '../functions/tasks';
 
 export type TaskDataProps = {
+  selectedBy: string | undefined;
   id: string;
   creator: string;
   date: any;

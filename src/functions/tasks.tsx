@@ -35,4 +35,25 @@ const fetchTasks = async () => {
   };
 };
 
-export {deleteTask, fetchTasks};
+
+//Profile data
+const fetchProfileTasks = async (
+  field: string,
+  condition: string,
+  value: string | null,
+) => {
+  const lists = await firestore()
+    .collection('tasks')
+    .where(field, condition, value)
+    .where('status', 'not-in', ['deleted'])
+    .get();
+  return lists.docs.map(
+    doc =>
+      ({
+        id: doc.id,
+        ...doc.data(),
+      } as TaskDataProps),
+  );
+};
+
+export {deleteTask, fetchTasks, fetchProfileTasks};

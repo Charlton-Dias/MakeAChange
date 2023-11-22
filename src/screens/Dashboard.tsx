@@ -5,11 +5,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import ProfileCard from '../components/ProfileCard';
-import {
-  CompletedList,
-  CreatedList,
-  SelectedList,
-} from '../components/ProfileData';
+import ProfileItemList from '../components/ProfileItemList';
 import styles from '../styles';
 
 const Tab = createMaterialTopTabNavigator();
@@ -43,9 +39,43 @@ export default function Dashboard(): JSX.Element {
           tabBarLabelStyle: styles.profileTabBarLabelStyle,
           tabBarStyle: styles.profileTabBarStyle,
         }}>
-        <Tab.Screen name="Created" component={CreatedList} />
+        {/* <Tab.Screen name="Created" component={CreatedList} />
         <Tab.Screen name="Selected" component={SelectedList} />
-        <Tab.Screen name="Completed" component={CompletedList} />
+        <Tab.Screen name="Completed" component={CompletedList} /> */}
+
+        <Tab.Screen
+          name="Created"
+          children={() => (
+            <ProfileItemList
+              filter={task => task.creator === currentUser?.uid}
+              section="Created"
+              type="creator"
+            />
+          )}
+        />
+        <Tab.Screen
+          name="Selected"
+          children={() => (
+            <ProfileItemList
+              filter={task => task.selectedBy === currentUser?.uid}
+              section="Selected"
+              type="selectedBy"
+            />
+          )}
+        />
+        <Tab.Screen
+          name="Completed"
+          children={() => (
+            <ProfileItemList
+              filter={task =>
+                task.status === 'completed' &&
+                task.selectedBy === currentUser?.uid
+              }
+              section="Completed"
+              type="selectedBy"
+            />
+          )}
+        />
       </Tab.Navigator>
     </>
   );
