@@ -8,34 +8,37 @@ import {
   Heading,
 } from '@gluestack-ui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import auth from '@react-native-firebase/auth';
 
-type LogoutModalProps = {
-  showLogoutModal: boolean;
-  setShowLogoutModal: (showLogoutModal: boolean) => void;
+type ConfirmModalProps = {
+  showModal: boolean;
+  setShowModal: (showModal: boolean) => void;
+  modalFunction: () => void;
+  name: string;
 };
 
-const LogoutModal = ({
-  showLogoutModal,
-  setShowLogoutModal,
-}: LogoutModalProps) => {
-  const handleLogout = () => {
-    auth().signOut();
-    setShowLogoutModal(false);
+const ConfirmModal = ({
+  showModal,
+  setShowModal,
+  modalFunction,
+  name,
+}: ConfirmModalProps) => {
+  const handleFunction = () => {
+    modalFunction();
+    setShowModal(false);
   };
 
   return (
-    <Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)}>
+    <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
       <Modal.Backdrop />
       <Modal.Content>
         <Modal.Header>
-          <Heading>Logout</Heading>
+          <Heading>{name}</Heading>
           <Modal.CloseButton>
             <Icon name="close" color={'black'} size={24} />
           </Modal.CloseButton>
         </Modal.Header>
         <Modal.Body>
-          <Text>Are you sure you want to logout?</Text>
+          <Text>Are you sure you want to {name}?</Text>
         </Modal.Body>
         <Modal.Footer>
           <ButtonGroup>
@@ -43,11 +46,11 @@ const LogoutModal = ({
               action="secondary"
               variant="outline"
               w={'48%'}
-              onPress={() => setShowLogoutModal(false)}>
+              onPress={() => setShowModal(false)}>
               <ButtonText>Cancel</ButtonText>
             </Button>
-            <Button action="negative" w={'48%'} onPress={handleLogout}>
-              <ButtonText>Logout</ButtonText>
+            <Button action="negative" w={'48%'} onPress={handleFunction}>
+              <ButtonText>{name}</ButtonText>
             </Button>
           </ButtonGroup>
         </Modal.Footer>
@@ -56,4 +59,4 @@ const LogoutModal = ({
   );
 };
 
-export default LogoutModal;
+export default ConfirmModal;

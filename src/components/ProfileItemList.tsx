@@ -61,6 +61,7 @@ const ProfileItemList = ({filter, section, type}: ProfileItemListProps) => {
                 images={item?.images}
                 status={item?.status}
                 taskName={item.taskName}
+                selectedBy={item?.selectedBy}
                 fetchData={getdata}
               />
             </View>

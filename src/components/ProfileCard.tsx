@@ -9,13 +9,16 @@ import {
   ButtonText,
   ButtonGroup,
 } from '@gluestack-ui/themed';
+import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import LogoutModal from '../components/LogoutModal';
 import styles from '../styles';
+import ConfirmModal from './ConfirmModal';
 
 const ProfileCard = (props: any) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
+  const handleLogout = () => {
+    auth().signOut();
+  };
   return (
     <View
       margin={10}
@@ -56,9 +59,11 @@ const ProfileCard = (props: any) => {
         </VStack>
       </HStack>
 
-      <LogoutModal
-        showLogoutModal={showLogoutModal}
-        setShowLogoutModal={setShowLogoutModal}
+      <ConfirmModal
+        showModal={showLogoutModal}
+        setShowModal={setShowLogoutModal}
+        modalFunction={handleLogout}
+        name="Logout"
       />
     </View>
   );

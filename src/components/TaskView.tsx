@@ -6,7 +6,6 @@ import {
   ActionsheetDragIndicatorWrapper,
   Box,
   Button,
-  ButtonGroup,
   ButtonText,
   HStack,
   Heading,
@@ -18,8 +17,9 @@ import {
 import React, {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {TaskDataProps} from '../screens/Tasks';
-import {acceptTask, deleteTask} from '../functions/tasks';
+import {acceptTask, completedTask, deleteTask} from '../functions/tasks';
 import {Alert} from 'react-native';
+import ConfirmModal from './ConfirmModal';
 
 type TaskViewProps = {
   show: boolean;
@@ -63,14 +63,22 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
   const isOwner = currentUser === task?.creator;
   const id = task.id;
   const [buttonMessage, setButtonMessage] = useState('Accept Task');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const getButtonMessage = () => {
     switch (task.status) {
       case 'taken':
-        setButtonMessage('Task Taken');
+        if (task.selectedBy === currentUser) {
+          setButtonMessage('Mark as Completed');
+        } else {
+          setButtonMessage('Task Taken');
+          setDisabled(true);
+        }
         break;
       case 'completed':
         setButtonMessage('Task Completed');
+        setDisabled(true);
         break;
       default:
         setButtonMessage(currentUser ? 'Accept Task' : 'Login to Accept Task');
@@ -81,12 +89,12 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
   const handleAcceptTask = () => {
     if (task.status === 'taken' || task.status === 'completed') {
       getButtonMessage();
-      Alert.alert(
-        `Task Already ${
-          task.status.charAt(0).toUpperCase() + task.status.slice(1)
-        }`,
-        `This task has already been ${task.status} by someone else`,
-      );
+      if (task.status === 'taken' && task.selectedBy === currentUser) {
+        completedTask(task.id);
+        handleClose();
+        return;
+      }
+      setDisabled(true);
       return;
     }
     if (currentUser) {
@@ -97,9 +105,16 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
     }
   };
 
+  const handleDeleteTask = () => {
+    deleteTask(id);
+    handleClose();
+    fetchData();
+  };
+
   useEffect(() => {
     getButtonMessage();
   }, [task.status, currentUser]);
+
   return (
     <ScrollView minWidth={350} p={10}>
       <Image
@@ -159,25 +174,29 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
         </ScrollView>
 
         {isOwner ? (
-          <ButtonGroup>
+          <>
+            {/* <ButtonGroup> */}
             <Button
-              width={'48%'}
+              // width={'48%'}
               action="negative"
               variant="outline"
-              onPress={() => {
-                deleteTask(id);
-                handleClose();
-                fetchData();
-              }}>
+              onPress={() => setShowDeleteModal(true)}>
               <ButtonText>Delete Task</ButtonText>
             </Button>
-            <Button width={'48%'} action="secondary">
-              <ButtonText>Edit Task</ButtonText>
-            </Button>
-          </ButtonGroup>
+            {/* <Button width={'48%'} action="secondary">
+                <ButtonText>Edit Task</ButtonText>
+              </Button> */}
+            {/* </ButtonGroup> */}
+            <ConfirmModal
+              showModal={showDeleteModal}
+              setShowModal={setShowDeleteModal}
+              modalFunction={handleDeleteTask}
+              name="Delete Task"
+            />
+          </>
         ) : (
           <>
-            <Button onPress={handleAcceptTask}>
+            <Button onPress={handleAcceptTask} isDisabled={disabled}>
               <ButtonText>{buttonMessage}</ButtonText>
             </Button>
           </>

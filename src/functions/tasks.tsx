@@ -1,6 +1,10 @@
 import firestore, {WhereFilterOp} from '@react-native-firebase/firestore';
 import {TaskDataProps} from '../screens/Tasks';
 
+const completedTask = async (id: string) => {
+  await firestore().collection('tasks').doc(id).update({status: 'completed'});
+};
+
 const deleteTask = async (id: string) => {
   await firestore().collection('tasks').doc(id).update({status: 'deleted'});
   console.log('Task Deleted');
@@ -63,4 +67,4 @@ const fetchProfileTasks = async (
   );
 };
 
-export {acceptTask, deleteTask, fetchTasks, fetchProfileTasks};
+export {acceptTask, completedTask, deleteTask, fetchTasks, fetchProfileTasks};

@@ -100,6 +100,7 @@ const TaskSection: React.FC<TaskSectionProps> = ({title, data, fetchData}) => (
               images={item?.images}
               status={item?.status}
               taskName={item.taskName}
+              selectedBy={item.selectedBy}
               fetchData={fetchData}
             />
           ))}
