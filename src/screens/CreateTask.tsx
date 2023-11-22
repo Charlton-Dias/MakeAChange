@@ -15,6 +15,7 @@ import {
   Pressable,
   Text,
   View,
+  Fab,
 } from '@gluestack-ui/themed';
 import {Alert, PermissionsAndroid, ScrollView} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
@@ -22,6 +23,7 @@ import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
@@ -330,15 +332,27 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
   return (
     <>
       {device && (
-        <Camera
-          style={styles.camera}
-          device={device}
-          isActive={active}
-          enableZoomGesture
-          photo
-          orientation="portrait"
-          ref={camera}
-        />
+        <>
+          <Fab
+            size="md"
+            placement="top right"
+            backgroundColor="transparent"
+            onPress={() => {
+              setActive(false);
+              setIsCameraOpen(false);
+            }}>
+            <MaterialIcons name="close" size={24} color="white" />
+          </Fab>
+          <Camera
+            style={styles.camera}
+            device={device}
+            isActive={active}
+            enableZoomGesture
+            photo
+            orientation="portrait"
+            ref={camera}
+          />
+        </>
       )}
       <Pressable
         onPress={() => {

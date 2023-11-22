@@ -1,4 +1,7 @@
 import {StyleSheet} from 'react-native';
+import {Dimensions} from 'react-native';
+
+const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   addImage: {
@@ -14,8 +17,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   camera: {
-    minHeight: 600,
-    width: 'auto',
+    width: width,
+    height: height - 150,
   },
   capture: {
     height: 50,
