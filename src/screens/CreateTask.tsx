@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
-  Alert,
+  Alert as GsAlert,
   Button,
   ButtonGroup,
   ButtonSpinner,
@@ -16,7 +16,7 @@ import {
   Text,
   View,
 } from '@gluestack-ui/themed';
-import {PermissionsAndroid, ScrollView} from 'react-native';
+import {Alert, PermissionsAndroid, ScrollView} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -29,6 +29,7 @@ import {useNavigation} from '@react-navigation/native';
 import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
 import {TabsParamList} from '../types';
+import {getCurrentLocation} from '../functions/location';
 
 function Create() {
   const [currentUser, setCurrentUser] = useState<FirebaseAuthTypes.User | null>(
@@ -51,12 +52,12 @@ function Create() {
 export default Create;
 
 const LoginAlert = () => (
-  <Alert>
+  <GsAlert>
     <Icon name="info-circle" size={24} color={'black'} />
     <Text ml={10} color="black" textAlign="center">
       Please Login to continue
     </Text>
-  </Alert>
+  </GsAlert>
 );
 
 type CreateTaskScreenNavigationProp = BottomTabNavigationProp<
@@ -91,6 +92,10 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         setIsCameraOpen(true);
       } else {
+        Alert.alert(
+          'Camera permission denied',
+          'Please allow camera access to capture images.',
+        );
         console.log('Camera permission denied');
       }
     } catch (err) {
@@ -102,7 +107,9 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const handleSubmit = async () => {
     setLoading(true);
     const status = 'new';
-    const formData = {creator, taskName, description, date, status};
+    const {latitude, longitude} = (await getCurrentLocation()).coords;
+    const geopoint = new firestore.GeoPoint(latitude, longitude);
+    const formData = {creator, date, description, geopoint, status, taskName};
     const docRef = await firestore().collection('tasks').add(formData);
 
     const imageUrls = await Promise.all(
@@ -118,7 +125,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
     await docRef.update({images: imageUrls});
     setLoading(false);
     handleDiscard();
-    navigation.navigate('Home');
   };
 
   const handleDiscard = () => {
@@ -162,10 +168,11 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
               w="48%"
               variant="outline"
               action="negative"
+              isDisabled={loading}
               onPress={handleDiscard}>
               <ButtonText>Discard</ButtonText>
             </Button>
-            <Button w="48%" onPress={handleSubmit}>
+            <Button w="48%" onPress={handleSubmit} isDisabled={loading}>
               {loading ? (
                 <>
                   <ButtonText>Creating</ButtonText>

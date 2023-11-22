@@ -1,43 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {PermissionsAndroid} from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
 import Leaflet, {Layers, Markers, TileOptions} from 'react-native-leaflet-ts';
 import {Fab} from '@gluestack-ui/themed';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {getCurrentLocation} from '../functions/location';
 
 const Home = () => {
   const [region, setRegion] = useState([15.4617259147707, 73.83342337687071]);
 
-  const getCurrentLocation = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Location Permission',
-          message: 'This app needs access to your location',
-          buttonPositive: 'OK',
-        },
-      );
-      console.log('permissions: ', granted);
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        Geolocation.getCurrentPosition(
-          position => {
-            const {latitude, longitude} = position.coords;
-            setRegion([latitude, longitude]);
-          },
-          error => console.log(error),
-          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-        );
-      } else {
-        console.log('Location permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
+  const updateLocation = async () => {
+    const location = await getCurrentLocation();
+    const {latitude, longitude} = location.coords;
+    setRegion([latitude, longitude]);
   };
-
   useEffect(() => {
-    getCurrentLocation();
+    updateLocation();
   }, []);
 
   const options: TileOptions = {
@@ -71,7 +47,7 @@ const Home = () => {
       <Fab
         size="md"
         placement="bottom right"
-        onPress={() => getCurrentLocation()}
+        onPress={() => updateLocation()}
         bottom={80}>
         <MaterialIcons name="my-location" size={24} color="white" />
       </Fab>
