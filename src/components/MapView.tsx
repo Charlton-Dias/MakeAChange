@@ -1,13 +1,13 @@
 import React from 'react';
 import Leaflet, {Layers, Markers, TileOptions} from 'react-native-leaflet-ts';
-import {TaskDataProps} from '../screens/Tasks';
+import {TaskDataProps} from '../types';
 
 type MapViewProps = {
   region?: number[];
   tasks?: TaskDataProps[];
 };
 
-const MapView: React.FC<MapViewProps> = ({region, task}) => {
+const MapView: React.FC<MapViewProps> = ({region, tasks}) => {
   const options: TileOptions = {
     noWrap: false,
     detectRetina: true,
@@ -22,17 +22,18 @@ const MapView: React.FC<MapViewProps> = ({region, task}) => {
     },
   ];
 
-  // const markerList: Markers[] = [
-  //   {
-  //     latLng: region,
-  //     iconSize: {
-  //       width: 20,
-  //       height: 20,
-  //     },
-  //     title: 'Your location',
-  //     disabled: true,
-  //   },
-  // ];
+  const markerList: Markers[] =
+    tasks?.map(task => ({
+      icon: task?.images && task?.images[0],
+      latLng: [task?.geopoint?.latitude, task?.geopoint?.longitude],
+      iconSize: {
+        width: 30,
+        height: 30,
+      },
+      title: task.taskName,
+      disabled: true,
+    })) || [];
+
   return (
     <Leaflet
       mapLayers={mapLayers}
@@ -45,7 +46,7 @@ const MapView: React.FC<MapViewProps> = ({region, task}) => {
           zoom: 15,
         }
       }
-      // markers={markerList}
+      markers={markerList}
       startInLoadingState={false}
     />
   );
