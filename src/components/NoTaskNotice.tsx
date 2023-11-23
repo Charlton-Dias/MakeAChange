@@ -21,7 +21,7 @@ const NoTaskNotice = ({title, profile}: NoTaskNoticeProps) => {
           <Heading>There are no {title.toLowerCase()} tasks!</Heading>
           <Text color="black" textAlign="left">
             You could try {title === 'Completed' ? 'completing' : 'creating'} a
-            task or try refreshing the page.
+            task
           </Text>
         </>
       )}
