@@ -15,24 +15,18 @@ import {
   View,
 } from '@gluestack-ui/themed';
 import React, {useEffect, useState} from 'react';
-import {TaskDataProps} from '../screens/Tasks';
 import {acceptTask, completedTask, deleteTask} from '../functions/tasks';
 import {Alert} from 'react-native';
 import ConfirmModal from './ConfirmModal';
 import {useUserAuth} from '../hooks';
+import {TaskDataProps} from '../types';
 
 type TaskViewProps = {
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   task: TaskDataProps;
-  fetchData: () => void;
 };
-const TaskView: React.FC<TaskViewProps> = ({
-  setShow,
-  show,
-  task,
-  fetchData,
-}) => {
+const TaskView: React.FC<TaskViewProps> = ({setShow, show, task}) => {
   const handleClose = () => setShow(false);
   return (
     <Actionsheet isOpen={show} onClose={handleClose} snapPoints={[90]}>
@@ -42,11 +36,7 @@ const TaskView: React.FC<TaskViewProps> = ({
           <ActionsheetDragIndicator />
         </ActionsheetDragIndicatorWrapper>
         <Heading size={'lg'}>{task?.taskName || 'Task'}</Heading>
-        <TaskLayout
-          task={task}
-          handleClose={handleClose}
-          fetchData={fetchData}
-        />
+        <TaskLayout task={task} handleClose={handleClose} />
       </ActionsheetContent>
     </Actionsheet>
   );
@@ -56,40 +46,36 @@ export default TaskView;
 type TaskLayoutProps = {
   task: TaskDataProps;
   handleClose: () => void;
-  fetchData: () => void;
 };
-const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
+const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
   const currentUser = useUserAuth();
-  const isOwner = currentUser === task?.creator;
+  const isOwner = currentUser?.uid === task?.creator;
   const id = task.id;
-  const [buttonMessage, setButtonMessage] = useState('Accept Task');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const expired =
+    new Date(task?.date).toLocaleDateString('en-IN') >
+    new Date().toLocaleDateString('en-IN');
 
   const getButtonMessage = () => {
-    switch (task.status) {
-      case 'taken':
-        if (task.selectedBy === currentUser) {
-          setButtonMessage('Mark as Completed');
-        } else {
-          setButtonMessage('Task Taken');
-          setDisabled(true);
-        }
-        break;
-      case 'completed':
-        setButtonMessage('Task Completed');
-        setDisabled(true);
-        break;
-      default:
-        setButtonMessage(currentUser ? 'Accept Task' : 'Login to Accept Task');
-        break;
+    if (task.status === 'taken') {
+      if (task.selectedBy === currentUser?.uid) {
+        return 'Mark as Completed';
+      } else {
+        return 'Task Taken';
+      }
+    } else if (task.status === 'completed') {
+      return 'Task Completed';
+    } else if (expired) {
+      return 'Task Expired';
+    } else {
+      return currentUser ? 'Accept Task' : 'Login to Accept Task';
     }
   };
 
   const handleAcceptTask = () => {
     if (task.status === 'taken' || task.status === 'completed') {
-      getButtonMessage();
-      if (task.status === 'taken' && task.selectedBy === currentUser) {
+      if (task.status === 'taken' && task.selectedBy === currentUser?.uid) {
         completedTask(task.id);
         handleClose();
         return;
@@ -98,7 +84,7 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
       return;
     }
     if (currentUser) {
-      acceptTask(id, currentUser);
+      acceptTask(id, currentUser?.uid);
       handleClose();
     } else {
       Alert.alert('Login', 'Please Login to continue');
@@ -108,12 +94,20 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
   const handleDeleteTask = () => {
     deleteTask(id);
     handleClose();
-    fetchData();
   };
 
   useEffect(() => {
-    getButtonMessage();
-  }, [task.status, currentUser]);
+    if (
+      task.status !== 'completed' &&
+      task.status !== 'taken' &&
+      expired &&
+      currentUser
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [task.status, task.date, currentUser, expired]);
 
   return (
     <ScrollView minWidth={350} p={10}>
@@ -124,12 +118,12 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
         borderTopLeftRadius={10}
         borderTopRightRadius={10}
         borderColor="black"
-        alt={task?.taskName}
         source={{
           uri:
             task?.images?.[0] ||
             'https://i2.wp.com/www.differencebetween.com/wp-content/uploads/2011/07/Difference-Between-Environment-and-Ecosystem-fig-1.jpg?w=640&ssl=1',
         }}
+        alt={task?.taskName}
         flex={1}
         resizeMode="cover"
       />
@@ -143,7 +137,7 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
         mb={20}>
         {task?.date && (
           <Text bold>
-            Deadline: {task?.date.toDate().toLocaleDateString('en-IN')}
+            Deadline: {new Date(task?.date).toLocaleDateString('en-IN')}
           </Text>
         )}
         <Text bold mt={10}>
@@ -161,7 +155,7 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
                 borderWidth={1}
                 borderRadius={10}
                 size="2xl"
-                alt={task?.taskName}
+                alt={`${task?.taskName} ${index}`}
                 source={{
                   uri: image,
                 }}
@@ -197,7 +191,7 @@ const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
         ) : (
           <>
             <Button onPress={handleAcceptTask} isDisabled={disabled}>
-              <ButtonText>{buttonMessage}</ButtonText>
+              <ButtonText>{getButtonMessage()}</ButtonText>
             </Button>
           </>
         )}

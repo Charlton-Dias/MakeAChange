@@ -14,6 +14,7 @@ const Tasks = () => {
   const expiredTasks = data.filter(task => {
     return (
       task.status !== 'completed' &&
+      task.status !== 'deleted' &&
       new Date(task?.date).toLocaleDateString('en-IN') <
         new Date().toLocaleDateString('en-IN')
     );
