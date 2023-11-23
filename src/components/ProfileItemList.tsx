@@ -3,10 +3,10 @@ import {FlatList, RefreshControl} from 'react-native';
 import {ScrollView, View} from '@gluestack-ui/themed';
 import Card from './Card';
 import styles from '../styles';
-import auth from '@react-native-firebase/auth';
 import NoTaskNotice from './NoTaskNotice';
 import {TaskDataProps} from '../screens/Tasks';
 import {fetchProfileTasks} from '../functions/tasks';
+import {useUserAuth} from '../hooks';
 
 type RenderList = {item: TaskDataProps; index: number};
 
@@ -18,7 +18,7 @@ type ProfileItemListProps = {
 
 const ProfileItemList = ({filter, section, type}: ProfileItemListProps) => {
   const [tasks, setTasks] = useState<TaskDataProps[]>([]);
-  const currentUser = auth().currentUser;
+  const currentUser = useUserAuth();
 
   const [refreshing, setRefreshing] = useState(false);
 

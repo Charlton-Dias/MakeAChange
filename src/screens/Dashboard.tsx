@@ -1,18 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {Divider} from '@gluestack-ui/themed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
 import ProfileCard from '../components/ProfileCard';
 import ProfileItemList from '../components/ProfileItemList';
 import styles from '../styles';
+import {useUserAuth} from '../hooks';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function Dashboard(): JSX.Element {
   const [user, setUser] = useState<object | null>();
-  const currentUser = auth().currentUser;
+  const currentUser = useUserAuth();
 
   useEffect(() => {
     const fetchUser = async () => {

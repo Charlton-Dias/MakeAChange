@@ -15,11 +15,11 @@ import {
   View,
 } from '@gluestack-ui/themed';
 import React, {useEffect, useState} from 'react';
-import auth from '@react-native-firebase/auth';
 import {TaskDataProps} from '../screens/Tasks';
 import {acceptTask, completedTask, deleteTask} from '../functions/tasks';
 import {Alert} from 'react-native';
 import ConfirmModal from './ConfirmModal';
+import {useUserAuth} from '../hooks';
 
 type TaskViewProps = {
   show: boolean;
@@ -59,7 +59,7 @@ type TaskLayoutProps = {
   fetchData: () => void;
 };
 const TaskLayout = ({task, handleClose, fetchData}: TaskLayoutProps) => {
-  const currentUser = auth().currentUser?.uid;
+  const currentUser = useUserAuth();
   const isOwner = currentUser === task?.creator;
   const id = task.id;
   const [buttonMessage, setButtonMessage] = useState('Accept Task');
