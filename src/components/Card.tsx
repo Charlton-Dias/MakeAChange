@@ -30,7 +30,7 @@ const Card = ({...props}) => {
             alt={props?.taskName}
             source={{
               uri:
-                props?.images?.[0] ||
+                props?.task?.images?.[0] ||
                 'https://i2.wp.com/www.differencebetween.com/wp-content/uploads/2011/07/Difference-Between-Environment-and-Ecosystem-fig-1.jpg?w=640&ssl=1',
             }}
           />
