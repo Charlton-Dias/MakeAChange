@@ -17,6 +17,7 @@ import {
   View,
   Fab,
 } from '@gluestack-ui/themed';
+
 import {Alert, PermissionsAndroid, ScrollView} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
@@ -82,7 +83,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const [images, setImages] = useState<string[]>([]);
   const [active, setActive] = useState(true);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-
+ const [errorNotification, setErrorNotification] = useState<string | null>(null);
   const handleOpenCamera = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -109,6 +110,10 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
+    if (!taskName || !description || !date || images.length === 0) {
+        setErrorNotification('All fields are required.');
+        return;
+    }
     setLoading(true);
     const status = 'new';
     const {latitude, longitude} = (await getCurrentLocation()).coords;
@@ -141,6 +146,20 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
 
   return (
     <ScrollView style={styles.p10}>
+      {errorNotification && (
+        <GsAlert
+          status="error"
+          mb="4"
+          justifyContent="space-between"
+          flexDirection="row">
+          <Text color="black">{errorNotification}</Text>
+          <Pressable onPress={() => setErrorNotification(null)}>
+            <Text color="red" >
+              X
+            </Text>
+          </Pressable>
+        </GsAlert>
+      )}
       {isCameraOpen ? (
         <>
           <ImageCapture
