@@ -27,7 +27,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
-import ImageCropPicker from 'react-native-image-crop-picker'; // Add this import
+import ImageCropPicker from 'react-native-image-crop-picker'; 
+import ImagePicker from 'react-native-image-picker'; 
 
 import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
@@ -135,7 +136,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
     setDescription('');
     setDate(new Date());
     setImages([]);
-    navigation.navigate('Tasks');
+    navigation.navigate('CreateTask');
   };
 
   return (
@@ -343,21 +344,27 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
       await CameraRoll.save(`file://${newPhoto.path}`, {
         type: 'photo',
       });
-      const savedPhoto = await CameraRoll.getPhotos({
-        first: 1,
-        assetType: 'Photos',
-      });
-                      const image = await ImageCropPicker.openPicker({
-                        width: 300,
-                        height: 400,
-                        cropping: true,
-                      });
-      
-      setImages([...images, savedPhoto.edges[0].node.image.uri]);
-      setIsCameraOpen(false);
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      try {
+        ImageCropPicker.openCropper({
+          path: `file://${newPhoto.path}`,
+          width: 300,
+          height: 400,
+          cropping: true,
+        }).then(croppedImage => {
+          if (croppedImage && croppedImage.path) {
+            setImages([...images, croppedImage.path]);
+          }
+          setIsCameraOpen(false);
+        });
+      } catch (error) {
+        console.log('Error during cropping:', error);
+        setIsCameraOpen(false);
+      }
     }
   };
-
   return (
     <>
       {device && (
