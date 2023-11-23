@@ -25,6 +25,7 @@
     "@react-navigation/material-top-tabs": "^6.6.5",
     "@react-navigation/native": "^6.1.8",
     "@react-navigation/native-stack": "^6.9.16",
+    "@reduxjs/toolkit": "^1.9.7",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-leaflet-ts": "^0.2.18",
@@ -35,7 +36,8 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.0",
     "react-native-vision-camera": "^3.6.4",
-    "react-native-webview": "^13.6.2"
+    "react-native-webview": "^13.6.2",
+    "react-redux": "^8.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

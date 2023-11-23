@@ -4,23 +4,12 @@ import TaskView from './TaskView';
 
 const Card = ({...props}) => {
   const [showTask, setShowTask] = useState(false);
-  const {taskName, description, id, images, date, status, creator, selectedBy} =
-    props;
   return (
     <>
       <TaskView
         setShow={setShowTask}
         show={showTask}
-        task={{
-          taskName,
-          description,
-          id,
-          images,
-          date,
-          status,
-          creator,
-          selectedBy,
-        }}
+        task={props.task}
         fetchData={props.fetchData}
       />
 
@@ -47,10 +36,10 @@ const Card = ({...props}) => {
           />
           <Box padding={5}>
             <Text size="xl" bold>
-              {props?.taskName}
+              {props?.task?.taskName}
             </Text>
             <Text isTruncated numberOfLines={1}>
-              {props?.description}
+              {props?.task?.description}
             </Text>
           </Box>
         </Box>

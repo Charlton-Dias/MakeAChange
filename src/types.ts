@@ -10,3 +10,14 @@ export type StackParamList = {
   Login: undefined;
   Signup: undefined;
 };
+
+export type TaskDataProps = {
+  id: string;
+  creator: string;
+  taskName: string;
+  date: any;
+  description?: string;
+  status?: string;
+  selectedBy?: string;
+  images?: string[];
+};

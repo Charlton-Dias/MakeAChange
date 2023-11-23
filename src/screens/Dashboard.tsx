@@ -40,36 +40,15 @@ export default function Dashboard(): JSX.Element {
         }}>
         <Tab.Screen
           name="Created"
-          children={() => (
-            <ProfileItemList
-              filter={task => task.creator === currentUser?.uid}
-              section="Created"
-              type="creator"
-            />
-          )}
+          children={() => <ProfileItemList section="Created" />}
         />
         <Tab.Screen
           name="Selected"
-          children={() => (
-            <ProfileItemList
-              filter={task => task.selectedBy === currentUser?.uid}
-              section="Selected"
-              type="selectedBy"
-            />
-          )}
+          children={() => <ProfileItemList section="Selected" />}
         />
         <Tab.Screen
           name="Completed"
-          children={() => (
-            <ProfileItemList
-              filter={task =>
-                task.status === 'completed' &&
-                task.selectedBy === currentUser?.uid
-              }
-              section="Completed"
-              type="selectedBy"
-            />
-          )}
+          children={() => <ProfileItemList section="Completed" />}
         />
       </Tab.Navigator>
     </>
