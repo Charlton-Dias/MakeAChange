@@ -1,4 +1,7 @@
 import {StyleSheet} from 'react-native';
+import {Dimensions} from 'react-native';
+
+const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   addImage: {
@@ -14,30 +17,29 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   camera: {
-    minHeight: 600,
-    width: 'auto',
+    width: width,
+    height: height - 150,
   },
   capture: {
     height: 50,
     width: 50,
     borderRadius: 50,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     borderWidth: 2,
     borderColor: 'white',
     margin: 2,
     alignSelf: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
     bottom: 20,
     padding: 0,
   },
-  capture2: {
-    height: 46,
-    width: 46,
-    borderRadius: 50,
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: 'black',
-    alignSelf: 'center',
+  flatListContainer: {
+    padding: 10,
+    paddingBottom: 80,
+    justifyContent: 'space-between',
   },
   navBar: {
     width: '95%',
@@ -84,13 +86,6 @@ const styles = StyleSheet.create({
   profileAvatar: {
     width: 100,
     height: 100,
-  },
-  profileCardContainter: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
-    padding: 10,
   },
   profileTabBarIndicatorStyle: {
     backgroundColor: 'rgba(26, 110, 188, 0.9)',

@@ -4,13 +4,24 @@ import TaskView from './TaskView';
 
 const Card = ({...props}) => {
   const [showTask, setShowTask] = useState(false);
-  const {title, description, image, date} = props;
+  const {taskName, description, id, images, date, status, creator, selectedBy} =
+    props;
   return (
     <>
       <TaskView
         setShow={setShowTask}
         show={showTask}
-        task={{title, description, image, date}}
+        task={{
+          taskName,
+          description,
+          id,
+          images,
+          date,
+          status,
+          creator,
+          selectedBy,
+        }}
+        fetchData={props.fetchData}
       />
 
       <Pressable onPress={() => setShowTask(true)}>
@@ -20,26 +31,25 @@ const Card = ({...props}) => {
           margin={5}
           borderWidth={1}
           backgroundColor="white"
-          maxWidth={200}
-          height={240}>
+          maxWidth={200}>
           <Image
             minWidth={180}
             height={150}
             borderTopLeftRadius={10}
             borderTopRightRadius={10}
             size="full"
-            alt={props?.title}
+            alt={props?.taskName}
             source={{
               uri:
-                props?.image ||
+                props?.images?.[0] ||
                 'https://i2.wp.com/www.differencebetween.com/wp-content/uploads/2011/07/Difference-Between-Environment-and-Ecosystem-fig-1.jpg?w=640&ssl=1',
             }}
           />
           <Box padding={5}>
             <Text size="xl" bold>
-              {props?.title}
+              {props?.taskName}
             </Text>
-            <Text isTruncated numberOfLines={2}>
+            <Text isTruncated numberOfLines={1}>
               {props?.description}
             </Text>
           </Box>

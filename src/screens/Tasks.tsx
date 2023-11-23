@@ -1,52 +1,43 @@
 import React, {useEffect, useState} from 'react';
 import {Heading, ScrollView, VStack, View} from '@gluestack-ui/themed';
 import Card from '../components/Card';
-import dummyData from '../../dummyData';
 import styles from '../styles';
-import firestore from '@react-native-firebase/firestore';
 import {RefreshControl} from 'react-native';
 import NoTaskNotice from '../components/NoTaskNotice';
+import {fetchTasks} from '../functions/tasks';
 
 export type TaskDataProps = {
-  taskName: string;
-  description: string;
+  selectedBy: string | undefined;
+  id: string;
+  creator: string;
+  date: any;
+  description?: string;
   images?: string[];
-  date: Date;
+  status?: string;
+  taskName: string;
 };
 
 const Tasks = () => {
   const [activeTasks, setActiveTasks] = useState<TaskDataProps[]>([]);
   const [expiredTasks, setExpiredTasks] = useState<TaskDataProps[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<TaskDataProps[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-
-  const fetchTasks = async () => {
-    const tasksCollection = await firestore().collection('tasks').get();
-    const _tasks = tasksCollection.docs.map(doc => doc.data() as TaskDataProps);
-
-    setActiveTasks(
-      _tasks.filter(
-        task =>
-          task.date.toDate().toLocaleDateString() >=
-          new Date().toLocaleDateString(),
-      ),
-    );
-    setExpiredTasks(
-      _tasks.filter(
-        task =>
-          task.date.toDate().toLocaleDateString() <
-          new Date().toLocaleDateString(),
-      ),
-    );
-  };
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    await fetchTasks();
+    await fetchData();
     setRefreshing(false);
   }, []);
 
+  const fetchData = async () => {
+    const {active, expired, completed} = await fetchTasks();
+    setActiveTasks(active);
+    setExpiredTasks(expired);
+    setCompletedTasks(completed);
+  };
+
   useEffect(() => {
-    fetchTasks();
+    fetchData();
   }, []);
   return (
     <>
@@ -56,10 +47,22 @@ const Tasks = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <TaskSection title="Available" data={activeTasks} />
-        <TaskSection title="Completed" data={dummyData} />
+        <TaskSection
+          title="Available"
+          data={activeTasks}
+          fetchData={fetchData}
+        />
+        <TaskSection
+          title="Completed"
+          data={completedTasks}
+          fetchData={fetchData}
+        />
         {expiredTasks.length > 0 && (
-          <TaskSection title="Expired" data={expiredTasks} />
+          <TaskSection
+            title="Expired"
+            data={expiredTasks}
+            fetchData={fetchData}
+          />
         )}
         <View mb={40} />
       </ScrollView>
@@ -72,9 +75,10 @@ export default Tasks;
 type TaskSectionProps = {
   title: string;
   data: TaskDataProps[];
+  fetchData: () => void;
 };
 
-const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
+const TaskSection: React.FC<TaskSectionProps> = ({title, data, fetchData}) => (
   <>
     <Heading ml={10} size="xl">
       {title}
@@ -89,10 +93,15 @@ const TaskSection: React.FC<TaskSectionProps> = ({title, data}) => (
           {data.map((item, index) => (
             <Card
               key={index}
-              title={item.taskName}
-              description={item.description}
-              image={item?.images?.[0]}
-              date={item?.date}
+              creator={item.creator}
+              date={item.date}
+              description={item?.description}
+              id={item.id}
+              images={item?.images}
+              status={item?.status}
+              taskName={item.taskName}
+              selectedBy={item.selectedBy}
+              fetchData={fetchData}
             />
           ))}
         </VStack>

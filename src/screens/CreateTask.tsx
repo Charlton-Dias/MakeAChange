@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
-  Alert,
+  Alert as GsAlert,
   Button,
   ButtonGroup,
   ButtonSpinner,
@@ -15,13 +15,15 @@ import {
   Pressable,
   Text,
   View,
+  Fab,
 } from '@gluestack-ui/themed';
-import {PermissionsAndroid, ScrollView} from 'react-native';
+import {Alert, PermissionsAndroid, ScrollView} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
@@ -30,6 +32,7 @@ import ImageCropPicker from 'react-native-image-crop-picker'; // Add this import
 import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
 import {TabsParamList} from '../types';
+import {getCurrentLocation} from '../functions/location';
 
 function Create() {
   const [currentUser, setCurrentUser] = useState<FirebaseAuthTypes.User | null>(
@@ -52,12 +55,12 @@ function Create() {
 export default Create;
 
 const LoginAlert = () => (
-  <Alert>
+  <GsAlert>
     <Icon name="info-circle" size={24} color={'black'} />
     <Text ml={10} color="black" textAlign="center">
       Please Login to continue
     </Text>
-  </Alert>
+  </GsAlert>
 );
 
 type CreateTaskScreenNavigationProp = BottomTabNavigationProp<
@@ -74,7 +77,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const creator = user.uid;
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
-  const [points, setPoints] = useState('');
   const [date, setDate] = useState(new Date());
   const [images, setImages] = useState<string[]>([]);
   const [active, setActive] = useState(true);
@@ -93,6 +95,10 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         setIsCameraOpen(true);
       } else {
+        Alert.alert(
+          'Camera permission denied',
+          'Please allow camera access to capture images.',
+        );
         console.log('Camera permission denied');
       }
     } catch (err) {
@@ -103,7 +109,10 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
     setLoading(true);
-    const formData = {creator, taskName, description, points, date};
+    const status = 'new';
+    const {latitude, longitude} = (await getCurrentLocation()).coords;
+    const geopoint = new firestore.GeoPoint(latitude, longitude);
+    const formData = {creator, date, description, geopoint, status, taskName};
     const docRef = await firestore().collection('tasks').add(formData);
 
     const imageUrls = await Promise.all(
@@ -118,16 +127,15 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
 
     await docRef.update({images: imageUrls});
     setLoading(false);
-    navigation.navigate('Home');
+    handleDiscard();
   };
 
   const handleDiscard = () => {
     setTaskName('');
     setDescription('');
-    setPoints('');
     setDate(new Date());
     setImages([]);
-    navigation.navigate('Home');
+    navigation.navigate('Tasks');
   };
 
   return (
@@ -149,10 +157,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
             setTaskName={setTaskName}
             description={description}
             setDescription={setDescription}
-            points={points}
-            setPoints={setPoints}
           />
-
           <Deadline date={date} setDate={setDate} />
 
           <ImageList
@@ -184,10 +189,11 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
               w="48%"
               variant="outline"
               action="negative"
+              isDisabled={loading}
               onPress={handleDiscard}>
               <ButtonText>Discard</ButtonText>
             </Button>
-            <Button w="48%" onPress={handleSubmit}>
+            <Button w="48%" onPress={handleSubmit} isDisabled={loading}>
               {loading ? (
                 <>
                   <ButtonText>Creating</ButtonText>
@@ -242,8 +248,6 @@ interface FormInputFieldsProps {
   setTaskName: (taskName: string) => void;
   description: string;
   setDescription: (description: string) => void;
-  points: string;
-  setPoints: (points: string) => void;
 }
 
 const FormInputFields: React.FC<FormInputFieldsProps> = ({
@@ -251,8 +255,6 @@ const FormInputFields: React.FC<FormInputFieldsProps> = ({
   setTaskName,
   description,
   setDescription,
-  points,
-  setPoints,
 }) => (
   <>
     <FormInput
@@ -267,13 +269,6 @@ const FormInputFields: React.FC<FormInputFieldsProps> = ({
       placeholder="Description"
       value={description}
       onChangeText={setDescription}
-    />
-
-    <FormInput
-      label="Points"
-      placeholder="Points"
-      value={points}
-      onChangeText={setPoints}
     />
   </>
 );
@@ -366,15 +361,27 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
   return (
     <>
       {device && (
-        <Camera
-          style={styles.camera}
-          device={device}
-          isActive={active}
-          enableZoomGesture
-          photo
-          orientation="portrait"
-          ref={camera}
-        />
+        <>
+          <Fab
+            size="md"
+            placement="top right"
+            backgroundColor="transparent"
+            onPress={() => {
+              setActive(false);
+              setIsCameraOpen(false);
+            }}>
+            <MaterialIcons name="close" size={24} color="white" />
+          </Fab>
+          <Camera
+            style={styles.camera}
+            device={device}
+            isActive={active}
+            enableZoomGesture
+            photo
+            orientation="portrait"
+            ref={camera}
+          />
+        </>
       )}
       <Pressable
         onPress={() => {
@@ -382,7 +389,7 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
           setActive(false);
         }}>
         <View style={styles.capture}>
-          <View style={styles.capture2} />
+          <MaterialIcons name="camera" size={45} color={'white'} />
         </View>
       </Pressable>
     </>
