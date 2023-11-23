@@ -352,6 +352,12 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
         first: 1,
         assetType: 'Photos',
       });
+                      const image = await ImageCropPicker.openPicker({
+                        width: 300,
+                        height: 400,
+                        cropping: true,
+                      });
+      
       setImages([...images, savedPhoto.edges[0].node.image.uri]);
       setIsCameraOpen(false);
     }
