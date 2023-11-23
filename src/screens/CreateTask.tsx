@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Alert as GsAlert,
@@ -19,7 +19,6 @@ import {
 } from '@gluestack-ui/themed';
 import {Alert, PermissionsAndroid, ScrollView} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -32,24 +31,15 @@ import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
 import {TabsParamList} from '../types';
 import {getCurrentLocation} from '../functions/location';
+import {useUserAuth} from '../hooks';
 
 function Create() {
-  const [currentUser, setCurrentUser] = useState<FirebaseAuthTypes.User | null>(
-    null,
-  );
+  const user = useUserAuth();
 
-  useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(user => {
-      setCurrentUser(user);
-    });
-
-    return () => unsubscribe();
-  }, [currentUser]);
-
-  if (!currentUser) {
+  if (!user) {
     return <LoginAlert />;
   }
-  return <CreateTask user={currentUser} />;
+  return <CreateTask user={user} />;
 }
 export default Create;
 
