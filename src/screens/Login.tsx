@@ -10,12 +10,11 @@ import {
   Text,
 } from '@gluestack-ui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import SignInWith from '../components/SignInWith';
-import SectionWrapper from '../components/SectionWrapper';
-import FormInput from '../components/FormInput';
 import auth from '@react-native-firebase/auth';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackParamList} from '../types';
+import FormInput from '../components/FormInput';
+import SectionWrapper from '../components/SectionWrapper';
 
 type Props = NativeStackScreenProps<StackParamList, 'Signup'>;
 
@@ -38,6 +37,21 @@ export default function Login({navigation}: Props): JSX.Element {
       setLoading(false);
     }
   };
+
+  const handleForgotPassword = async () => {
+    try {
+      if (!email) {
+        throw new Error('Enter your email to reset the password.');
+      }
+
+      await auth().sendPasswordResetEmail(email);
+
+      alert('Password reset email sent. Check your email inbox.');
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    }
+  };
+
   return (
     <ScrollView backgroundColor="white">
       <Box display="flex" padding={'5%'}>
@@ -61,7 +75,7 @@ export default function Login({navigation}: Props): JSX.Element {
             onChangeText={setPassword}
             type="password"
           />
-          <Button size="sm" variant="link">
+          <Button size="sm" variant="link" onPress={handleForgotPassword}>
             <ButtonText textAlign="left">Forgot password?</ButtonText>
           </Button>
 
@@ -83,8 +97,6 @@ export default function Login({navigation}: Props): JSX.Element {
           <Text>Don't have an account? </Text>
           <ButtonText>Sign up</ButtonText>
         </Button>
-
-        {/* <SignInWith /> */}
       </Box>
     </ScrollView>
   );
