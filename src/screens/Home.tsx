@@ -1,48 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, PermissionsAndroid} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import {Fab, View} from '@gluestack-ui/themed';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getCurrentLocation} from '../functions/location';
 import MapViews from '../components/MapView';
 import styles from '../styles';
 import {useAppSelector} from '../redux/hooks';
-import RNExitApp from 'react-native-exit-app';
-
 const Home = () => {
   const [region, setRegion] = useState([undefined, undefined]);
   const [loading, setLoading] = useState(false);
-  const {data} = useAppSelector(state => state.tasks);
-
   const updateLocation = async () => {
-    try {
-      setLoading(true);
-
-      // Request location permission
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        // If permission is granted, get current location
-        const location = await getCurrentLocation();
-        setRegion([location.coords.latitude, location.coords.longitude]);
-      } else {
-        // If permission is denied, exit the app
-        console.warn('Location permission denied. Exiting the app.');
-        RNExitApp.exitApp();
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.error('Error updating location:', error);
-      setLoading(false);
-    }
+    setLoading(true);
+    const location = await getCurrentLocation();
+    setRegion([location.coords.latitude, location.coords.longitude]);
+    setLoading(false);
   };
-
+  const {data} = useAppSelector(state => state.tasks);
   useEffect(() => {
     updateLocation();
   }, []);
-
   return (
     <>
       {loading && (
@@ -67,5 +43,4 @@ const Home = () => {
     </>
   );
 };
-
 export default Home;
