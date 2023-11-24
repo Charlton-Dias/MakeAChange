@@ -38,19 +38,30 @@ export default function Login({navigation}: Props): JSX.Element {
     }
   };
 
-  const handleForgotPassword = async () => {
-    try {
-      if (!email) {
-        throw new Error('Enter your email to reset the password.');
-      }
-
-      await auth().sendPasswordResetEmail(email);
-
-      alert('Password reset email sent. Check your email inbox.');
-    } catch (error) {
-      alert(`Error: ${error.message}`);
+const handleForgotPassword = async () => {
+  try {
+    if (!email) {
+      throw new Error('Enter your email to reset the password.');
     }
-  };
+
+    // Check if the email exists in Firebase
+    const methods = await auth().fetchSignInMethodsForEmail(email);
+
+    if (methods.length === 0) {
+      // Email does not exist in Firebase
+      throw new Error(
+        'Email not found. Please enter a registered email address.',
+      );
+    }
+
+    // Email exists, send password reset email
+    await auth().sendPasswordResetEmail(email);
+
+    alert('Password reset email sent. Check your email inbox.');
+  } catch (error) {
+    alert(`${error.message}`);
+  }
+};
 
   return (
     <ScrollView backgroundColor="white">
