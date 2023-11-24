@@ -17,7 +17,7 @@ const Card = ({...props}) => {
           backgroundColor="white"
           width={180}>
           <Image
-            minWidth={180}
+            width={180}
             height={150}
             borderTopLeftRadius={10}
             borderTopRightRadius={10}
