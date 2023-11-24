@@ -17,6 +17,7 @@ import {
   View,
   Fab,
 } from '@gluestack-ui/themed';
+
 import {Alert, PermissionsAndroid, ScrollView} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import firestore from '@react-native-firebase/firestore';
@@ -26,6 +27,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
+import ImageCropPicker from 'react-native-image-crop-picker'; 
+import ImagePicker from 'react-native-image-picker'; 
 
 import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
@@ -70,7 +73,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const [images, setImages] = useState<string[]>([]);
   const [active, setActive] = useState(true);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-
+ const [errorNotification, setErrorNotification] = useState<string | null>(null);
   const handleOpenCamera = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -97,6 +100,10 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
+    if (!taskName || !description || !date || images.length === 0) {
+        setErrorNotification('All fields are required.');
+        return;
+    }
     setLoading(true);
     const status = 'new';
     const {latitude, longitude} = (await getCurrentLocation()).coords;
@@ -124,11 +131,25 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
     setDescription('');
     setDate(new Date());
     setImages([]);
-    navigation.navigate('Tasks');
+    navigation.navigate('CreateTask');
   };
 
   return (
     <ScrollView style={styles.p10}>
+      {errorNotification && (
+        <GsAlert
+          status="error"
+          mb="4"
+          justifyContent="space-between"
+          flexDirection="row">
+          <Text color="black">{errorNotification}</Text>
+          <Pressable onPress={() => setErrorNotification(null)}>
+            <Text color="red" >
+              X
+            </Text>
+          </Pressable>
+        </GsAlert>
+      )}
       {isCameraOpen ? (
         <>
           <ImageCapture
@@ -151,6 +172,24 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
 
           <ImageList
             handleOpenCamera={handleOpenCamera}
+            handleRemoveImage={index => {
+              const newImages = [...images];
+              newImages.splice(index, 1);
+              setImages(newImages);
+            }}
+            handlePickImageFromGallery={async () => {
+              try {
+                const image = await ImageCropPicker.openPicker({
+                  width: 300,
+                  height: 400,
+                  cropping: true,
+                });
+
+                setImages([...images, image.path]);
+              } catch (error) {
+                console.log(error);
+              }
+            }}
             images={images}
             setActive={setActive}
           />
@@ -246,34 +285,37 @@ const FormInputFields: React.FC<FormInputFieldsProps> = ({
 
 interface ImageListProps {
   handleOpenCamera: () => void;
+  handlePickImageFromGallery: () => void;
+  handleRemoveImage: (index: number) => void;
   images: string[];
   setActive: (active: boolean) => void;
 }
 
 const ImageList: React.FC<ImageListProps> = ({
   handleOpenCamera,
+  handlePickImageFromGallery,
+  handleRemoveImage,
   images,
   setActive,
 }) => {
-  const scrollViewRef = React.useRef<ScrollView>(null);
-
   return (
-    <ScrollView
-      horizontal
-      ref={scrollViewRef}
-      onContentSizeChange={() =>
-        scrollViewRef?.current?.scrollToEnd({animated: true})
-      }
-      style={styles.addImageContainer}>
+    <ScrollView horizontal style={styles.addImageContainer}>
       <HStack alignItems="center" padding={10}>
         {images.map((image, index) => (
-          <Image
-            alt={`image_${index}`}
-            key={index}
-            source={{uri: image}}
-            style={styles.addImage}
-          />
+          <View key={index}>
+            <Image
+              alt={`image_${index}`}
+              source={{uri: image}}
+              style={styles.addImage}
+            />
+            <Pressable onPress={() => handleRemoveImage(index)}>
+              <Text style={{color: 'red'}}>Remove</Text>
+            </Pressable>
+          </View>
         ))}
+        <Pressable onPress={handlePickImageFromGallery}>
+          <Text style={{color: 'blue'}}>Add from Gallery </Text>
+        </Pressable>
         <Button
           onPress={() => {
             setActive(true);
@@ -311,12 +353,25 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
       await CameraRoll.save(`file://${newPhoto.path}`, {
         type: 'photo',
       });
-      const savedPhoto = await CameraRoll.getPhotos({
-        first: 1,
-        assetType: 'Photos',
-      });
-      setImages([...images, savedPhoto.edges[0].node.image.uri]);
-      setIsCameraOpen(false);
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      try {
+        ImageCropPicker.openCropper({
+          path: `file://${newPhoto.path}`,
+          width: 300,
+          height: 400,
+          cropping: true,
+        }).then(croppedImage => {
+          if (croppedImage && croppedImage.path) {
+            setImages([...images, croppedImage.path]);
+          }
+          setIsCameraOpen(false);
+        });
+      } catch (error) {
+        console.log('Error during cropping:', error);
+        setIsCameraOpen(false);
+      }
     }
   };
   return (
