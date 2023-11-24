@@ -9,7 +9,7 @@ type MapViewProps = {
 
 const MapView: React.FC<MapViewProps> = ({region, tasks}) => {
   const options: TileOptions = {
-    noWrap: false,
+    noWrap: true,
     detectRetina: true,
     updateWhenIdle: true,
   };
@@ -24,7 +24,6 @@ const MapView: React.FC<MapViewProps> = ({region, tasks}) => {
 
   const markerList: Markers[] =
     tasks?.map(task => ({
-      icon: task?.images && task?.images[0],
       latLng: [task?.geopoint?.latitude, task?.geopoint?.longitude],
       iconSize: {
         width: 30,
