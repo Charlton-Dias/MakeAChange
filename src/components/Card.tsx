@@ -6,12 +6,7 @@ const Card = ({...props}) => {
   const [showTask, setShowTask] = useState(false);
   return (
     <>
-      <TaskView
-        setShow={setShowTask}
-        show={showTask}
-        task={props.task}
-        fetchData={props.fetchData}
-      />
+      <TaskView setShow={setShowTask} show={showTask} task={props.task} />
 
       <Pressable onPress={() => setShowTask(true)}>
         <Box
