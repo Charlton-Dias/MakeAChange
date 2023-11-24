@@ -10,16 +10,18 @@ import {
   HStack,
   Heading,
   Image,
+  Modal,
   ScrollView,
   Text,
   View,
 } from '@gluestack-ui/themed';
 import React, {useEffect, useState} from 'react';
 import {acceptTask, completedTask, deleteTask} from '../functions/tasks';
-import {Alert} from 'react-native';
+import {Alert, TouchableOpacity} from 'react-native';
 import ConfirmModal from './ConfirmModal';
 import {useUserAuth} from '../hooks';
 import {TaskDataProps} from '../types';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 type TaskViewProps = {
   show: boolean;
@@ -53,6 +55,7 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
   const id = task.id;
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [disabled, setDisabled] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const expired =
     new Date(task?.date).toLocaleDateString('en-IN') >
     new Date().toLocaleDateString('en-IN');
@@ -111,6 +114,10 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
 
   return (
     <ScrollView minWidth={350} p={10}>
+      <ImageView
+        selectedImage={selectedImage}
+        setSelectedImage={setSelectedImage}
+      />
       <Image
         width={'100%'}
         height={300}
@@ -150,19 +157,15 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
         <ScrollView horizontal>
           <HStack alignItems="center" padding={0}>
             {task?.images?.map((image, index) => (
-              <Image
+              <TouchableOpacity
                 key={index}
-                borderWidth={1}
-                borderRadius={10}
-                size="2xl"
-                alt={`${task?.taskName} ${index}`}
-                source={{
-                  uri: image,
-                }}
-                flex={1}
-                resizeMode="center"
-                m={10}
-              />
+                onPress={() => setSelectedImage(image)}>
+                <TaskImage
+                  image={image}
+                  taskName={task?.taskName}
+                  index={index}
+                />
+              </TouchableOpacity>
             ))}
           </HStack>
         </ScrollView>
@@ -198,5 +201,51 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
       </Box>
       <View mb={20} />
     </ScrollView>
+  );
+};
+
+const TaskImage = ({
+  image,
+  taskName,
+  index,
+}: {
+  image: string;
+  taskName: string;
+  index: number;
+}) => (
+  <Image
+    key={image}
+    borderWidth={1}
+    borderRadius={10}
+    alt={`${taskName} ${index}`}
+    source={{
+      uri: image,
+    }}
+    flex={1}
+    m={10}
+  />
+);
+
+type ImageViewProps = {
+  selectedImage: string | null;
+  setSelectedImage: () => void;
+};
+
+const ImageView = ({selectedImage, setSelectedImage}: ImageViewProps) => {
+  return (
+    <Modal
+      isOpen={selectedImage !== null}
+      onClose={() => setSelectedImage(null)}>
+      <Modal.Backdrop />
+      <Modal.Content w={'auto'} alignItems="center" p={10}>
+        <Image
+          size="2xl"
+          alt="image"
+          source={{
+            uri: selectedImage,
+          }}
+        />
+      </Modal.Content>
+    </Modal>
   );
 };
