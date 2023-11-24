@@ -41,6 +41,19 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
     justifyContent: 'space-between',
   },
+  loader: {
+    position: 'absolute',
+    zIndex: 2,
+  },
+  loaderBG: {
+    backgroundColor: 'rgba(225, 225, 225, 0.5)',
+    width: width,
+    height: height,
+    position: 'absolute',
+    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   navBar: {
     width: '95%',
     maxWidth: 400,

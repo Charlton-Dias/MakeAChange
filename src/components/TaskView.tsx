@@ -21,6 +21,7 @@ import {Alert, TouchableOpacity} from 'react-native';
 import ConfirmModal from './ConfirmModal';
 import {useUserAuth} from '../hooks';
 import {TaskDataProps} from '../types';
+import MapView from './MapView';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 type TaskViewProps = {
@@ -112,6 +113,7 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
     }
   }, [task.status, task.date, currentUser, expired]);
 
+  const region = [task?.geopoint?.latitude, task?.geopoint?.longitude];
   return (
     <ScrollView minWidth={350} p={10}>
       <ImageView
@@ -142,6 +144,11 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
         borderTopWidth={0}
         p={10}
         mb={20}>
+        <Text bold>Location:</Text>
+        <View mt={10} height={150}>
+          <MapView region={region} tasks={[task]} />
+        </View>
+
         {task?.date && (
           <Text bold>
             Deadline: {new Date(task?.date).toLocaleDateString('en-IN')}

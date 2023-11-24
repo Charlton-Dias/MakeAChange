@@ -1,23 +1,36 @@
 import React, {useEffect, useState} from 'react';
-import {Fab} from '@gluestack-ui/themed';
+import {ActivityIndicator} from 'react-native';
+import {Fab, View} from '@gluestack-ui/themed';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getCurrentLocation} from '../functions/location';
 import MapViews from '../components/MapView';
-
+import styles from '../styles';
+import {useAppSelector} from '../redux/hooks';
 const Home = () => {
-  const [region, setRegion] = useState([15.4617259147707, 73.83342337687071]);
-
+  const [region, setRegion] = useState([undefined, undefined]);
+  const [loading, setLoading] = useState(false);
   const updateLocation = async () => {
+    setLoading(true);
     const location = await getCurrentLocation();
-    const {latitude, longitude} = location.coords;
-    setRegion([latitude, longitude]);
+    setRegion([location.coords.latitude, location.coords.longitude]);
+    setLoading(false);
   };
+  const {data} = useAppSelector(state => state.tasks);
   useEffect(() => {
     updateLocation();
   }, []);
-
   return (
     <>
+      {loading && (
+        <View style={styles.loaderBG}>
+          <ActivityIndicator
+            color={'rgba(0,93,180,0.7)'}
+            style={styles.loader}
+            size={80}
+          />
+        </View>
+      )}
+
       <Fab
         size="md"
         placement="bottom right"
@@ -25,9 +38,9 @@ const Home = () => {
         bottom={80}>
         <MaterialIcons name="my-location" size={24} color="white" />
       </Fab>
-      <MapViews region={region} />
+
+      <MapViews region={region} tasks={data} />
     </>
   );
 };
-
 export default Home;

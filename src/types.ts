@@ -1,3 +1,5 @@
+import firestore from '@react-native-firebase/firestore';
+
 export type TabsParamList = {
   Home: undefined;
   Tasks: undefined;
@@ -20,4 +22,5 @@ export type TaskDataProps = {
   status?: string;
   selectedBy?: string;
   images?: string[];
+  geopoint?: typeof firestore.GeoPoint;
 };
