@@ -16,6 +16,7 @@ import {
   Text,
   View,
   Fab,
+  VStack,
 } from '@gluestack-ui/themed';
 
 import {Alert, PermissionsAndroid, ScrollView} from 'react-native';
@@ -25,14 +26,10 @@ import storage from '@react-native-firebase/storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Camera, useCameraDevice} from 'react-native-vision-camera';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {useNavigation} from '@react-navigation/native';
-import ImageCropPicker from 'react-native-image-crop-picker'; 
-import ImagePicker from 'react-native-image-picker'; 
+import ImageCropPicker from 'react-native-image-crop-picker';
 
 import styles from '../styles';
 import FormInput, {FormTextArea} from '../components/FormInput';
-import {TabsParamList} from '../types';
 import {getCurrentLocation} from '../functions/location';
 import {useUserAuth} from '../hooks';
 
@@ -47,25 +44,21 @@ function Create() {
 export default Create;
 
 const LoginAlert = () => (
-  <GsAlert>
-    <Icon name="info-circle" size={24} color={'black'} />
-    <Text ml={10} color="black" textAlign="center">
-      Please Login to continue
-    </Text>
-  </GsAlert>
+  <View justifyContent="center" height={'100%'} p={10}>
+    <GsAlert justifyContent="center">
+      <Icon name="info-circle" size={24} color={'black'} />
+      <Text ml={10} color="black" textAlign="center">
+        Please Login to continue
+      </Text>
+    </GsAlert>
+  </View>
 );
-
-type CreateTaskScreenNavigationProp = BottomTabNavigationProp<
-  TabsParamList,
-  'CreateTask'
->;
 
 type CreateTaskProps = {
   user: any;
 };
 
 const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
-  const navigation = useNavigation<CreateTaskScreenNavigationProp>();
   const creator = user.uid;
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
@@ -73,7 +66,9 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const [images, setImages] = useState<string[]>([]);
   const [active, setActive] = useState(true);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
- const [errorNotification, setErrorNotification] = useState<string | null>(null);
+  const [errorNotification, setErrorNotification] = useState<string | null>(
+    null,
+  );
   const handleOpenCamera = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -101,8 +96,8 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
   const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
     if (!taskName || !description || !date || images.length === 0) {
-        setErrorNotification('All fields are required.');
-        return;
+      setErrorNotification('All fields are required.');
+      return;
     }
     setLoading(true);
     const status = 'new';
@@ -131,7 +126,6 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
     setDescription('');
     setDate(new Date());
     setImages([]);
-    navigation.navigate('CreateTask');
   };
 
   return (
@@ -139,14 +133,12 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
       {errorNotification && (
         <GsAlert
           status="error"
-          mb="4"
+          mb={4}
           justifyContent="space-between"
           flexDirection="row">
           <Text color="black">{errorNotification}</Text>
           <Pressable onPress={() => setErrorNotification(null)}>
-            <Text color="red" >
-              X
-            </Text>
+            <MaterialIcons name="close" size={24} color="red" />
           </Pressable>
         </GsAlert>
       )}
@@ -170,6 +162,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({user}) => {
           />
           <Deadline date={date} setDate={setDate} />
 
+          <Text bold>Images:</Text>
           <ImageList
             handleOpenCamera={handleOpenCamera}
             handleRemoveImage={index => {
@@ -298,8 +291,15 @@ const ImageList: React.FC<ImageListProps> = ({
   images,
   setActive,
 }) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   return (
-    <ScrollView horizontal style={styles.addImageContainer}>
+    <ScrollView
+      horizontal
+      style={styles.addImageContainer}
+      ref={scrollViewRef}
+      onContentSizeChange={() =>
+        scrollViewRef?.current?.scrollToEnd({animated: true})
+      }>
       <HStack alignItems="center" padding={10}>
         {images.map((image, index) => (
           <View key={index}>
@@ -308,21 +308,28 @@ const ImageList: React.FC<ImageListProps> = ({
               source={{uri: image}}
               style={styles.addImage}
             />
-            <Pressable onPress={() => handleRemoveImage(index)}>
-              <Text style={{color: 'red'}}>Remove</Text>
+            <Pressable
+              onPress={() => handleRemoveImage(index)}
+              position="absolute"
+              p={10}
+              right={0}>
+              <MaterialIcons name="close" size={24} color="red" />
             </Pressable>
           </View>
         ))}
-        <Pressable onPress={handlePickImageFromGallery}>
-          <Text style={{color: 'blue'}}>Add from Gallery </Text>
-        </Pressable>
-        <Button
-          onPress={() => {
-            setActive(true);
-            handleOpenCamera();
-          }}>
-          <ButtonText>+</ButtonText>
-        </Button>
+        <VStack>
+          <Button
+            m={10}
+            onPress={() => {
+              setActive(true);
+              handleOpenCamera();
+            }}>
+            <MaterialIcons name="add-a-photo" size={24} color={'white'} />
+          </Button>
+          <Button m={10} onPress={handlePickImageFromGallery}>
+            <MaterialIcons name="upload-file" size={24} color={'white'} />
+          </Button>
+        </VStack>
       </HStack>
     </ScrollView>
   );

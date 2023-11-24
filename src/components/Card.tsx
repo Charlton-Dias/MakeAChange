@@ -6,12 +6,7 @@ const Card = ({...props}) => {
   const [showTask, setShowTask] = useState(false);
   return (
     <>
-      <TaskView
-        setShow={setShowTask}
-        show={showTask}
-        task={props.task}
-        fetchData={props.fetchData}
-      />
+      <TaskView setShow={setShowTask} show={showTask} task={props.task} />
 
       <Pressable onPress={() => setShowTask(true)}>
         <Box
@@ -20,7 +15,7 @@ const Card = ({...props}) => {
           margin={5}
           borderWidth={1}
           backgroundColor="white"
-          maxWidth={200}>
+          width={180}>
           <Image
             minWidth={180}
             height={150}
