@@ -42,7 +42,7 @@ const registerUser = async ({userAuth, userData}: any) => {
   }
 };
 
-export default function Signup({ navigation }: Props): JSX.Element {
+export default function Signup({navigation}: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -50,35 +50,41 @@ export default function Signup({ navigation }: Props): JSX.Element {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
-  const [errorNotifications, setErrorNotifications] = useState<{ [key: string]: string }>({});
+  const [errorNotifications, setErrorNotifications] = useState<{
+    [key: string]: string;
+  }>({});
 
   const showErrorNotification = (field: string, message: string) => {
-    setErrorNotifications((prevErrors) => ({ ...prevErrors, [field]: message }));
+    setErrorNotifications(prevErrors => ({...prevErrors, [field]: message}));
   };
 
   const clearErrorNotification = (field: string) => {
-    setErrorNotifications((prevErrors) => {
-      const updatedErrors = { ...prevErrors };
+    setErrorNotifications(prevErrors => {
+      const updatedErrors = {...prevErrors};
       delete updatedErrors[field];
       return updatedErrors;
     });
   };
 
-  const checkUsernameAvailability = async (username: string): Promise<boolean> => {
-    const querySnapshot = await firestore().collection('users').where('username', '==', username).get();
+  const checkUsernameAvailability = async (
+    username: string,
+  ): Promise<boolean> => {
+    const querySnapshot = await firestore()
+      .collection('users')
+      .where('username', '==', username)
+      .get();
     return false;
   };
 
-const checkEmailAvailability = async (email: string): Promise<boolean> => {
-  try {
-    const methods = await auth().fetchSignInMethodsForEmail(email);
-
-    return (methods.length === 0);
-  } catch (error) {
-    console.error('Error checking email availability:', error);
-    return false; 
-  }
-};
+  const checkEmailAvailability = async (email: string): Promise<boolean> => {
+    try {
+      const methods = await auth().fetchSignInMethodsForEmail(email);
+      return methods.length === 0;
+    } catch (error) {
+      console.error('Error checking email availability:', error);
+      return false;
+    }
+  };
 
   const checkPhoneAvailability = async (phone: string): Promise<boolean> => {
     return false;
@@ -86,9 +92,9 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setErrors({});
+    setErrorNotifications({});
     try {
-      const errors: { [key: string]: string } = {};
+      const errors: {[key: string]: string} = {};
 
       if (!username) {
         errors.username = 'Username is required';
@@ -122,28 +128,23 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
 
       if (!password) {
         errors.password = 'Password is required';
+        showErrorNotification('password', 'Password is required');
+      }
+      else {
+        clearErrorNotification('password');
       }
       if (!cpassword) {
-        newErrors = {
-          ...newErrors,
-          cpassword: 'Please retype the password.',
-        };
+        errors.cpassword = 'Please retype the password.';
         showErrorNotification('cpassword', 'Confirm Password is required');
       } else if (password !== cpassword) {
-        newErrors = {
-          ...newErrors,
-          cpassword: 'Passwords do not match.',
-        };
+        errors.cpassword = 'Passwords do not match.';
         showErrorNotification('cpassword', 'Passwords do not match');
       } else {
         clearErrorNotification('cpassword');
       }
 
       if (!phone) {
-        newErrors = {
-          ...newErrors,
-          phone: 'Phone number is required.',
-        };
+        errors.phone = 'Phone number is required.';
         showErrorNotification('phone', 'Phone is required');
       } else if (!isValidPhoneNumber(phone)) {
         errors.phone = 'Invalid phone number';
@@ -161,8 +162,8 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
       }
 
       await registerUser({
-        userAuth: { email, password },
-        userData: { username, phone, name },
+        userAuth: {email, password},
+        userData: {username, phone, name},
       });
       setLoading(false);
       console.log('User registered successfully!');
@@ -257,7 +258,6 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
                   showErrorNotification('email', 'Email is already in use');
                 }
               }}
-              error={errors?.email}
             />
             {errorNotifications.email && (
               <GsAlert
@@ -301,14 +301,13 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
 
             <FormInput
               label="Confirm Password"
-              placeholder="Password"
+              placeholder=" Confirm Password"
               value={cpassword}
               onChangeText={text => {
                 setCPassword(text);
                 clearErrorNotification('cpassword');
               }}
               type="password"
-              error={errors?.cpassword}
             />
             {errorNotifications.cpassword && (
               <GsAlert
@@ -329,7 +328,18 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
               label="Phone"
               placeholder="9876543210"
               value={phone}
-              onChangeText={setPhone}
+              onChangeText={async text => {
+                setPhone(text);
+                clearErrorNotification('phone');
+                if (!isValidPhoneNumber(text)) {
+                  showErrorNotification('phone', 'Invalid phone number');
+                } else if (!(await checkPhoneAvailability(text))) {
+                  showErrorNotification(
+                    'phone',
+                    'Phone number is already in use',
+                  );
+                }
+              }}
             />
             {errorNotifications.phone && (
               <GsAlert
