@@ -86,6 +86,7 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setErrors({});
     try {
       const errors: { [key: string]: string } = {};
 
@@ -121,23 +122,28 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
 
       if (!password) {
         errors.password = 'Password is required';
-        showErrorNotification('password', 'Password is required');
-      } else {
-        clearErrorNotification('password');
       }
-
       if (!cpassword) {
-        errors.cpassword = 'Confirm Password is required';
+        newErrors = {
+          ...newErrors,
+          cpassword: 'Please retype the password.',
+        };
         showErrorNotification('cpassword', 'Confirm Password is required');
       } else if (password !== cpassword) {
-        errors.cpassword = 'Passwords do not match';
+        newErrors = {
+          ...newErrors,
+          cpassword: 'Passwords do not match.',
+        };
         showErrorNotification('cpassword', 'Passwords do not match');
       } else {
         clearErrorNotification('cpassword');
       }
 
       if (!phone) {
-        errors.phone = 'Phone is required';
+        newErrors = {
+          ...newErrors,
+          phone: 'Phone number is required.',
+        };
         showErrorNotification('phone', 'Phone is required');
       } else if (!isValidPhoneNumber(phone)) {
         errors.phone = 'Invalid phone number';
@@ -151,7 +157,7 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
 
       if (Object.keys(errors).length > 0) {
         setLoading(false);
-        throw errors;
+        return;
       }
 
       await registerUser({
@@ -251,6 +257,7 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
                   showErrorNotification('email', 'Email is already in use');
                 }
               }}
+              error={errors?.email}
             />
             {errorNotifications.email && (
               <GsAlert
@@ -301,6 +308,7 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
                 clearErrorNotification('cpassword');
               }}
               type="password"
+              error={errors?.cpassword}
             />
             {errorNotifications.cpassword && (
               <GsAlert
@@ -321,18 +329,7 @@ const checkEmailAvailability = async (email: string): Promise<boolean> => {
               label="Phone"
               placeholder="9876543210"
               value={phone}
-              onChangeText={async text => {
-                setPhone(text);
-                clearErrorNotification('phone');
-                if (!isValidPhoneNumber(text)) {
-                  showErrorNotification('phone', 'Invalid phone number');
-                } else if (!(await checkPhoneAvailability(text))) {
-                  showErrorNotification(
-                    'phone',
-                    'Phone number is already in use',
-                  );
-                }
-              }}
+              onChangeText={setPhone}
             />
             {errorNotifications.phone && (
               <GsAlert

@@ -35,7 +35,7 @@ const Card = ({...props}) => {
             }}
           />
           <Box padding={5}>
-            <Text size="xl" bold>
+            <Text size="xl" bold isTruncated numberOfLines={1}>
               {props?.task?.taskName}
             </Text>
             <Text isTruncated numberOfLines={1}>

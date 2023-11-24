@@ -22,13 +22,25 @@ export default function Login({navigation}: Props): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
 
   const handleSubmit = async () => {
     try {
+      setErrors({});
       setLoading(true);
-      if (!email || !password) {
-        throw new Error('Enter email and password');
+      let newErrors = {};
+      if (!email) {
+        newErrors = {...newErrors, email: 'Email is Required'};
       }
+      if (!password) {
+        newErrors = {...newErrors, password: 'Password is Required'};
+      }
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        setLoading(false);
+        return;
+      }
+
       await auth().signInWithEmailAndPassword(email, password);
       console.log('success');
     } catch (error) {
@@ -77,6 +89,7 @@ const handleForgotPassword = async () => {
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
+            error={errors?.email}
           />
 
           <FormInput
@@ -85,6 +98,7 @@ const handleForgotPassword = async () => {
             value={password}
             onChangeText={setPassword}
             type="password"
+            error={errors?.password}
           />
           <Button size="sm" variant="link" onPress={handleForgotPassword}>
             <ButtonText textAlign="left">Forgot password?</ButtonText>
