@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   loaderBG: {
-    backgroundColor: 'rgba(225, 225, 225, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     width: width,
     height: height,
     position: 'absolute',
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     width: '95%',
     maxWidth: 400,
     alignSelf: 'center',
-    borderColor: '#005DB4',
+    borderColor: '(rgba(26, 110, 255, 0.9)',
     borderWidth: 1,
     borderRadius: 10,
     height: 60,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   navBarActiveTab: {
-    backgroundColor: 'rgba(26, 110, 188, 0.9)',
+    // backgroundColor: 'rgba(26, 110, 188, 0.9)',
     borderRadius: 10,
     opacity: 1,
     margin: -12,
@@ -92,7 +92,9 @@ const styles = StyleSheet.create({
   },
   navHeader: {
     height: 40,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
   },
+  navHeaderTitle: {fontSize: 30, color: 'white'},
   p10: {
     padding: 10,
   },
@@ -100,8 +102,15 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  profileCard: {
+    margin: 10,
+    padding: 15,
+    borderColor: 'rgba(26, 110, 255, 0.5)',
+    borderRadius: 10,
+    borderWidth: 1,
+  },
   profileTabBarIndicatorStyle: {
-    backgroundColor: 'rgba(26, 110, 188, 0.9)',
+    backgroundColor: 'rgba(26, 110, 255, 0.9)',
     height: '100%',
     borderRadius: 10,
   },
@@ -110,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
     borderWidth: 1,
-    borderColor: 'rgba(26, 110, 188, 0.9)',
+    borderColor: 'rgba(26, 110, 255, 0.9)',
   },
   profileTabBarLabelStyle: {
     fontSize: 14,

@@ -12,6 +12,7 @@ import styles from '../styles';
 import Tasks from '../screens/Tasks';
 import Create from '../screens/CreateTask';
 import {TabsParamList} from '../types';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Tab = createBottomTabNavigator<TabsParamList>();
 
@@ -29,6 +30,7 @@ export default function BottomTabs() {
       screenOptions={{
         headerStyle: styles.navHeader,
         headerTitleAlign: 'center',
+        headerTitleStyle: styles.navHeaderTitle,
       }}
       sceneContainerStyle={styles.sceneContainerStyle}>
       <Tab.Screen name="Home" component={Home} options={{title: 'Taskify'}} />
@@ -49,7 +51,11 @@ export default function BottomTabs() {
 
 const Tabs = ({state, descriptors, navigation}: BottomTabBarProps) => {
   return (
-    <View style={styles.navBar}>
+    <LinearGradient
+      colors={['rgba(26, 110, 255, 0.12)', 'rgba(0, 46, 125, 0.12)']}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.navBar}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const iconName = ICON_NAMES[route.name];
@@ -71,18 +77,27 @@ const Tabs = ({state, descriptors, navigation}: BottomTabBarProps) => {
             accessibilityRole="button"
             testID={options.tabBarTestID}
             onPress={onPress}
-            key={index}
-            style={(styles.navBarTabs, isFocused && styles.navBarActiveTab)}>
-            <View width={30} alignItems="center">
-              <Icon
-                name={`${iconName}`}
-                size={28}
-                color={isFocused ? 'white' : 'rgba(26, 110, 188, 0.9)'}
-              />
-            </View>
+            key={index}>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 1}}
+              colors={
+                isFocused
+                  ? ['rgba(26, 110, 255, 0.9)', 'rgba(0, 46, 106, 0.9)']
+                  : ['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)']
+              }
+              style={(styles.navBarTabs, isFocused && styles.navBarActiveTab)}>
+              <View width={30} alignItems="center">
+                <Icon
+                  name={`${iconName}`}
+                  size={28}
+                  color={isFocused ? 'white' : 'rgba(40, 100, 255, 0.9)'}
+                />
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
         );
       })}
-    </View>
+    </LinearGradient>
   );
 };

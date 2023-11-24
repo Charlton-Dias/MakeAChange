@@ -20,7 +20,7 @@ const Card = ({...props}) => {
           margin={5}
           borderWidth={1}
           backgroundColor="white"
-          maxWidth={200}>
+          width={180}>
           <Image
             minWidth={180}
             height={150}
