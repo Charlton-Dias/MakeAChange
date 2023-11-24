@@ -69,10 +69,16 @@ export default function Signup({ navigation }: Props): JSX.Element {
     return false;
   };
 
-  const checkEmailAvailability = async (email: string): Promise<boolean> => {
-    const querySnapshot = await firestore().collection('users').where('email', '==', email).get();
-    return false;
-  };
+const checkEmailAvailability = async (email: string): Promise<boolean> => {
+  try {
+    const methods = await auth().fetchSignInMethodsForEmail(email);
+
+    return (methods.length === 0);
+  } catch (error) {
+    console.error('Error checking email availability:', error);
+    return false; 
+  }
+};
 
   const checkPhoneAvailability = async (phone: string): Promise<boolean> => {
     return false;
