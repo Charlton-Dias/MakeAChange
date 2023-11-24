@@ -182,19 +182,26 @@ export default function Signup({ navigation }: Props): JSX.Element {
               label="Username"
               placeholder="Username"
               value={username}
-              onChangeText={async (text) => {
+              onChangeText={async text => {
                 setUsername(text);
                 clearErrorNotification('username');
                 if (!(await checkUsernameAvailability(text))) {
-                  showErrorNotification('username', 'Username is already taken');
+                  showErrorNotification(
+                    'username',
+                    'Username is already taken',
+                  );
                 }
               }}
             />
             {errorNotifications.username && (
-              <GsAlert status="error" mb="4" justifyContent="space-between" flexDirection="row">
-                <Text color="white">{errorNotifications.username}</Text>
+              <GsAlert
+                status="error"
+                mb="4"
+                justifyContent="space-between"
+                flexDirection="row">
+                <Text color="black">{errorNotifications.username}</Text>
                 <Pressable onPress={() => clearErrorNotification('username')}>
-                  <Text color="white" style={{ textDecorationLine: 'underline' }}>
+                  <Text color="red" style={{textDecorationLine: 'underline'}}>
                     Close
                   </Text>
                 </Pressable>
@@ -205,16 +212,20 @@ export default function Signup({ navigation }: Props): JSX.Element {
               label="Name"
               placeholder="Jon Doe"
               value={name}
-              onChangeText={(text) => {
+              onChangeText={text => {
                 setName(text);
                 clearErrorNotification('name');
               }}
             />
             {errorNotifications.name && (
-              <GsAlert status="error" mb="4" justifyContent="space-between" flexDirection="row">
-                <Text color="white">{errorNotifications.name}</Text>
+              <GsAlert
+                status="error"
+                mb="4"
+                justifyContent="space-between"
+                flexDirection="row">
+                <Text color="black">{errorNotifications.name}</Text>
                 <Pressable onPress={() => clearErrorNotification('name')}>
-                  <Text color="white" style={{ textDecorationLine: 'underline' }}>
+                  <Text color="red" style={{textDecorationLine: 'underline'}}>
                     Close
                   </Text>
                 </Pressable>
@@ -225,7 +236,7 @@ export default function Signup({ navigation }: Props): JSX.Element {
               label="Email"
               placeholder="user@email.com"
               value={email}
-              onChangeText={async (text) => {
+              onChangeText={async text => {
                 setEmail(text);
                 clearErrorNotification('email');
                 if (!isValidEmail(text)) {
@@ -236,10 +247,14 @@ export default function Signup({ navigation }: Props): JSX.Element {
               }}
             />
             {errorNotifications.email && (
-              <GsAlert status="error" mb="4" justifyContent="space-between" flexDirection="row">
-                <Text color="white">{errorNotifications.email}</Text>
+              <GsAlert
+                status="error"
+                mb="4"
+                justifyContent="space-between"
+                flexDirection="row">
+                <Text color="black">{errorNotifications.email}</Text>
                 <Pressable onPress={() => clearErrorNotification('email')}>
-                  <Text color="white" style={{ textDecorationLine: 'underline' }}>
+                  <Text color="red" style={{textDecorationLine: 'underline'}}>
                     Close
                   </Text>
                 </Pressable>
@@ -250,17 +265,21 @@ export default function Signup({ navigation }: Props): JSX.Element {
               label="Password"
               placeholder="Password"
               value={password}
-              onChangeText={(text) => {
+              onChangeText={text => {
                 setPassword(text);
                 clearErrorNotification('password');
               }}
               type="password"
             />
             {errorNotifications.password && (
-              <GsAlert status="error" mb="4" justifyContent="space-between" flexDirection="row">
-                <Text color="white">{errorNotifications.password}</Text>
+              <GsAlert
+                status="error"
+                mb="4"
+                justifyContent="space-between"
+                flexDirection="row">
+                <Text color="black">{errorNotifications.password}</Text>
                 <Pressable onPress={() => clearErrorNotification('password')}>
-                  <Text color="white" style={{ textDecorationLine: 'underline' }}>
+                  <Text color="red" style={{textDecorationLine: 'underline'}}>
                     Close
                   </Text>
                 </Pressable>
@@ -271,17 +290,21 @@ export default function Signup({ navigation }: Props): JSX.Element {
               label="Confirm Password"
               placeholder="Password"
               value={cpassword}
-              onChangeText={(text) => {
+              onChangeText={text => {
                 setCPassword(text);
                 clearErrorNotification('cpassword');
               }}
               type="password"
             />
             {errorNotifications.cpassword && (
-              <GsAlert status="error" mb="4" justifyContent="space-between" flexDirection="row">
-                <Text color="white">{errorNotifications.cpassword}</Text>
+              <GsAlert
+                status="error"
+                mb="4"
+                justifyContent="space-between"
+                flexDirection="row">
+                <Text color="black">{errorNotifications.cpassword}</Text>
                 <Pressable onPress={() => clearErrorNotification('cpassword')}>
-                  <Text color="white" style={{ textDecorationLine: 'underline' }}>
+                  <Text color="red" style={{textDecorationLine: 'underline'}}>
                     Close
                   </Text>
                 </Pressable>
@@ -292,21 +315,28 @@ export default function Signup({ navigation }: Props): JSX.Element {
               label="Phone"
               placeholder="9876543210"
               value={phone}
-              onChangeText={async (text) => {
+              onChangeText={async text => {
                 setPhone(text);
                 clearErrorNotification('phone');
                 if (!isValidPhoneNumber(text)) {
                   showErrorNotification('phone', 'Invalid phone number');
                 } else if (!(await checkPhoneAvailability(text))) {
-                  showErrorNotification('phone', 'Phone number is already in use');
+                  showErrorNotification(
+                    'phone',
+                    'Phone number is already in use',
+                  );
                 }
               }}
             />
             {errorNotifications.phone && (
-              <GsAlert status="error" mb="4" justifyContent="space-between" flexDirection="row">
-                <Text color="white">{errorNotifications.phone}</Text>
+              <GsAlert
+                status="error"
+                mb="4"
+                justifyContent="space-between"
+                flexDirection="row">
+                <Text color="black">{errorNotifications.phone}</Text>
                 <Pressable onPress={() => clearErrorNotification('phone')}>
-                  <Text color="white" style={{ textDecorationLine: 'underline' }}>
+                  <Text color="red" style={{textDecorationLine: 'underline'}}>
                     Close
                   </Text>
                 </Pressable>
@@ -324,7 +354,10 @@ export default function Signup({ navigation }: Props): JSX.Element {
             </Button>
           </SectionWrapper>
 
-          <Button size="sm" variant="link" onPress={() => navigation.navigate('Login')}>
+          <Button
+            size="sm"
+            variant="link"
+            onPress={() => navigation.navigate('Login')}>
             <Text>Already have an account? </Text>
             <ButtonText>Login </ButtonText>
           </Button>
