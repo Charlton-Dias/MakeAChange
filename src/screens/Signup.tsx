@@ -66,15 +66,21 @@ export default function Signup({navigation}: Props): JSX.Element {
     });
   };
 
-  const checkUsernameAvailability = async (
-    username: string,
-  ): Promise<boolean> => {
+const checkUsernameAvailability = async (
+  username: string,
+): Promise<boolean> => {
+  try {
     const querySnapshot = await firestore()
       .collection('users')
       .where('username', '==', username)
       .get();
+
+    return querySnapshot.empty;
+  } catch (error) {
+    console.error('Error checking username availability:', error);
     return false;
-  };
+  }
+};
 
   const checkEmailAvailability = async (email: string): Promise<boolean> => {
     try {
