@@ -43,58 +43,95 @@ const registerUser = async ({userAuth, userData}: any) => {
 
 type Props = NativeStackScreenProps<StackParamList, 'Signup'>;
 
+type ErrorProps = {
+  username?: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  cpassword?: string;
+  phone?: string;
+};
+
 export default function Signup({navigation}: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [cpassword, setCPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [name, setName] = useState('');
-  // const [city, setCity] = useState('');
-  // const [state, setState] = useState('');
-  // const [country, setCountry] = useState('');
-  // const [zip, setZip] = useState('');
+  const [username, setUsername] = useState(undefined);
+  const [password, setPassword] = useState(undefined);
+  const [cpassword, setCPassword] = useState(undefined);
+  const [email, setEmail] = useState(undefined);
+  const [phone, setPhone] = useState(undefined);
+  const [name, setName] = useState(undefined);
+  const [errors, setErrors] = useState<ErrorProps>({});
 
   const handleSubmit = async () => {
     setLoading(true);
+    setErrors({});
     try {
-      const errors: {[key: string]: string} = {};
-
+      let newErrors = {};
       if (!username) {
-        errors.username = 'Username is required';
+        newErrors = {
+          ...newErrors,
+          username: 'Username is required.',
+        };
+      } else if (username?.length < 5) {
+        newErrors = {
+          ...newErrors,
+          username: 'Username should be of at least 5 characters.',
+        };
       }
 
       if (!name) {
-        errors.name = 'Name is required';
+        newErrors = {
+          ...newErrors,
+          name: 'Name is required.',
+        };
       }
 
       if (!email) {
-        errors.email = 'Email is required';
+        newErrors = {
+          ...newErrors,
+          email: 'Email is required.',
+        };
       } else if (!isValidEmail(email)) {
-        errors.email = 'Invalid email address';
+        newErrors = {
+          ...newErrors,
+          email: 'Invalid email address.',
+        };
       }
 
-      if (!password) {
-        errors.password = 'Password is required';
+      if (!password || password.length < 6) {
+        newErrors = {
+          ...newErrors,
+          password: 'Password should be at least 6 characters.',
+        };
       }
-
       if (!cpassword) {
-        errors.cpassword = 'Confirm Password is required';
+        newErrors = {
+          ...newErrors,
+          cpassword: 'Please retype the password.',
+        };
       } else if (password !== cpassword) {
-        errors.cpassword = 'Passwords do not match';
+        newErrors = {
+          ...newErrors,
+          cpassword: 'Passwords do not match.',
+        };
       }
 
       if (!phone) {
-        errors.phone = 'Phone is required';
+        newErrors = {
+          ...newErrors,
+          phone: 'Phone number is required.',
+        };
       } else if (!isValidPhoneNumber(phone)) {
-        errors.phone = 'Invalid phone number';
+        newErrors = {
+          ...newErrors,
+          phone: 'Invalid phone number.',
+        };
       }
 
-      // Check if there are any errors
-      if (Object.keys(errors).length > 0) {
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
         setLoading(false);
-        throw errors;
+        return;
       }
 
       // Perform the signup
@@ -141,18 +178,21 @@ export default function Signup({navigation}: Props): JSX.Element {
               placeholder="Username"
               value={username}
               onChangeText={setUsername}
+              error={errors?.username}
             />
             <FormInput
               label=" Name"
               placeholder="Jon Doe"
               value={name}
               onChangeText={setName}
+              error={errors?.name}
             />
             <FormInput
               label="Email"
               placeholder="user@email.com"
               value={email}
               onChangeText={setEmail}
+              error={errors?.email}
             />
 
             <FormInput
@@ -161,6 +201,7 @@ export default function Signup({navigation}: Props): JSX.Element {
               value={password}
               onChangeText={setPassword}
               type="password"
+              error={errors?.password}
             />
 
             <FormInput
@@ -169,6 +210,7 @@ export default function Signup({navigation}: Props): JSX.Element {
               value={cpassword}
               onChangeText={setCPassword}
               type="password"
+              error={errors?.cpassword}
             />
 
             <FormInput
@@ -177,6 +219,7 @@ export default function Signup({navigation}: Props): JSX.Element {
               placeholder="9876543210"
               value={phone}
               onChangeText={setPhone}
+              error={errors?.phone}
             />
 
             <Button
@@ -189,36 +232,6 @@ export default function Signup({navigation}: Props): JSX.Element {
               {loading ? <ButtonSpinner /> : <ButtonText>Sign up</ButtonText>}
             </Button>
           </SectionWrapper>
-
-          {/* <SectionWrapper>
-            <FormInput
-              label="City"
-              placeholder="City"
-              value={city}
-              onChangeText={setCity}
-            />
-
-            <FormInput
-              label="State"
-              placeholder="State"
-              value={state}
-              onChangeText={setState}
-            />
-
-            <FormInput
-              label="Country"
-              placeholder="Country"
-              value={country}
-              onChangeText={setCountry}
-            />
-
-            <FormInput
-              label="Zip"
-              placeholder="Zip"
-              value={zip}
-              onChangeText={setZip}
-            />
-          </SectionWrapper> */}
 
           <Button
             size="sm"

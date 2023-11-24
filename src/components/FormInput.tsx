@@ -1,8 +1,14 @@
 import React from 'react';
 import {
+  AlertCircleIcon,
   Box,
   CircleIcon,
   FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlHelper,
+  FormControlHelperText,
   FormControlLabel,
   FormControlLabelText,
   Input,
@@ -23,6 +29,8 @@ type FormInputProps = {
   value: string;
   onChangeText: (text: string) => void;
   type?: 'text' | 'password';
+  error?: string;
+  helper?: string;
 };
 
 const FormInput = ({
@@ -31,9 +39,15 @@ const FormInput = ({
   value,
   onChangeText,
   type,
-  error
+  error,
+  helper,
 }: FormInputProps) => (
-  <FormControl size="md" my={5} mb={10}>
+  <FormControl
+    size="md"
+    my={5}
+    mb={10}
+    isRequired
+    isInvalid={error?.length > 0}>
     <FormControlLabel mb="$1">
       <FormControlLabelText>{label}:</FormControlLabelText>
     </FormControlLabel>
@@ -45,6 +59,17 @@ const FormInput = ({
         onChangeText={onChangeText}
       />
     </Input>
+    {helper && (
+      <FormControlHelper>
+        <FormControlHelperText>{helper}</FormControlHelperText>
+      </FormControlHelper>
+    )}
+    {error && (
+      <FormControlError>
+        <FormControlErrorIcon as={AlertCircleIcon} />
+        <FormControlErrorText>{error}</FormControlErrorText>
+      </FormControlError>
+    )}
   </FormControl>
 );
 
@@ -53,6 +78,8 @@ const FormTextArea = ({
   placeholder,
   value,
   onChangeText,
+  error,
+  helper,
 }: FormInputProps) => (
   <FormControl size="md" my={5} mb={10}>
     <FormControlLabel mb="$1">
@@ -65,6 +92,17 @@ const FormTextArea = ({
         onChangeText={onChangeText}
       />
     </Textarea>
+    {helper && (
+      <FormControlHelper>
+        <FormControlHelperText>{helper}</FormControlHelperText>
+      </FormControlHelper>
+    )}
+    {error && (
+      <FormControlError>
+        <FormControlErrorIcon as={AlertCircleIcon} />
+        <FormControlErrorText>{error}</FormControlErrorText>
+      </FormControlError>
+    )}
   </FormControl>
 );
 
