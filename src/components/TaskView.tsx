@@ -58,13 +58,15 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
   const [disabled, setDisabled] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const expired =
-    new Date(task?.date).toLocaleDateString('en-IN') >
+    new Date(task?.date).toLocaleDateString('en-IN') <
     new Date().toLocaleDateString('en-IN');
 
   const getButtonMessage = () => {
     if (task.status === 'taken') {
       if (task.selectedBy === currentUser?.uid) {
         return 'Mark as Completed';
+      } else if (expired) {
+        return 'Task Expired';
       } else {
         return 'Task Taken';
       }
@@ -102,14 +104,16 @@ const TaskLayout = ({task, handleClose}: TaskLayoutProps) => {
 
   useEffect(() => {
     if (
-      task.status !== 'completed' &&
-      task.status !== 'taken' &&
-      expired &&
-      currentUser
+      task.status === 'completed' ||
+      (task.status === 'taken' && task.selectedBy !== currentUser?.uid) ||
+      expired ||
+      !currentUser
     ) {
-      setDisabled(false);
-    } else {
       setDisabled(true);
+    }
+    //  {
+    else {
+      setDisabled(false);
     }
   }, [task.status, task.date, currentUser, expired]);
 

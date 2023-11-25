@@ -364,6 +364,7 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
       await new Promise(resolve => setTimeout(resolve, 0));
 
       try {
+        setIsCameraOpen(false);
         ImageCropPicker.openCropper({
           path: `file://${newPhoto.path}`,
           width: 300,
@@ -373,11 +374,10 @@ const ImageCapture: React.FC<ImageCaptureProps> = ({
           if (croppedImage && croppedImage.path) {
             setImages([...images, croppedImage.path]);
           }
-          setIsCameraOpen(false);
         });
       } catch (error) {
         console.log('Error during cropping:', error);
-        setIsCameraOpen(false);
+        setIsCameraOpen(true);
       }
     }
   };
