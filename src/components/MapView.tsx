@@ -26,10 +26,11 @@ const MapView: React.FC<MapViewProps> = ({region, tasks}) => {
     tasks?.map(task => ({
       latLng: [task?.geopoint?.latitude, task?.geopoint?.longitude],
       iconSize: {
-        width: 30,
-        height: 30,
+        width: 10,
+        height: 20,
       },
       title: task.taskName,
+      icon: 'https://firebasestorage.googleapis.com/v0/b/makeachange-7e3ec.appspot.com/o/assets%2Fmarker-3365838_1280.png?alt=media&token=da8252aa-8eaa-4b38-899f-0549be3334ef',
       disabled: true,
     })) || [];
 
