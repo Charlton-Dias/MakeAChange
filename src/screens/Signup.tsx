@@ -66,21 +66,21 @@ export default function Signup({navigation}: Props): JSX.Element {
     });
   };
 
-const checkUsernameAvailability = async (
-  username: string,
-): Promise<boolean> => {
-  try {
-    const querySnapshot = await firestore()
-      .collection('users')
-      .where('username', '==', username)
-      .get();
+  const checkUsernameAvailability = async (
+    username: string,
+  ): Promise<boolean> => {
+    try {
+      const querySnapshot = await firestore()
+        .collection('users')
+        .where('username', '==', username)
+        .get();
 
-    return querySnapshot.empty;
-  } catch (error) {
-    console.error('Error checking username availability:', error);
-    return false;
-  }
-};
+      return querySnapshot.empty;
+    } catch (error) {
+      console.error('Error checking username availability:', error);
+      return false;
+    }
+  };
 
   const checkEmailAvailability = async (email: string): Promise<boolean> => {
     try {
@@ -135,8 +135,7 @@ const checkUsernameAvailability = async (
       if (!password) {
         errors.password = 'Password is required';
         showErrorNotification('password', 'Password is required');
-      }
-      else {
+      } else {
         clearErrorNotification('password');
       }
       if (!cpassword) {
@@ -155,9 +154,9 @@ const checkUsernameAvailability = async (
       } else if (!isValidPhoneNumber(phone)) {
         errors.phone = 'Invalid phone number';
         showErrorNotification('phone', 'Invalid phone number');
-      } else if (!(await checkPhoneAvailability(phone))) {
-        errors.phone = 'Phone number is already in use';
-        showErrorNotification('phone', 'Phone number is already in use');
+        // } else if (!(await checkPhoneAvailability(phone))) {
+        //   errors.phone = 'Phone number is already in use';
+        //   showErrorNotification('phone', 'Phone number is already in use');
       } else {
         clearErrorNotification('phone');
       }
@@ -288,6 +287,7 @@ const checkUsernameAvailability = async (
                 setPassword(text);
                 clearErrorNotification('password');
               }}
+              helper="Should be atleast 6 characters"
               type="password"
             />
             {errorNotifications.password && (
@@ -339,12 +339,13 @@ const checkUsernameAvailability = async (
                 clearErrorNotification('phone');
                 if (!isValidPhoneNumber(text)) {
                   showErrorNotification('phone', 'Invalid phone number');
-                } else if (!(await checkPhoneAvailability(text))) {
-                  showErrorNotification(
-                    'phone',
-                    'Phone number is already in use',
-                  );
                 }
+                //  else if (!(await checkPhoneAvailability(text))) {
+                //   showErrorNotification(
+                //     'phone',
+                //     'Phone number is already in use',
+                //   );
+                // }
               }}
             />
             {errorNotifications.phone && (
